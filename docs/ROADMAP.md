@@ -5,7 +5,7 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 - [x] **1. Database lokal**
   - SQLite dibuka saat aplikasi dimulai.
   - Foreign key diaktifkan.
-  - Migrasi schema versi 1 tersedia dan tidak menghapus data saat aplikasi dibuka ulang.
+  - Migrasi schema berversi tersedia dan tidak menghapus data saat aplikasi dibuka ulang.
   - Drizzle client tersedia melalui context aplikasi.
   - Seed development tersedia dan hanya berjalan jika diaktifkan secara eksplisit.
 - [x] **2. Manajemen deck**
@@ -15,10 +15,10 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
   - CRUD kata, frasa, dan kalimat; terjemahan, catatan, contoh, favorit, dan tag.
 - [x] **4. Pustaka**
   - Data nyata, pencarian, filter, pengurutan, serta detail entri.
-- [ ] **5. Text-to-speech**
+- [x] **5. Text-to-speech**
   - Pemutaran teks, bahasa/voice, kecepatan, stop, dan penanganan voice offline.
-- [ ] **6. Fondasi sesi latihan**
-  - Pemilihan deck, jumlah materi, arah bahasa, pengacakan, serta penyimpanan sesi.
+- [x] **6. Fondasi sesi latihan**
+  - Pemilihan multi-deck, rentang tanggal entri, status mastery, jumlah materi, arah/mode game, pengacakan, serta penyimpanan sesi.
 - [ ] **7. Game kartu flash**
   - Balik kartu, TTS, rating Lupa/Sulit/Ingat/Kuat, dan histori hasil.
 - [ ] **8. Game dikte**
@@ -52,7 +52,7 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 
 ### Tahap 1, selesai
 - Database: `lingolog.db`.
-- Schema version: `1`, disimpan melalui `PRAGMA user_version`.
+- Schema version awal: `1`; versi aktif kini `2`, disimpan melalui `PRAGMA user_version`.
 - Tabel: `decks`, `entries`, `mastery_states`, `practice_sessions`, `practice_answers`, `activity_events`, `tags`, `entry_tags`, dan `settings`.
 - Migrasi menggunakan transaksi; data lama tidak di-reset.
 - Seed contoh bersifat opt-in melalui `EXPO_PUBLIC_SEED_DATABASE=true` dan hanya mengisi database kosong.
@@ -80,3 +80,23 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 - Jumlah hasil dan empty state dibedakan antara deck kosong dengan pencarian/filter tanpa hasil.
 - Menekan entri membuka halaman detail baca yang menampilkan pasangan bahasa, contoh, catatan, tag, favorit, dan tanggal dibuat.
 - Aksi edit dipisahkan dari detail agar penelusuran Pustaka tidak langsung membuka form.
+
+### Tahap 5, selesai
+- Satu `SpeechProvider` mengelola voice perangkat, pemutaran tunggal, stop, error, dan preferensi TTS bersama.
+- Bahasa speech mengikuti bahasa sumber atau terjemahan deck; pengguna dapat mendengarkan teks utama dan contoh.
+- Daftar Pustaka memiliki tombol dengarkan cepat tanpa membuka detail entri.
+- Pengaturan voice menampilkan suara lokal yang kompatibel per bahasa dan memprioritaskan locale serta kualitas Enhanced.
+- Kecepatan Pelan/Santai/Normal/Cepat dan pilihan voice per bahasa disimpan secara lokal.
+- Voice yang belum terpasang, kegagalan audio, teks terlalu panjang, serta pemeriksaan voice yang masih berjalan memiliki pesan khusus.
+- Audio dihentikan saat layar ditinggalkan dan tombol putar berubah menjadi stop selama speech aktif.
+- Prototype kartu flash dan dikte menggunakan layanan TTS bersama agar tidak lagi memanggil `expo-speech` secara langsung.
+
+### Tahap 6, selesai
+- Layar persiapan sesi bersama mendukung satu atau beberapa deck, rentang tanggal entri dibuat, serta kombinasi keduanya.
+- Status mastery dapat dipilih jamak: Baru/masih asing, Dipelajari, Familiar, dan Dikuasai.
+- Jumlah materi 5/10/20/50, pengacakan, dan arah kartu flash disediakan sebelum sesi dimulai.
+- Dikte menyimpan pilihan `audio_to_source` (dengar lalu tulis) atau `meaning_to_source` (lihat arti lalu tulis teks yang dipelajari).
+- Jumlah kandidat dihitung langsung dari SQLite sebelum tombol mulai diaktifkan; tanggal kalender yang tidak nyata ditolak.
+- Schema versi 2 menambahkan konfigurasi JSON, relasi multi-deck, dan snapshot urutan entri untuk setiap sesi tanpa menghapus data lama.
+- Pembuatan sesi, relasi deck, dan urutan materi berjalan dalam satu transaksi.
+- Kartu flash dan dikte membaca materi nyata dari snapshot sesi serta menandai waktu selesai dan durasi sesi.

@@ -34,7 +34,9 @@ Ambang awal statistik (dapat dikalibrasi setelah pengujian):
 ## Batas MVP berikutnya
 - CRUD deck dan entri.
 - SQLite dan migrasi.
-- Pemilihan deck sebelum sesi game.
-- Persistensi sesi, jawaban, dan mastery.
+- Pemilihan satu atau beberapa deck sebelum sesi game.
+- Filter materi sesi dapat menggabungkan deck, rentang tanggal entri dibuat, dan satu atau beberapa status mastery.
+- Dikte memiliki dua varian: audio bahasa yang dipelajari lalu menulis, atau melihat arti lalu menulis teks bahasa yang dipelajari.
+- Persistensi konfigurasi sesi, urutan materi, jawaban, dan mastery.
 - Kalender berasal dari query data nyata.
 - Impor/ekspor deck lokal.
