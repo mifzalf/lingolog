@@ -1,36 +1,35 @@
-import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
-import * as Speech from 'expo-speech';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { isDictationCorrect } from '../../src/features/practice/answer';
+import { useDatabase } from '../../src/db/DatabaseProvider';
+import { completePracticeSession } from '../../src/features/practice/session.repository';
+import { usePracticeSession } from '../../src/features/practice/usePracticeSession';
 import { radius, ThemeColors } from '../../src/theme/tokens';
+import { useSpeech } from '../../src/features/speech/SpeechProvider';
 import { useTheme } from '../../src/theme/ThemeProvider';
 
 export default function DictationScreen() {
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
-  const [answer, setAnswer] = useState('');
-  const [result, setResult] = useState<boolean | null>(null);
-  const expected = 'Es kommt darauf an.';
-  const check = () => setResult(isDictationCorrect(answer, expected, 'de-DE'));
+  const { colors } = useTheme(); const styles = createStyles(colors); const database = useDatabase(); const { sessionId } = useLocalSearchParams<{ sessionId: string }>();
+  const { data, loading, error } = usePracticeSession(Number(sessionId)); const { speak, stop, speakingKey } = useSpeech();
+  const [index, setIndex] = useState(0); const [answer, setAnswer] = useState(''); const [result, setResult] = useState<boolean | null>(null);
+  const item = data?.items[index]; const variant = data?.config?.dictationVariant ?? 'audio_to_source';
+  useEffect(() => { if (item && variant === 'audio_to_source') void speak(item.sourceText, item.sourceLanguage, 'dictation'); return () => { void stop(); }; }, [item?.id, variant]); // A newly loaded item may auto-play once.
+  if (loading) return <View style={styles.center}><ActivityIndicator color={colors.primary} /></View>;
+  if (error || !data || !item) return <View style={styles.center}><Text style={styles.error}>{error || 'Materi sesi tidak tersedia.'}</Text><Pressable onPress={() => router.dismissTo('/practice')}><Text style={styles.back}>Kembali ke latihan</Text></Pressable></View>;
+  const check = () => setResult(isDictationCorrect(answer, item.sourceText, item.sourceLanguage));
+  function next() { if (!data) return; void stop(); if (index < data.items.length - 1) { setIndex(index + 1); setAnswer(''); setResult(null); } else { void completePracticeSession(database, data.session.id, data.session.startedAt); router.dismissTo('/practice'); } }
   return <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-    <View style={styles.top}><Pressable onPress={() => router.back()}><Ionicons name="close" size={27} color={colors.ink} /></Pressable><Text style={styles.counter}>Dikte · 1 / 8</Text><Ionicons name="ellipsis-horizontal" size={24} color={colors.ink} /></View>
-    <View style={styles.progress}><View style={styles.progressFill} /></View>
-    <View style={styles.main}>
-      <Text style={styles.eyebrow}>DENGARKAN KALIMAT</Text>
-      <Pressable onPress={() => Speech.speak(expected, { language: 'de-DE', rate: 0.78 })} style={styles.listen}><Ionicons name="volume-high" size={40} color={colors.white} /></Pressable>
-      <Text style={styles.replay}>Ketuk untuk memutar ulang</Text>
-      <TextInput value={answer} onChangeText={(v) => { setAnswer(v); setResult(null); }} multiline autoCapitalize="sentences" placeholder="Tulis yang kamu dengar…" placeholderTextColor={colors.muted} style={styles.input} />
-      <Text style={styles.tolerance}>Kapital, spasi berlebih, dan tanda baca tidak dihitung.</Text>
-      {result !== null && <View style={[styles.result, !result && styles.resultWrong]}><Ionicons name={result ? 'checkmark-circle' : 'close-circle'} size={22} color={result ? colors.moss : colors.coral} /><View><Text style={styles.resultTitle}>{result ? 'Tepat!' : 'Belum tepat'}</Text>{!result && <Text style={styles.expected}>Jawaban: {expected}</Text>}</View></View>}
-    </View>
-    <Pressable onPress={check} disabled={!answer.trim()} style={[styles.button, !answer.trim() && { opacity: 0.45 }]}><Text style={styles.buttonText}>Periksa jawaban</Text><Ionicons name="arrow-forward" size={20} color={colors.white} /></Pressable>
+    <View style={styles.top}><Pressable onPress={() => router.dismissTo('/practice')}><Ionicons name="close" size={27} color={colors.ink} /></Pressable><Text style={styles.counter}>Dikte · {index + 1} / {data.items.length}</Text><Text style={styles.deck} numberOfLines={1}>{item.deckName}</Text></View><View style={styles.progress}><View style={[styles.progressFill, { width: `${((index + 1) / data.items.length) * 100}%` }]} /></View>
+    <View style={styles.main}>{variant === 'audio_to_source' ? <><Text style={styles.eyebrow}>DENGARKAN TEKS</Text><Pressable accessibilityLabel={speakingKey === 'dictation' ? 'Hentikan audio' : 'Dengarkan teks'} onPress={() => speakingKey === 'dictation' ? void stop() : void speak(item.sourceText, item.sourceLanguage, 'dictation')} style={styles.listen}><Ionicons name={speakingKey === 'dictation' ? 'stop' : 'volume-high'} size={40} color={colors.white} /></Pressable><Text style={styles.replay}>Ketuk untuk memutar ulang</Text></> : <><Text style={styles.eyebrow}>TULIS TEKS YANG DIPELAJARI</Text><View style={styles.meaning}><Text style={styles.meaningLabel}>ARTI</Text><Text style={styles.meaningText}>{item.translatedText}</Text></View></>}
+      <TextInput value={answer} onChangeText={(value) => { setAnswer(value); setResult(null); }} multiline autoCapitalize="sentences" placeholder="Tulis jawabanmu…" placeholderTextColor={colors.muted} style={styles.input} /><Text style={styles.tolerance}>Kapital, spasi berlebih, simbol, dan tanda baca tidak dihitung.</Text>
+      {result !== null ? <View style={[styles.result, !result && styles.resultWrong]}><Ionicons name={result ? 'checkmark-circle' : 'close-circle'} size={22} color={result ? colors.moss : colors.coral} /><View style={{ flex: 1 }}><Text style={styles.resultTitle}>{result ? 'Tepat!' : 'Belum tepat'}</Text>{!result ? <Text style={styles.expected}>Jawaban: {item.sourceText}</Text> : null}</View></View> : null}
+    </View><Pressable onPress={result === null ? check : next} disabled={!answer.trim()} style={[styles.button, !answer.trim() && { opacity: 0.45 }]}><Text style={styles.buttonText}>{result === null ? 'Periksa jawaban' : index === data.items.length - 1 ? 'Selesaikan sesi' : 'Soal berikutnya'}</Text><Ionicons name="arrow-forward" size={20} color={colors.white} /></Pressable>
   </KeyboardAvoidingView>;
 }
-
 const createStyles = (colors: ThemeColors) => StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.paper, paddingTop: 58, paddingHorizontal: 20, paddingBottom: 24 }, top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, counter: { color: colors.ink, fontWeight: '900' }, progress: { height: 5, backgroundColor: colors.line, borderRadius: 5, marginTop: 22 }, progressFill: { width: '12.5%', height: 5, backgroundColor: colors.moss, borderRadius: 5 }, main: { flex: 1, alignItems: 'center', paddingTop: 58 }, eyebrow: { color: colors.muted, fontSize: 11, fontWeight: '900', letterSpacing: 1.4 },
-  listen: { width: 106, height: 106, borderRadius: 53, backgroundColor: colors.moss, alignItems: 'center', justifyContent: 'center', marginTop: 28, shadowColor: colors.moss, shadowOpacity: 0.25, shadowRadius: 15, shadowOffset: { width: 0, height: 8 } }, replay: { color: colors.muted, fontSize: 12, marginTop: 14 }, input: { width: '100%', minHeight: 112, textAlignVertical: 'top', backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.line, padding: 18, marginTop: 43, color: colors.ink, fontSize: 18, fontWeight: '600' }, tolerance: { alignSelf: 'flex-start', color: colors.muted, fontSize: 11, marginTop: 9 },
-  result: { width: '100%', flexDirection: 'row', gap: 10, alignItems: 'center', backgroundColor: colors.mossSoft, borderRadius: radius.md, padding: 14, marginTop: 16 }, resultWrong: { backgroundColor: '#F4DDD7' }, resultTitle: { color: colors.ink, fontWeight: '900' }, expected: { color: colors.muted, fontSize: 12, marginTop: 3 }, button: { height: 56, borderRadius: radius.md, backgroundColor: colors.moss, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 9 }, buttonText: { color: colors.white, fontSize: 15, fontWeight: '900' },
+  center: { flex: 1, backgroundColor: colors.paper, alignItems: 'center', justifyContent: 'center', gap: 10, padding: 24 }, error: { color: colors.danger, fontWeight: '800' }, back: { color: colors.primary, fontWeight: '900' }, screen: { flex: 1, backgroundColor: colors.paper, paddingTop: 58, paddingHorizontal: 20, paddingBottom: 24 }, top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, counter: { color: colors.ink, fontWeight: '900' }, deck: { maxWidth: 100, color: colors.inkMuted, fontSize: 11 }, progress: { height: 5, backgroundColor: colors.line, borderRadius: 5, marginTop: 22 }, progressFill: { height: 5, backgroundColor: colors.moss, borderRadius: 5 }, main: { flex: 1, alignItems: 'center', paddingTop: 45 }, eyebrow: { color: colors.muted, fontSize: 11, fontWeight: '900', letterSpacing: 1.4 },
+  listen: { width: 106, height: 106, borderRadius: 53, backgroundColor: colors.moss, alignItems: 'center', justifyContent: 'center', marginTop: 28, shadowColor: colors.moss, shadowOpacity: 0.25, shadowRadius: 15, shadowOffset: { width: 0, height: 8 } }, replay: { color: colors.muted, fontSize: 12, marginTop: 14 }, meaning: { width: '100%', minHeight: 120, alignItems: 'center', justifyContent: 'center', padding: 20, marginTop: 23, borderRadius: radius.lg, backgroundColor: colors.mossSoft }, meaningLabel: { color: colors.moss, fontSize: 10, fontWeight: '900', letterSpacing: 1.2 }, meaningText: { color: colors.ink, fontSize: 23, lineHeight: 31, fontWeight: '900', textAlign: 'center', marginTop: 8 }, input: { width: '100%', minHeight: 112, textAlignVertical: 'top', backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.line, padding: 18, marginTop: 32, color: colors.ink, fontSize: 18, fontWeight: '600' }, tolerance: { alignSelf: 'flex-start', color: colors.muted, fontSize: 11, marginTop: 9 },
+  result: { width: '100%', flexDirection: 'row', gap: 10, alignItems: 'center', backgroundColor: colors.mossSoft, borderRadius: radius.md, padding: 14, marginTop: 16 }, resultWrong: { backgroundColor: colors.dangerSoft }, resultTitle: { color: colors.ink, fontWeight: '900' }, expected: { color: colors.muted, fontSize: 12, marginTop: 3 }, button: { height: 56, borderRadius: radius.md, backgroundColor: colors.moss, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 9 }, buttonText: { color: colors.white, fontSize: 15, fontWeight: '900' },
 });
