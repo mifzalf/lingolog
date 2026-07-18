@@ -18,15 +18,15 @@ export default function PracticeScreen() {
       </View>
 
       <SectionTitle>Pilih permainan</SectionTitle>
-      <Pressable onPress={() => router.push('/practice/flashcard')} style={({ pressed }) => [styles.game, pressed && styles.pressed]}>
+      <Pressable onPress={() => router.push({ pathname: '/practice/setup', params: { mode: 'flashcard' } })} style={({ pressed }) => [styles.game, pressed && styles.pressed]}>
         <View style={[styles.gameIcon, { backgroundColor: colors.amberSoft }]}><Ionicons name="copy-outline" size={29} color={colors.ink} /></View>
         <View style={{ flex: 1 }}><Pill tone="amber">Mengingat</Pill><Text style={styles.gameTitle}>Kartu flash</Text><Text style={styles.description}>Balik kartu, lalu nilai sendiri seberapa kuat ingatanmu.</Text></View>
         <Ionicons name="arrow-forward" size={22} color={colors.ink} />
       </Pressable>
 
-      <Pressable onPress={() => router.push('/practice/dictation')} style={({ pressed }) => [styles.game, pressed && styles.pressed]}>
+      <Pressable onPress={() => router.push({ pathname: '/practice/setup', params: { mode: 'dictation' } })} style={({ pressed }) => [styles.game, pressed && styles.pressed]}>
         <View style={[styles.gameIcon, { backgroundColor: colors.mossSoft }]}><Ionicons name="ear-outline" size={30} color={colors.moss} /></View>
-        <View style={{ flex: 1 }}><Pill>Mendengar</Pill><Text style={styles.gameTitle}>Dikte</Text><Text style={styles.description}>Dengarkan ucapan, kemudian tulis yang kamu dengar.</Text></View>
+        <View style={{ flex: 1 }}><Pill>Mendengar</Pill><Text style={styles.gameTitle}>Dikte</Text><Text style={styles.description}>Dengar lalu tulis, atau lihat arti lalu tulis teks yang dipelajari.</Text></View>
         <Ionicons name="arrow-forward" size={22} color={colors.ink} />
       </Pressable>
 

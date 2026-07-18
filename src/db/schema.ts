@@ -49,7 +49,19 @@ export const practiceSessions = sqliteTable('practice_sessions', {
   totalItems: integer('total_items').notNull().default(0),
   correctItems: integer('correct_items').notNull().default(0),
   durationMs: integer('duration_ms').notNull().default(0),
+  configJson: text('config_json'),
 }, (table) => [index('sessions_started_idx').on(table.startedAt)]);
+
+export const practiceSessionDecks = sqliteTable('practice_session_decks', {
+  sessionId: integer('session_id').notNull().references(() => practiceSessions.id, { onDelete: 'cascade' }),
+  deckId: integer('deck_id').notNull().references(() => decks.id, { onDelete: 'cascade' }),
+}, (table) => [uniqueIndex('session_decks_unique').on(table.sessionId, table.deckId), index('session_decks_deck_idx').on(table.deckId)]);
+
+export const practiceSessionEntries = sqliteTable('practice_session_entries', {
+  sessionId: integer('session_id').notNull().references(() => practiceSessions.id, { onDelete: 'cascade' }),
+  entryId: integer('entry_id').notNull().references(() => entries.id, { onDelete: 'cascade' }),
+  position: integer('position').notNull(),
+}, (table) => [uniqueIndex('session_entries_unique').on(table.sessionId, table.entryId), uniqueIndex('session_entries_position_unique').on(table.sessionId, table.position)]);
 
 export const practiceAnswers = sqliteTable('practice_answers', {
   id: integer('id').primaryKey({ autoIncrement: true }),
