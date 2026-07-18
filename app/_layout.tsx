@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Suspense } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { DatabaseProvider } from '../src/db/DatabaseProvider';
+import { SpeechProvider } from '../src/features/speech/SpeechProvider';
 import { ThemeProvider, useTheme } from '../src/theme/ThemeProvider';
 
 function AppNavigator() {
@@ -36,7 +37,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <Suspense fallback={<View style={styles.loading}><ActivityIndicator color="#355A46" /></View>}>
-        <DatabaseProvider><AppNavigator /></DatabaseProvider>
+        <DatabaseProvider><SpeechProvider><AppNavigator /></SpeechProvider></DatabaseProvider>
       </Suspense>
     </ThemeProvider>
   );
