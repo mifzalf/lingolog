@@ -1,6 +1,6 @@
 import type { LingologDeckFile } from '../transfer/deck-transfer';
-import { englishStarterDecks } from './english';
 import { germanStarterDecks } from './german';
+import { germanExtraStarterDecks } from './german-extra';
 
 export type StarterDeckLevel = 'pemula' | 'menengah' | 'lanjutan';
 export type StarterDeckCategory = 'sehari-hari' | 'perjalanan' | 'sekolah' | 'kerja' | 'lainnya';
@@ -19,7 +19,7 @@ export type StarterDeck = {
  * Tambahkan deck siap pakai di sini pada tahap penyusunan konten.
  * `id` harus stabil; naikkan `version` ketika isi deck diperbarui.
  */
-export const starterDecks: StarterDeck[] = [...germanStarterDecks, ...englishStarterDecks];
+export const starterDecks: StarterDeck[] = [...germanStarterDecks, ...germanExtraStarterDecks];
 
 export const starterDeckLevels: { value: StarterDeckLevel; label: string }[] = [
   { value: 'pemula', label: 'Pemula' },
