@@ -19,7 +19,7 @@ export function PaperScreen({ children, contentContainerStyle, ...props }: Props
   return (
     <View style={[styles.root, { backgroundColor: colors.paper }]}>
       <PaperTexture />
-      <ScrollView {...props} style={[styles.scroll, props.style]} contentContainerStyle={[styles.content, contentContainerStyle]}>
+      <ScrollView keyboardShouldPersistTaps="handled" {...props} style={[styles.scroll, props.style]} contentContainerStyle={[styles.content, contentContainerStyle]}>
         {children}
       </ScrollView>
     </View>

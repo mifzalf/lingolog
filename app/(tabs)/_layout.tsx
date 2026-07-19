@@ -3,8 +3,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../src/theme/ThemeProvider';
 
 const icons: Record<string, keyof typeof Ionicons.glyphMap> = {
-  index: 'library-outline',
-  practice: 'shapes-outline',
+  index: 'book-outline',
+  practice: 'pencil-outline',
   repository: 'albums-outline',
   calendar: 'calendar-clear-outline',
 };

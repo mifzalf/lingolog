@@ -6,6 +6,7 @@ export function usePracticeSession(id: number) {
   const database = useDatabase();
   const [data, setData] = useState<Awaited<ReturnType<typeof getPracticeSession>>>();
   const [loading, setLoading] = useState(true); const [error, setError] = useState('');
-  useEffect(() => { if (!Number.isFinite(id)) { setError('Sesi tidak valid.'); setLoading(false); return; } getPracticeSession(database, id).then((value) => { if (!value) setError('Sesi tidak ditemukan.'); else setData(value); }).catch((cause) => { console.error(cause); setError('Sesi belum dapat dibuka.'); }).finally(() => setLoading(false)); }, [database, id]);
-  return { data, loading, error };
+  function reload() { setLoading(true); setError(''); setData(undefined); if (!Number.isFinite(id)) { setError('Sesi tidak valid.'); setLoading(false); return; } getPracticeSession(database, id).then((value) => { if (!value) setError('Sesi tidak ditemukan.'); else setData(value); }).catch((cause) => { console.error(cause); setError('Sesi belum dapat dibuka.'); }).finally(() => setLoading(false)); }
+  useEffect(reload, [database, id]);
+  return { data, loading, error, reload };
 }

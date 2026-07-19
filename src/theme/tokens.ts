@@ -37,7 +37,7 @@ export const lightColors: ThemeColors = {
   paperPressed: '#EAE9E4',
   ink: '#20231F',
   inkMuted: '#62675F',
-  inkFaint: '#8A8E86',
+  inkFaint: '#6B7068',
   rule: '#D5D7D0',
   gridLine: 'rgba(64, 83, 70, 0.075)',
   primary: '#355A46',

@@ -2,12 +2,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Speech from 'expo-speech';
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-const STORAGE_KEY = 'lingolog.speech-preferences.v1';
+export const SPEECH_STORAGE_KEY = 'lingolog.speech-preferences.v1';
 export const speechRates = [
   { value: 0.65, label: 'Pelan' }, { value: 0.82, label: 'Santai' }, { value: 1, label: 'Normal' }, { value: 1.15, label: 'Cepat' },
 ] as const;
 
-type Preferences = { rate: number; voices: Record<string, string> };
+export type SpeechPreferences = { rate: number; voices: Record<string, string> };
 type SpeechContextValue = {
   voices: Speech.Voice[]; loadingVoices: boolean; speakingKey: string | null; rate: number; error: string;
   speak: (text: string, language: string, key?: string) => Promise<void>; stop: () => Promise<void>;
@@ -16,18 +16,18 @@ type SpeechContextValue = {
   refreshVoices: () => Promise<void>; clearError: () => void;
 };
 const SpeechContext = createContext<SpeechContextValue | null>(null);
-const initialPreferences: Preferences = { rate: 0.82, voices: {} };
+const initialPreferences: SpeechPreferences = { rate: 0.82, voices: {} };
 
 function languageBase(language: string) { return language.toLocaleLowerCase().split(/[-_]/)[0]; }
 function matchesLanguage(voiceLanguage: string, requested: string) { return languageBase(voiceLanguage) === languageBase(requested); }
 
 export function SpeechProvider({ children }: PropsWithChildren) {
   const [voices, setVoices] = useState<Speech.Voice[]>([]); const [loadingVoices, setLoadingVoices] = useState(true);
-  const [preferences, setPreferences] = useState<Preferences>(initialPreferences); const [speakingKey, setSpeakingKey] = useState<string | null>(null); const [error, setError] = useState('');
+  const [preferences, setPreferences] = useState<SpeechPreferences>(initialPreferences); const [speakingKey, setSpeakingKey] = useState<string | null>(null); const [error, setError] = useState('');
   const utterance = useRef(0);
   const refreshVoices = useCallback(async () => { try { setLoadingVoices(true); setVoices(await Speech.getAvailableVoicesAsync()); } catch (cause) { console.error(cause); setError('Daftar suara perangkat tidak dapat dibaca.'); } finally { setLoadingVoices(false); } }, []);
-  useEffect(() => { AsyncStorage.getItem(STORAGE_KEY).then((stored) => { if (!stored) return; try { const value = JSON.parse(stored) as Partial<Preferences>; setPreferences({ rate: speechRates.some((item) => item.value === value.rate) ? value.rate! : initialPreferences.rate, voices: value.voices ?? {} }); } catch { void AsyncStorage.removeItem(STORAGE_KEY); } }); void refreshVoices(); return () => { void Speech.stop(); }; }, [refreshVoices]);
-  const save = useCallback((next: Preferences) => { setPreferences(next); void AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)); }, []);
+  useEffect(() => { AsyncStorage.getItem(SPEECH_STORAGE_KEY).then((stored) => { if (!stored) return; try { const value = JSON.parse(stored) as Partial<SpeechPreferences>; setPreferences({ rate: speechRates.some((item) => item.value === value.rate) ? value.rate! : initialPreferences.rate, voices: value.voices ?? {} }); } catch { void AsyncStorage.removeItem(SPEECH_STORAGE_KEY); } }); void refreshVoices(); return () => { void Speech.stop(); }; }, [refreshVoices]);
+  const save = useCallback((next: SpeechPreferences) => { setPreferences(next); void AsyncStorage.setItem(SPEECH_STORAGE_KEY, JSON.stringify(next)); }, []);
   const compatibleVoices = useCallback((language: string) => voices.filter((voice) => matchesLanguage(voice.language, language)).sort((a, b) => Number(b.quality === Speech.VoiceQuality.Enhanced) - Number(a.quality === Speech.VoiceQuality.Enhanced) || a.name.localeCompare(b.name)), [voices]);
   const selectedVoice = useCallback((language: string) => { const compatible = compatibleVoices(language); const selected = preferences.voices[language]; return compatible.find((voice) => voice.identifier === selected) ?? compatible.find((voice) => voice.language.toLocaleLowerCase() === language.toLocaleLowerCase() && voice.quality === Speech.VoiceQuality.Enhanced) ?? compatible.find((voice) => voice.language.toLocaleLowerCase() === language.toLocaleLowerCase()) ?? compatible[0]; }, [compatibleVoices, preferences.voices]);
   const stop = useCallback(async () => { utterance.current += 1; await Speech.stop(); setSpeakingKey(null); }, []);

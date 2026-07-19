@@ -3,7 +3,7 @@ import { createContext, PropsWithChildren, useCallback, useContext, useEffect, u
 import { ColorSchemeName, useColorScheme } from 'react-native';
 import { darkColors, lightColors, ResolvedTheme, ThemeColors, ThemeMode } from './tokens';
 
-const STORAGE_KEY = 'lingolog.theme-mode';
+export const THEME_STORAGE_KEY = 'lingolog.theme-mode';
 
 type ThemeContextValue = {
   colors: ThemeColors;
@@ -27,7 +27,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY)
+    AsyncStorage.getItem(THEME_STORAGE_KEY)
       .then((value) => {
         if (value === 'system' || value === 'light' || value === 'dark') setStoredMode(value);
       })
@@ -36,7 +36,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
 
   const setMode = useCallback((nextMode: ThemeMode) => {
     setStoredMode(nextMode);
-    void AsyncStorage.setItem(STORAGE_KEY, nextMode);
+    void AsyncStorage.setItem(THEME_STORAGE_KEY, nextMode);
   }, []);
 
   const cycleMode = useCallback(() => {

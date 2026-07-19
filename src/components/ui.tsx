@@ -11,7 +11,7 @@ export function ScreenHeader({ note, eyebrow, title, action }: { note?: string; 
     <View style={styles.header}>
       <View style={styles.headerCopy}>
         {note ? <Text style={[styles.note, { color: colors.primary }]}>{note}</Text> : null}
-        <Text style={[styles.title, { color: colors.ink }]}>{title}</Text>
+        <Text accessibilityRole="header" style={[styles.title, { color: colors.ink }]}>{title}</Text>
         <View style={[styles.underline, { backgroundColor: colors.highlight }]} />
       </View>
       {action}
@@ -23,16 +23,16 @@ export function SectionTitle({ children, aside }: { children: ReactNode; aside?:
   const { colors } = useTheme();
   return (
     <View style={styles.sectionTitle}>
-      <Text style={[styles.sectionText, { color: colors.ink }]}>{children}</Text>
+      <Text accessibilityRole="header" style={[styles.sectionText, { color: colors.ink }]}>{children}</Text>
       {aside ? <Text style={[styles.aside, { color: colors.inkMuted }]}>{aside}</Text> : null}
     </View>
   );
 }
 
-export function IconButton({ name, onPress, label }: { name: keyof typeof Ionicons.glyphMap; onPress?: () => void; label?: string }) {
+export function IconButton({ name, onPress, label, disabled = false }: { name: keyof typeof Ionicons.glyphMap; onPress?: () => void; label: string; disabled?: boolean }) {
   const { colors } = useTheme();
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} hitSlop={6} onPress={onPress} style={({ pressed }) => [styles.iconButton, { borderColor: colors.rule, backgroundColor: pressed ? colors.paperPressed : colors.paperRaised }]}>
+    <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled }} disabled={disabled} hitSlop={6} onPress={onPress} style={({ pressed }) => [styles.iconButton, disabled && styles.disabled, { borderColor: colors.rule, backgroundColor: pressed ? colors.paperPressed : colors.paperRaised }]}>
       <Ionicons name={name} size={22} color={colors.ink} />
     </Pressable>
   );
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   sectionText: { fontSize: 18, fontWeight: '800', letterSpacing: -0.2 },
   aside: { fontSize: 13, fontWeight: '600' },
   iconButton: { width: 44, height: 44, borderRadius: 14, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  disabled: { opacity: 0.45 },
   pill: { alignSelf: 'flex-start', borderRadius: radius.sm, paddingHorizontal: 9, paddingVertical: 5, borderWidth: StyleSheet.hairlineWidth, transform: [{ rotate: '-0.5deg' }] },
   pillText: { fontSize: 11, fontWeight: '800' },
 });
