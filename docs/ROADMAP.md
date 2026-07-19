@@ -47,19 +47,19 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
   - Unit, integration, perangkat nyata, performa SQLite, dan penanganan crash.
 - [x] **19. Identitas rilis**
   - Ikon, splash, privacy policy, materi toko aplikasi, dan versi.
-- [ ] **20. Build dan internal testing** *(Android selesai; kandidat lintas platform menunggu iOS)*
+- [x] **20. Build dan internal testing** *(selesai untuk target rilis Android)*
   - APK/AAB, distribusi internal, perbaikan bug, dan kandidat rilis pertama.
 
 ## Catatan progres
 
-### Tahap 20, Android selesai; iOS diblokir credential
+### Tahap 20, selesai untuk target rilis Android
 - Proyek telah terhubung ke EAS sebagai `@zalifzal/lingolog`; `eas.json` menyediakan profile `preview` untuk internal distribution/APK Android dan `production` untuk AAB Android serta archive iOS. Build version tetap bersumber dari `app.json` agar setiap kenaikan tercatat di Git.
 - APK Android bertanda tangan `1.0.0 (1)` berhasil dibuat melalui build `e2eca22e-6659-4d60-946e-19fe0876296f`, dipasang pada handphone fisik, dan diterima pemilik aplikasi tanpa bug yang dilaporkan. Transisi dark mode yang sebelumnya berkilat putih ikut dinyatakan baik.
 - AAB production Android `1.0.0 (1)` berhasil dibuat melalui build `fa728713-518e-4537-b84c-f93b5717071a`. APK/AAB diunduh, lulus pemeriksaan integritas arsip, dan checksum SHA-256 dicatat di `docs/INTERNAL_TESTING.md`.
 - Kegagalan build awal akibat lockfile npm yang tidak lengkap diperbaiki dengan mengunci `react-dom@19.1.0`, kompatibel dengan React 19.1.0 Expo SDK 54. `npm ci --include=dev`, gate lokal, Expo Doctor 18/18, dan build cloud kemudian berhasil.
 - `npm run release:check` lulus dan menjalankan verifikasi inti, Expo dependency check, Expo Doctor, public config, Android production export, dan diff check. Audit produksi tetap 0 high/critical dengan 14 moderate pada rantai tool Expo/transitif.
-- Percobaan build iOS production berhenti sebelum upload karena distribution certificate/provisioning profile belum tersedia. Apple Developer credential, perangkat iOS, dan hasil TestFlight/ad hoc tetap menjadi blocker eksternal; karena roadmap mendefinisikan kandidat lintas Android/iOS, Tahap 20 belum ditandai selesai secara prematur.
-- `docs/INTERNAL_TESTING.md` mencatat build URL, tanggal, pemilik pengujian, integritas artefak, hasil Android, batas bukti pengujian, format bug, dan kriteria kandidat lulus.
+- Berdasarkan keputusan produk setelah kandidat Android diterima, target rilis 1.0.0 difokuskan ke Android. Percobaan build iOS production berhenti sebelum upload karena distribution certificate/provisioning profile belum tersedia; iOS dipindahkan ke cakupan rilis mendatang dan bukan lagi gate Tahap 20 Android.
+- `docs/INTERNAL_TESTING.md` mencatat build URL, tanggal, pemilik pengujian, integritas artefak, hasil Android, batas bukti pengujian, format bug, dan keputusan kandidat. Dengan APK internal serta AAB production bertanda tangan berhasil, gate otomatis lulus, dan penerimaan pada handphone fisik tanpa bug yang dilaporkan, Tahap 20 dinyatakan selesai.
 
 ### Pemilihan materi satuan dari Deck siap pakai, selesai
 - Kartu katalog sekarang dapat dibuka untuk melihat seluruh kata, frasa, dan kalimat sebelum materi masuk ke database pengguna.

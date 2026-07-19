@@ -1,6 +1,6 @@
 # Kandidat internal Lingolog 1.0.0 (build 1)
 
-Dokumen ini adalah lembar hasil Tahap 20. Kandidat Android telah dibuat, diverifikasi, dan diterima pada perangkat fisik oleh pemilik aplikasi. Kandidat lintas platform belum dapat dinyatakan lulus sampai build iOS diuji pada perangkat fisik.
+Dokumen ini adalah lembar hasil Tahap 20 untuk target rilis Android. Kandidat Android telah dibuat, diverifikasi, dan diterima pada perangkat fisik oleh pemilik aplikasi. Dukungan rilis iOS dipindahkan ke cakupan mendatang dan tidak menjadi gate kandidat Android 1.0.0.
 
 ## Status kandidat
 
@@ -20,8 +20,8 @@ Tanggal build dan pengujian Android: 19 Juli 2026
 Gate otomatis lokal: LULUS
 Dependency audit produksi: 0 high/critical; 14 moderate pada rantai tool Expo/transitif
 Bug Android yang dilaporkan: tidak ada
-Keputusan Android: DITERIMA untuk internal testing
-Keputusan lintas platform: DIBLOKIR — Apple Developer credential dan perangkat iOS belum tersedia
+Keputusan kandidat: LULUS — APK internal dan AAB production Android selesai
+Cakupan iOS: DITUNDA — memerlukan Apple Developer credential dan perangkat iOS
 ```
 
 Build number `1` telah digunakan untuk APK internal dan AAB production kandidat pertama. Naikkan `android.versionCode` sebelum membuat binary Android berikutnya. Naikkan `ios.buildNumber` setelah build iOS pertama berhasil dibuat; build iOS belum pernah berhasil dibuat.
@@ -149,12 +149,12 @@ Kandidat ditolak bila ada crash reproducible, kehilangan/korupsi data, restore t
 
 ## Kriteria selesai Tahap 20
 
-Tahap 20 baru selesai bila seluruh kondisi berikut terpenuhi:
+Target rilis 1.0.0 ditetapkan sebagai Android-first. Tahap 20 selesai karena:
 
-- APK internal Android bertanda tangan berhasil dibuat dan lulus pada perangkat fisik.
-- AAB production Android berhasil dibuat dan, bila console tersedia, divalidasi melalui track internal.
-- Build iOS internal atau TestFlight berhasil dibuat dan lulus pada perangkat fisik.
-- Checklist Android/iOS di `docs/TESTING.md` memiliki hasil nyata, bukan asumsi dari Expo export.
-- Semua blocker/critical/major ditutup dan pemeriksaan otomatis tetap lulus.
-- Build URL, tester, tanggal, hasil, dan keputusan kandidat dicatat di dokumen ini.
-- Identitas legal, kontak dukungan, support URL, dan privacy policy HTTPS tersedia sebelum submission publik.
+- [x] APK internal Android bertanda tangan berhasil dibuat dan diterima pada perangkat fisik.
+- [x] AAB production Android bertanda tangan berhasil dibuat.
+- [x] Tidak ada blocker/critical/major yang dilaporkan dan pemeriksaan otomatis tetap lulus.
+- [x] Build URL, pemilik pengujian, tanggal, hasil, checksum, dan keputusan kandidat dicatat di dokumen ini.
+- [x] Credential signing Android dikelola di EAS dan tidak masuk repository.
+
+Validasi Google Play Internal testing tetap dilakukan ketika akun console tersedia. Identitas legal, kontak dukungan, support URL, dan privacy policy HTTPS tetap wajib sebelum submission publik. Build iOS, TestFlight, VoiceOver, dan pengujian perangkat iOS merupakan milestone terpisah untuk rilis mendatang.
