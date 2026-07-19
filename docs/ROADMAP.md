@@ -45,12 +45,33 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
   - Screen reader, ukuran teks, kontras, reduce motion, serta kondisi gagal/kosong.
 - [x] **18. Testing dan optimasi**
   - Unit, integration, perangkat nyata, performa SQLite, dan penanganan crash.
-- [ ] **19. Identitas rilis**
+- [x] **19. Identitas rilis**
   - Ikon, splash, privacy policy, materi toko aplikasi, dan versi.
-- [ ] **20. Build dan internal testing**
+- [ ] **20. Build dan internal testing** *(konfigurasi/gate lokal selesai; binary dan perangkat fisik diblokir credential)*
   - APK/AAB, distribusi internal, perbaikan bug, dan kandidat rilis pertama.
 
 ## Catatan progres
+
+### Tahap 20, konfigurasi selesai; build internal diblokir
+- `eas.json` menyediakan profile `preview` untuk internal distribution/APK Android dan `production` untuk AAB Android serta archive iOS. Build version tetap bersumber dari `app.json` agar setiap kenaikan tercatat di Git.
+- `npm run release:check` menjadi gate kandidat yang menjalankan verifikasi inti, Expo dependency check, Expo Doctor, public config, Android production export, dan diff check.
+- `docs/INTERNAL_TESTING.md` mendokumentasikan perintah build, aturan signing, registrasi UDID iOS, smoke test binary, format bug, dan kriteria kandidat lulus.
+- Environment belum login ke EAS dan tidak memiliki signing credentials, akun toko, Apple Developer membership, atau perangkat fisik. Karena itu APK/AAB/archive bertanda tangan serta hasil internal testing belum dapat dibuat; Tahap 20 tetap terbuka dan tidak ditandai selesai secara prematur.
+
+### Pemilihan materi satuan dari Deck siap pakai, selesai
+- Kartu katalog sekarang dapat dibuka untuk melihat seluruh kata, frasa, dan kalimat sebelum materi masuk ke database pengguna.
+- Pengguna mencari/filter materi lalu memilih satu atau banyak item dengan menekan barisnya. Centang dan bilah jumlah pilihan muncul; deck lokal aktif dengan pasangan bahasa sama baru dipilih setelah menekan `Tambahkan`.
+- Seluruh pilihan disalin dalam satu transaksi. Setiap entri memakai waktu aktual dan event `entry_created`, sehingga Kalender mencerminkan ritme belajar harian dan bukan waktu pemasangan massal.
+- Duplikat pada deck tujuan dideteksi melalui pasangan teks-terjemahan yang dinormalisasi; materi yang sudah ada ditandai centang dan tidak ditambahkan kembali.
+- Jika deck tujuan belum ada, layar menawarkan pembuatan deck dengan pasangan bahasa katalog yang sudah terisi. Instalasi seluruh deck tetap tersedia sebagai jalur sekunder.
+- Tidak ada migrasi database: materi satuan menjadi entri lokal biasa dengan mastery awal Baru, tag bawaan, serta seluruh kemampuan edit/latihan/statistik yang sama.
+
+### Revisi editorial Deck siap pakai Jerman, selesai
+- Koleksi Jerman generator lama diganti total dengan materi eksplisit yang dikurasi berdasarkan penggunaan nyata. Referensi domain: halaman belajar dan ringkasan kosakata Deutsche Welle yang diberikan pengguna.
+- Sebelas deck Jerman versi 2 memuat 1.083 materi: 881 kata/frasa dan 202 kalimat dalam dua deck terpisah. Tidak ada pasangan yang sama di seluruh koleksi Jerman.
+- Empat deck baru menambah domain Waktu/Cuaca/Angka A1, Perjalanan/Akomodasi A2, Profesi/Kantor B1, dan Masyarakat/Debat C1. Deck Inggris dikeluarkan dari katalog bawaan agar produk berfokus pada kurasi Jerman.
+- Test regresi memastikan deck kalimat tidak bercampur kata/frasa dan pola substitusi massal lama tidak kembali.
+- Perubahan hanya memengaruhi katalog bundle. Deck bawaan yang sudah pernah ditambahkan pengguna tetap menjadi deck lokal dan tidak ditimpa atau dihapus.
 
 ### Tahap 1, selesai
 - Database: `lingolog.db`.
@@ -214,22 +235,32 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 - Tabel `settings` menyimpan penanda `starter-deck:<id>` berisi versi, ID deck lokal, dan waktu pemasangan agar deck yang sama tidak terpasang dua kali.
 - Penanda instalasi yang deck-nya sudah dihapus diperbaiki otomatis sehingga pengguna dapat memasang ulang deck tersebut.
 - Setelah pemasangan berhasil, pengguna dapat langsung membuka deck baru; deck menjadi salinan lokal biasa yang bebas diubah, diarsipkan, digabungkan, diekspor, atau dihapus.
-- Koleksi Bahasa Jerman → Bahasa Indonesia berisi 15 deck: 5 A1, 5 A2, 3 menengah/B1, dan 2 lanjutan/C1.
-- Lima deck A1 memisahkan Perkenalan, Rumah & Keluarga, Makanan & Belanja, Kota/Taman & Perjalanan, serta Percakapan Harian agar materi sehari-hari luas tetapi tetap mudah dipilih.
-- Lima deck A2 memisahkan Rutinitas & Waktu, Hobi & Pergaulan, Pakaian & Layanan, Kesehatan & Tubuh, serta Sekolah & Pekerjaan Awal.
-- Tiga deck menengah mencakup Kerja & Studi, Kesehatan & Layanan, serta Sosial & Media; dua deck lanjutan mencakup Argumen & Masyarakat serta Akademik & Profesional.
-- Setiap deck A1/B1/C1 memiliki 300 entri unik; setiap deck A2 memiliki 320 entri unik (32 kata, 32 frasa, dan 256 kalimat). Total katalog Jerman menjadi 4.600 materi.
-- Builder memvalidasi minimal 20 nomina, 10 verba, dan 300 entri saat modul dimuat sehingga deck di bawah batas tidak dapat diam-diam masuk ke katalog.
-- Koleksi Bahasa Inggris → Bahasa Indonesia mengisi seluruh tingkat secara ringkas: masing-masing satu deck A1 Dasar Sehari-hari, A2 Rutinitas & Layanan, B1 Kerja/Sosial/Perjalanan, dan C1 Akademik & Profesional.
-- Keempat deck Inggris memiliki masing-masing 300 entri unik (30 kata, 30 frasa, 240 kalimat), sehingga koleksi Inggris berjumlah 1.200 materi dan total katalog bawaan menjadi 19 deck/5.800 materi.
-- Deck siap pakai memiliki filter bahasa Semua/Jerman/Inggris yang dapat digabungkan dengan CEFR, level produk, kategori, dan pencarian.
+- Koleksi Bahasa Jerman direvisi setelah audit penggunaan menemukan materi generator lama terlalu repetitif dan banyak kalimat tidak bernilai praktis. Katalog kini berisi sebelas deck kurasi A1–C1, termasuk domain waktu/cuaca/angka, perjalanan/akomodasi, profesi/kantor, masyarakat/debat, serta dua deck kalimat nyata.
+- Kata/frasa dan kalimat kini dipisahkan secara tegas. Dua deck kalimat hanya memuat kalimat utuh; lima deck lain tidak mencampur kalimat.
+- Materi Jerman berjumlah 1.083 entri yang ditulis satu per satu: 100 kalimat A1, 102 kalimat A2–B1, dan 881 kata/frasa A1–C1. Jumlah sengaja lebih kecil daripada katalog generator lama agar setiap entri relevan, natural, dan dapat digunakan.
+- Kosakata benda A1/A2/B1/C1 menyertakan artikel dan bentuk jamak bila relevan; frasa mencakup sapaan, layanan, kesehatan, perjalanan, komunikasi kerja, opini, dan register akademik.
+- Deutsche Welle Learn German dan ringkasan kosakatanya dipakai sebagai referensi domain/use case—termasuk model `Deutschtrainer` yang berfokus pada kosakata dan kalimat pendek—tanpa menyalin koleksi secara massal. Materi Lingolog tetap merupakan kurasi sendiri.
+- Builder lama yang menghasilkan sepuluh variasi untuk setiap nomina/verba dihapus. Builder baru hanya menerima baris eksplisit Jerman–Indonesia, minimal 60 materi, memvalidasi duplikat, dan menandai katalog Jerman sebagai versi 2.
+- Koleksi Inggris dikeluarkan dari katalog bawaan. Aplikasi tetap mendukung deck bahasa Inggris buatan atau impor pengguna, tetapi rak siap pakai difokuskan pada materi Jerman.
+- Karena katalog hanya memiliki satu bahasa sumber, filter bahasa pada Deck siap pakai dihapus. Filter CEFR, level produk, kategori, dan pencarian tetap tersedia.
 - Pustaka dan Katalog lokal memakai komponen kontrol bersama: search bar di samping ikon filter, badge jumlah filter aktif, serta bottom sheet bahasa sumber, bahasa arti, isi deck, pengurutan, dan—khusus Katalog—status aktif/arsip.
 - Hasil pencarian membedakan jumlah tampil dari total deck dan menyediakan reset ketika kombinasi pencarian/filter kosong.
 - Tidak ada perubahan schema database atau dependency baru.
 
+### Tahap 19, selesai
+- Identitas binary dikunci sebagai Lingolog `1.0.0`, Android package `com.lingolog.app`/`versionCode` 1, iOS bundle identifier `com.lingolog.app`/`buildNumber` 1, scheme `lingolog`, dan orientation portrait.
+- Ikon bunglon yang telah disetujui dipertahankan untuk launcher, adaptive foreground/background, monochrome themed icon, dan favicon; bunglon tetap tidak dipakai sebagai ornamen halaman.
+- Splash berpindah ke config plugin `expo-splash-screen` yang direkomendasikan dokumentasi Expo versi 57, dengan image width 180, contain, kertas terang `#F4F3EF`, serta aset transparan tinta terang khusus dark mode pada `#171A17`.
+- `docs/PRIVACY.md` menjelaskan data lokal, retensi, TTS perangkat, share sheet, ekspor deck, backup privat, restore, keamanan, kendali penghapusan, anak-anak, dan perubahan kebijakan. Dokumen menandai kontak dukungan/URL publik sebagai gate pemilik rilis, bukan mengarang identitas legal.
+- `docs/STORE_LISTING.md` menyediakan nama, subtitle, deskripsi pendek/panjang, promotional text, keyword, What's New, delapan konsep screenshot, arahan feature graphic, deklarasi awal Data safety/App Privacy, content rating, dan checklist field console.
+- `docs/RELEASE.md` membedakan marketing version, native build numbers, schema database, serta versi format deck; setiap binary berikutnya wajib menaikkan build number.
+- `scripts/validate-release.mjs` dan `npm run validate:release` memeriksa sinkronisasi versi, identifier, native build numbers, konfigurasi splash, dan keberadaan tujuh aset rilis. Pemeriksaan ini menjadi bagian `npm run verify`.
+- Metadata toko tidak mengklaim cloud, akun, mikrofon, atau analytics. Screenshot final dan feature graphic harus diambil/diekspor dari release build pada Tahap 20 karena memerlukan binary/perangkat serta akun console.
+- Tidak ada perubahan schema database. Dependency native `expo-splash-screen` dipasang pada versi yang kompatibel dengan SDK 54.
+
 ### Tahap 18, selesai
 - Test runner ringan memakai Node test melalui `tsx`, tanpa memasukkan framework test ke bundle produksi. `npm test` mencakup normalisasi Dikte, tanggal sesi, ambang/penurunan mastery, parser deck strict, versi format, pasangan bahasa, dan nama file aman.
-- Test kontrak katalog memuat seluruh materi bawaan dan memverifikasi 19 deck, 5.800 entri, komposisi 15 Jerman/4 Inggris, cakupan A1/A2/B1/C1 untuk kedua bahasa, batas tag, parser, dan keunikan pasangan dalam setiap deck.
+- Test kontrak katalog memuat seluruh materi bawaan dan kini memverifikasi 11 deck Jerman/1.083 entri, cakupan A1/A2/B1/C1, batas tag, parser, keunikan dalam dan lintas deck, pemisahan deck kalimat, serta tidak munculnya pola generator lama.
 - Test tersebut menemukan satu pasangan `husten → batuk` ganda pada deck Jerman A2 Kesehatan; sumber verba diperbaiki menjadi `abhusten → mengeluarkan batuk` dan test regresi mempertahankan keunikannya.
 - `scripts/test-migrations.mjs` menguji fresh serta database v1/v2/v3/v4 ke v5 melalui SQLite nyata, termasuk retensi baris lama, `user_version`, `application_id`, kolom mastery terbaru, integrity check, dan foreign-key check.
 - `scripts/benchmark-sqlite.mjs` membangun fixture 100 deck/20.000 entri dan mengukur query ringkasan deck serta pencarian/filter. Median lokal 9 proses cold-ish sekitar 5–6 ms, di bawah anggaran 500 ms.

@@ -12,24 +12,24 @@ Perintah tersebut mencakup:
 
 - TypeScript tanpa emit.
 - Unit test normalisasi Dikte, tanggal sesi, mastery, parser/format deck, dan nama file.
-- Integration contract katalog bawaan: 19 deck, 5.800 entri, cakupan bahasa/CEFR, parser, batas tag, dan keunikan pasangan.
+- Integration contract katalog bawaan: 11 deck Jerman/1.083 entri, cakupan A1–C1, parser, batas tag, keunikan pasangan dalam dan lintas deck, pemisahan deck kalimat, larangan pola generator lama, serta identitas pasangan ter-normalisasi untuk deteksi materi satuan yang sudah tersalin.
 - Migrasi SQLite fresh serta v1/v2/v3/v4 ke v5, termasuk `application_id`, `integrity_check`, `foreign_key_check`, dan retensi data lama.
 - Benchmark query SQLite dengan fixture 20.000 entri. Anggaran median pada mesin pengembangan adalah 500 ms.
 
-Sebelum kandidat build, jalankan juga:
+Sebelum kandidat build, jalankan gate gabungan:
 
 ```bash
-npx expo install --check
-CI=1 npx expo-doctor@latest
-npx expo export --platform android --clear
+npm run release:check
 npm audit --omit=dev
 ```
+
+`release:check` menjalankan verifikasi inti, pemeriksaan dependency Expo, Expo Doctor, public config, production export Android, dan `git diff --check`. Setelah login EAS, validasi juga keempat kombinasi profile/platform seperti yang dicatat di `docs/INTERNAL_TESTING.md`.
 
 Temuan audit dependency transitive harus dicatat dan diperbaiki melalui versi Expo yang kompatibel, bukan `npm audit fix --force` yang dapat melompati SDK.
 
 ## Matriks perangkat nyata
 
-Tahap 18 mengharuskan checklist ini dijalankan pada Android dan iOS fisik sebelum build internal ditandatangani. Lingkungan agent tidak dapat menggantikan validasi hardware.
+Checklist ini wajib dijalankan pada APK/archive internal yang sudah ditandatangani di Android dan iOS fisik. Lingkungan agent dan Expo export tidak dapat menggantikan validasi hardware. Hasil kandidat, build URL, tester, bug, dan keputusan dicatat di `docs/INTERNAL_TESTING.md`.
 
 ### Instalasi dan first run
 
@@ -67,10 +67,12 @@ Tahap 18 mengharuskan checklist ini dijalankan pada Android dan iOS fisik sebelu
 ### Tampilan dan aksesibilitas
 
 - [ ] Light, dark, dan system diuji setelah restart.
+- [ ] Pada dark mode, buka Deck siap pakai lalu kembali ke Pustaka berulang kali. Seluruh frame transisi, termasuk background navigator, loading font, dan Suspense, harus tetap memakai kertas arang tanpa kilatan putih.
 - [ ] Font sistem terbesar tetap memungkinkan aksi utama dijangkau.
 - [ ] TalkBack/VoiceOver membaca progress, pilihan, error, dan hasil game dengan urutan masuk akal.
 - [ ] Reduce Motion menghapus transisi dan transform yang tidak perlu.
 - [ ] Keyboard, native date picker, bottom sheet, Android back, dan navbar diuji pada layar kecil.
+- [ ] Buka layar anak melalui deep link/reload tanpa histori, lalu tekan tombol Kembali. Aplikasi harus menuju layar induk yang aman tanpa warning `GO_BACK was not handled by any navigator`.
 
 ## Profil performa perangkat
 
@@ -80,7 +82,11 @@ Gunakan data nyata atau deck bawaan, lalu catat pada perangkat kelas rendah:
 - Waktu membuka Pustaka dengan 100 deck.
 - Waktu pencarian/filter pada 20.000 entri.
 - Waktu membuat sesi 50 materi dengan shuffle.
-- Waktu memasang deck siap pakai 320 entri.
+- Waktu memasang deck siap pakai terbesar.
+- Buka setiap deck siap pakai, cari/filter jenis materi, pilih beberapa baris hingga semuanya bercetang, lalu tekan Tambahkan dan pilih deck tujuan. Pastikan entri, mastery Baru, tag, dan aktivitas kalender dibuat pada tanggal tindakan.
+- Batalkan pilihan dengan menekan baris bercetang, buka/tutup pemilih tujuan, dan pastikan pilihan tidak hilang sebelum penyimpanan berhasil.
+- Coba menambahkan kumpulan yang sebagian sudah ada. Materi duplikat harus dilewati, materi baru tetap masuk, dan hasil menampilkan jumlah keduanya.
+- Pastikan deck arsip dan deck dengan pasangan bahasa berbeda tidak muncul sebagai tujuan. Jika belum ada tujuan, aksi Buat deck harus mengisi pasangan bahasa yang benar.
 - Waktu backup dan restore database besar.
 - Penggunaan memori saat berpindah Pustaka, Kalender, Statistik, dan game berulang kali.
 

@@ -10,6 +10,7 @@ Lingolog dipakai ketika pengguna menemukan kata baru di perjalanan, kelas, atau 
 4. **Satu tinta utama.** Hijau tinta menandai aksi dan pilihan; oker berfungsi seperti stabilo.
 5. **Dark mode adalah kertas arang.** Bukan inversi hitam-putih murni.
 6. **Bunglon sebagai ikon aplikasi.** Siluet garis satu tinta dipertahankan pada aset launcher dan splash, tetapi tidak digunakan sebagai ornamen di dalam halaman agar antarmuka tetap fokus.
+7. **Materi toko adalah janji produk.** Screenshot dan feature graphic memakai UI release build, data demonstrasi nonpribadi, ruang napas luas, serta copy faktual tanpa badge, harga, atau klaim berlebihan.
 
 ## Tema
 Tema memiliki tiga preferensi: `system`, `light`, `dark`. Pilihan disimpan pada AsyncStorage dengan key `lingolog.theme-mode`.
@@ -48,8 +49,9 @@ Tema memiliki tiga preferensi: `system`, `light`, `dark`. Pilihan disimpan pada 
 - `CatalogDeckSheet`: lembar aksi deck dengan konteks pasangan bahasa, status arsip, pilihan tujuan gabung, serta ekspor; tindakan destruktif selalu melalui konfirmasi kedua.
 - Impor berada sebagai aksi ikon pada header Katalog, sedangkan ekspor berada dalam konteks deck agar pengguna tidak perlu memilih deck dua kali. Privasi isi file dijelaskan sebelum fitur digunakan.
 - `BackupSheet`: lembar data global dari ikon server pada header Katalog. Aksi backup dan restore dipisahkan secara visual dari file deck; peringatan menjelaskan bahwa backup bersifat privat dan restore mengganti seluruh data.
-- `Deck siap pakai`: rak materi bawaan yang dibuka dari Pustaka. Nama ini dipilih alih-alih Store karena tidak ada pembelian, akun, atau unduhan internet; aksi utama selalu `Tambahkan ke Pustaka`.
-- Kartu deck bawaan memakai bentuk sampul yang sama dengan katalog lokal, menampilkan pasangan bahasa, ringkasan, level, jumlah entri, serta status Terpasang. Filter bahasa dan CEFR tampil sebagai chip sebelum daftar agar koleksi lintas bahasa cepat dipindai.
+- `Deck siap pakai`: rak materi bawaan yang dibuka dari Pustaka. Nama ini dipilih alih-alih Store karena tidak ada pembelian, akun, atau unduhan internet. Menekan kartu membuka daftar materinya; pengguna menekan satu atau banyak kata/frasa/kalimat hingga muncul centang, lalu memilih deck tujuan yang kompatibel ketika menekan `Tambahkan`. Aksi sekunder `Tambahkan` pada kartu tetap menyalin seluruh deck.
+- Kartu deck bawaan memakai bentuk sampul yang sama dengan katalog lokal, menampilkan pasangan bahasa, ringkasan, level, jumlah entri, status Terpasang, serta aksi `Lihat isi`. Filter bahasa dan CEFR tampil sebagai chip sebelum daftar agar koleksi lintas bahasa cepat dipindai.
+- Detail deck bawaan memakai alur progresif: penjelasan hubungan tanggal, pencarian, filter jenis, daftar materi multi-select dengan target 44×44, lalu bilah pilihan persisten. Pemilih deck tujuan baru muncul sebagai bottom sheet setelah pengguna menekan `Tambahkan`; duplikat pada tujuan dilewati secara atomik.
 - Pustaka dan Katalog memakai pola kontrol yang sama: search bar permanen di kiri dan tombol filter 48×48 di kanan. Filter lengkap dibuka sebagai bottom sheet, badge menunjukkan jumlah filter aktif, dan chip aktif dapat dilepas langsung tanpa membuka sheet lagi.
 - Restore selalu memiliki dua langkah: preview ringkasan file lalu dialog konfirmasi danger yang tidak dapat ditutup tanpa memilih tindakan.
 - Onboarding memakai lima halaman catatan ringkas dengan satu fokus per halaman, indikator progres, ilustrasi kertas sederhana, tombol Lewati, Kembali, dan aksi akhir bercabang ke Deck siap pakai atau Buat deck sendiri. Tidak ada carousel otomatis atau animasi dekoratif.
@@ -67,3 +69,5 @@ Tema memiliki tiga preferensi: `system`, `light`, `dark`. Pilihan disimpan pada 
 - Aksi tidak boleh dibedakan dengan warna saja; gunakan ikon, label, atau bentuk juga.
 - Teks normal dan placeholder menargetkan kontras WCAG AA 4.5:1; teks besar dan komponen nonteks menargetkan 3:1. `inkFaint` hanya boleh dipakai jika memenuhi fungsi dan kontras tersebut.
 - Checklist visual dan perangkat fisik berada di `docs/TESTING.md`; perubahan UI kritis harus diperiksa pada tema terang/gelap, font terbesar, layar kecil, keyboard, dan screen reader sebelum kandidat rilis.
+- Splash memakai bunglon tinta gelap di kertas `#F4F3EF` dan varian tinta terang transparan pada kertas arang `#171A17`; hasil standalone harus diperiksa karena Expo Go tidak mereplikasi splash final.
+- Sumber caption, urutan screenshot, dan arahan feature graphic berada di `docs/STORE_LISTING.md`.

@@ -5,6 +5,7 @@ Aplikasi mobile offline untuk mencatat, mendengar, mengelola, dan melatih kata/f
 
 ## Identitas visual
 - Nama aplikasi: **Lingolog**.
+- Identitas rilis pertama memakai marketing version `1.0.0`, Android `versionCode` 1, iOS `buildNumber` 1, package/bundle identifier `com.lingolog.app`, ikon bunglon garis, dan splash light/dark bertema.
 - Tema: sistem, terang, atau gelap; preferensi disimpan lokal dan dipilih secara eksplisit dari layar Pengaturan.
 - Metafora visual: lembar catatan bahasa, garis buku samar, tinta, stabilo, dan anotasi pena.
 - Font tulisan tangan hanya menjadi aksen. Teks materi belajar tetap memakai sans-serif yang jelas agar mendukung berbagai aksara.
@@ -12,9 +13,9 @@ Aplikasi mobile offline untuk mencatat, mendengar, mengelola, dan melatih kata/f
 ## Keputusan
 - React Native + Expo + TypeScript.
 - Seluruh katalog lokal; tanpa akun, cloud, atau repositori publik.
-- `Deck siap pakai` adalah koleksi materi gratis yang dibundel bersama aplikasi, bukan toko daring. Pengguna dapat mencari/filter lalu menyalin deck ke Pustaka untuk diedit dan dilatih sepenuhnya offline.
-- Koleksi awal berfokus pada Bahasa Jerman → Bahasa Indonesia: 5 deck A1, 5 deck A2, 3 deck menengah/B1, dan 2 deck lanjutan/C1. Deck A1/B1/C1 memiliki 300 entri unik; deck A2 diperluas menjadi 320 entri per deck. Konteks nyata dipisahkan agar mudah dipilih, termasuk perkenalan, rumah, taman/kota, rutinitas, pergaulan, pakaian/layanan, kesehatan, dan sekolah/pekerjaan.
-- Koleksi Bahasa Inggris → Bahasa Indonesia lebih ringkas tetapi mengisi seluruh tingkat: masing-masing satu deck A1, A2, B1, dan C1 dengan 300 entri per deck.
+- `Deck siap pakai` adalah koleksi materi gratis yang dibundel bersama aplikasi, bukan toko daring. Pengguna dapat membuka isi katalog, mencari/filter kata, frasa, atau kalimat, memilih satu atau banyak materi, lalu menentukan deck lokal tujuan yang pasangan bahasanya sama. Pilihan ini menjaga jumlah entri harian sesuai ritme belajar; penambahan seluruh deck tetap tersedia bagi pengguna yang menginginkannya.
+- Katalog bawaan berfokus khusus pada Bahasa Jerman → Bahasa Indonesia dan berisi sebelas deck kurasi A1–C1 dengan total 1.083 materi. Koleksi mencakup kata inti, frasa sehari-hari, waktu/cuaca/angka, perjalanan/akomodasi, profesi/kantor, masyarakat/debat, akademik, serta dua deck kalimat nyata yang terpisah. Materi ditulis satu per satu; tidak ada ekspansi template dengan mengganti nomina/verba.
+- Deck Bahasa Inggris dihapus dari katalog bawaan agar kurasi, pencarian, dan pengembangan materi tetap fokus pada jalur belajar Jerman. Dukungan membuat deck bahasa Inggris milik pengguna tetap tersedia.
 - Deck siap pakai dapat difilter berdasarkan bahasa dan CEFR. Pustaka serta Katalog lokal selalu menampilkan search bar berdampingan dengan tombol filter yang membuka bahasa sumber/target, status isi/arsip, dan pengurutan.
 - Katalog mengelola deck aktif maupun arsip. Duplikasi menyalin materi dan tag tanpa statistik pribadi; penggabungan hanya diizinkan untuk pasangan bahasa yang sama serta mempertahankan entri, mastery, dan histori.
 - Deck dapat dibagikan sebagai JSON `lingolog.deck` berversi. File hanya berisi metadata deck, materi, contoh, catatan, dan tag; ID lokal, favorit, mastery, jawaban, sesi, serta histori pribadi tidak diekspor atau diimpor.
@@ -34,6 +35,7 @@ Aplikasi mobile offline untuk mencatat, mendengar, mengelola, dan melatih kata/f
 - Empty state utama selalu menawarkan tindakan berikutnya yang relevan, bukan hanya menyatakan bahwa data kosong.
 - Aksesibilitas adalah fungsi inti: alur utama dapat digunakan dengan TalkBack/VoiceOver, Dynamic Type, dan Reduce Motion. Teks, ikon, atau bentuk selalu melengkapi warna untuk menyampaikan status.
 - Kualitas rilis dijaga dengan test logika inti, kontrak katalog bawaan, migrasi seluruh versi database, benchmark SQLite, pemeriksaan dependency, production export, dan checklist perangkat fisik yang tidak mengirim materi pengguna.
+- Kebijakan privasi dan metadata toko harus mencerminkan binary aktual: tanpa akun/backend/iklan/pelacakan, data inti lokal, TTS melalui layanan perangkat, dan perpindahan file hanya atas tindakan eksplisit pengguna.
 
 ## Status mastery
 - 0: Baru
