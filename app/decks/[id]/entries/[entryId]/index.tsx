@@ -3,11 +3,15 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-nati
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { PaperScreen } from '../../../../../src/components/PaperScreen';
+import { useAppDialog } from '../../../../../src/components/AppDialog';
 import { IconButton, Pill } from '../../../../../src/components/ui';
 import { useDatabase } from '../../../../../src/db/DatabaseProvider';
 import { getDeck } from '../../../../../src/features/decks/deck.repository';
 import { getLanguage } from '../../../../../src/features/decks/languages';
 import { getEntry, toggleFavorite } from '../../../../../src/features/entries/entry.repository';
+import { MasterySheet, MasterySummary } from '../../../../../src/features/practice/MasteryPanel';
+import { MasteryGrade } from '../../../../../src/features/practice/mastery';
+import { getMasteryState, listRecentMasteryEvidence, setManualMasteryGrade } from '../../../../../src/features/practice/mastery.repository';
 import { SpeakButton, SpeechNotice, SpeechSettings } from '../../../../../src/features/speech/SpeechControls';
 import { useSpeech } from '../../../../../src/features/speech/SpeechProvider';
 import { useTheme } from '../../../../../src/theme/ThemeProvider';
@@ -16,27 +20,31 @@ import { radius, ThemeColors } from '../../../../../src/theme/tokens';
 const typeLabels = { word: 'Kata', phrase: 'Frasa', sentence: 'Kalimat' };
 
 export default function EntryDetailScreen() {
-  const database = useDatabase(); const { colors } = useTheme(); const styles = createStyles(colors);
+  const database = useDatabase(); const { colors } = useTheme(); const styles = createStyles(colors); const { showDialog } = useAppDialog();
   const params = useLocalSearchParams<{ id: string; entryId: string }>(); const deckId = Number(params.id); const entryId = Number(params.entryId);
   const [deck, setDeck] = useState<Awaited<ReturnType<typeof getDeck>>>();
   const [entry, setEntry] = useState<Awaited<ReturnType<typeof getEntry>>>();
-  const [loading, setLoading] = useState(true); const [error, setError] = useState(''); const [speechSettings, setSpeechSettings] = useState(false);
+  const [mastery, setMastery] = useState<Awaited<ReturnType<typeof getMasteryState>>>(); const [evidence, setEvidence] = useState<Awaited<ReturnType<typeof listRecentMasteryEvidence>>>([]);
+  const [loading, setLoading] = useState(true); const [error, setError] = useState(''); const [speechSettings, setSpeechSettings] = useState(false); const [masteryOpen, setMasteryOpen] = useState(false); const [masterySaving, setMasterySaving] = useState(false);
   const { stop } = useSpeech();
-  const load = useCallback(async () => { try { setError(''); const [d, e] = await Promise.all([getDeck(database, deckId), getEntry(database, entryId)]); setDeck(d); setEntry(e); } catch (cause) { console.error(cause); setError('Detail entri belum dapat dibuka.'); } finally { setLoading(false); } }, [database, deckId, entryId]);
+  const load = useCallback(async () => { try { setError(''); const [d, e, m, recent] = await Promise.all([getDeck(database, deckId), getEntry(database, entryId), getMasteryState(database, entryId), listRecentMasteryEvidence(database, entryId)]); setDeck(d); setEntry(e); setMastery(m); setEvidence(recent); } catch (cause) { console.error(cause); setError('Detail entri belum dapat dibuka.'); } finally { setLoading(false); } }, [database, deckId, entryId]);
   useFocusEffect(useCallback(() => { void load(); return () => { void stop(); }; }, [load, stop]));
   async function favorite() { if (!entry) return; await toggleFavorite(database, entry.id, !entry.isFavorite); await load(); }
+  async function setMasteryGrade(grade: MasteryGrade | null) { try { setMasterySaving(true); await setManualMasteryGrade(database, entryId, deckId, grade); await load(); if (grade === null) setMasteryOpen(false); } catch (cause) { console.error(cause); showDialog({ title: 'Mastery belum berubah', message: 'Coba lagi tanpa menutup halaman ini.', icon: 'alert-circle-outline' }); } finally { setMasterySaving(false); } }
 
   if (loading) return <View style={[styles.center, { backgroundColor: colors.paper }]}><ActivityIndicator color={colors.primary} /></View>;
-  if (error || !deck || !entry) return <View style={[styles.center, { backgroundColor: colors.paper }]}><Ionicons name="alert-circle-outline" size={28} color={colors.danger} /><Text style={styles.error}>{error || 'Entri tidak ditemukan.'}</Text><Pressable onPress={load}><Text style={styles.retry}>Muat ulang</Text></Pressable></View>;
+  if (error || !deck || !entry || !mastery) return <View style={[styles.center, { backgroundColor: colors.paper }]}><Ionicons name="alert-circle-outline" size={28} color={colors.danger} /><Text style={styles.error}>{error || 'Entri tidak ditemukan.'}</Text><Pressable onPress={load}><Text style={styles.retry}>Muat ulang</Text></Pressable></View>;
   const created = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(entry.createdAt);
   return <PaperScreen>
     <View style={styles.topbar}><IconButton name="arrow-back" label="Kembali" onPress={() => router.back()} /><View style={styles.heading}><Text style={styles.deck} numberOfLines={1}>{deck.name}</Text><Text style={styles.pair}>{getLanguage(deck.sourceLanguage).short} → {getLanguage(deck.targetLanguage).short}</Text></View><View style={styles.actions}><IconButton name="options-outline" label="Pengaturan suara" onPress={() => setSpeechSettings(true)} /><IconButton name="create-outline" label="Ubah entri" onPress={() => router.push(`/decks/${deckId}/entries/${entryId}/edit`)} /></View></View>
     <SpeechNotice />
     <View style={styles.metaRow}><Pill tone="plain">{typeLabels[entry.type]}</Pill><Text style={styles.date}>Ditulis {created}</Text><Pressable accessibilityRole="checkbox" accessibilityState={{ checked: entry.isFavorite }} accessibilityLabel="Favorit" onPress={favorite} style={styles.favorite}><Ionicons name={entry.isFavorite ? 'star' : 'star-outline'} size={24} color={entry.isFavorite ? colors.highlight : colors.inkMuted} /></Pressable></View>
     <View style={styles.paperCard}><Text style={styles.language}>{getLanguage(deck.sourceLanguage).name}</Text><Text selectable style={styles.source}>{entry.sourceText}</Text><SpeakButton text={entry.sourceText} language={deck.sourceLanguage} speechKey={`entry-${entry.id}-source`} label={getLanguage(deck.sourceLanguage).name} /><View style={styles.divider} /><Text style={styles.language}>{getLanguage(deck.targetLanguage).name}</Text><Text selectable style={styles.translation}>{entry.translatedText}</Text><SpeakButton text={entry.translatedText} language={deck.targetLanguage} speechKey={`entry-${entry.id}-target`} label={getLanguage(deck.targetLanguage).name} /></View>
+    <MasterySummary state={mastery} onPress={() => setMasteryOpen(true)} />
     {entry.exampleText || entry.exampleTranslation ? <Section icon="chatbubble-ellipses-outline" title="Contoh" styles={styles} colors={colors}><Text selectable style={styles.bodyStrong}>{entry.exampleText}</Text>{entry.exampleText ? <SpeakButton compact text={entry.exampleText} language={deck.sourceLanguage} speechKey={`entry-${entry.id}-example`} label="contoh" /> : null}{entry.exampleTranslation ? <Text selectable style={styles.bodyMuted}>{entry.exampleTranslation}</Text> : null}</Section> : null}
     {entry.notes ? <Section icon="pencil-outline" title="Catatan" styles={styles} colors={colors}><Text selectable style={styles.body}>{entry.notes}</Text></Section> : null}
     {entry.tags.length ? <Section icon="pricetags-outline" title="Tag" styles={styles} colors={colors}><View style={styles.tags}>{entry.tags.map((tag) => <Pill key={tag}>{tag}</Pill>)}</View></Section> : null}
+    <MasterySheet state={mastery} recent={evidence} visible={masteryOpen} saving={masterySaving} onClose={() => setMasteryOpen(false)} onSelect={(grade) => void setMasteryGrade(grade)} />
     <SpeechSettings visible={speechSettings} languages={[getLanguage(deck.sourceLanguage), getLanguage(deck.targetLanguage)]} onClose={() => setSpeechSettings(false)} />
   </PaperScreen>;
 }
