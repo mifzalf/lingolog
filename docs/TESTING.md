@@ -29,7 +29,7 @@ Temuan audit dependency transitive harus dicatat dan diperbaiki melalui versi Ex
 
 ## Matriks perangkat nyata
 
-Checklist ini wajib dijalankan pada APK/archive internal yang sudah ditandatangani di Android dan iOS fisik. Lingkungan agent dan Expo export tidak dapat menggantikan validasi hardware. Hasil kandidat, build URL, tester, bug, dan keputusan dicatat di `docs/INTERNAL_TESTING.md`.
+Checklist ini wajib dijalankan pada APK/archive internal yang sudah ditandatangani di Android dan iOS fisik. Lingkungan agent dan Expo export tidak dapat menggantikan validasi hardware. APK Android build 1 telah diterima pada handphone fisik melalui laporan pemilik aplikasi, tetapi model perangkat/OS dan hasil per butir belum dicatat; karena itu kotak rinci di bawah tetap terbuka. Validasi iOS belum tersedia. Hasil kandidat, build URL, tester, bug, dan keputusan dicatat di `docs/INTERNAL_TESTING.md`.
 
 ### Instalasi dan first run
 
