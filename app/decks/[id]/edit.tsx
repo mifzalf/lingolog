@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Alert, ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useAppDialog } from '../../../src/components/AppDialog';
 import { useDatabase } from '../../../src/db/DatabaseProvider';
 import { DeckForm } from '../../../src/features/decks/DeckForm';
 import { DeckInput, deleteDeck, getDeck, hasEntries, setDeckArchived, updateDeck } from '../../../src/features/decks/deck.repository';
@@ -8,7 +9,7 @@ import { useTheme } from '../../../src/theme/ThemeProvider';
 
 export default function EditDeckScreen() {
   const database = useDatabase();
-  const { colors } = useTheme();
+  const { colors } = useTheme(); const { showDialog } = useAppDialog();
   const { id } = useLocalSearchParams<{ id: string }>();
   const deckId = Number(id);
   const [deck, setDeck] = useState<Awaited<ReturnType<typeof getDeck>>>(undefined);
@@ -29,26 +30,19 @@ export default function EditDeckScreen() {
       router.back();
     } catch (error) {
       console.error(error);
-      Alert.alert('Perubahan belum tersimpan', 'Coba simpan kembali.');
+      showDialog({ title: 'Perubahan belum tersimpan', message: 'Coba simpan kembali. Data yang kamu isi tetap ada.', icon: 'cloud-offline-outline' });
     } finally {
       setSaving(false);
     }
   }
 
-  function showActions() {
-    Alert.alert(deck?.name ?? 'Kelola deck', undefined, [
-      { text: deck?.isArchived ? 'Pulihkan dari arsip' : 'Arsipkan deck', onPress: async () => { await setDeckArchived(database, deckId, !deck?.isArchived); router.dismissTo('/'); } },
-      { text: 'Hapus permanen', style: 'destructive', onPress: confirmDelete },
-      { text: 'Batal', style: 'cancel' },
-    ]);
-  }
-
-  function confirmDelete() {
-    Alert.alert('Hapus deck?', 'Semua entri dan histori yang terhubung akan ikut dihapus. Tindakan ini tidak dapat dibatalkan.', [
-      { text: 'Batal', style: 'cancel' },
-      { text: 'Hapus deck', style: 'destructive', onPress: async () => { await deleteDeck(database, deckId); router.dismissTo('/'); } },
-    ]);
-  }
+  function showActions() { showDialog({ title: deck?.name ?? 'Kelola deck', message: 'Pilih tindakan untuk deck ini.', icon: 'settings-outline', actions: [
+    { label: deck?.isArchived ? 'Pulihkan dari arsip' : 'Arsipkan deck', tone: 'primary', onPress: async () => { await setDeckArchived(database, deckId, !deck?.isArchived); router.dismissTo('/'); } },
+    { label: 'Hapus permanen', tone: 'danger', onPress: confirmDelete }, { label: 'Batal', tone: 'neutral' },
+  ] }); }
+  function confirmDelete() { showDialog({ title: 'Hapus deck?', message: 'Semua entri dan histori yang terhubung akan ikut dihapus. Tindakan ini tidak dapat dibatalkan.', icon: 'trash-outline', dismissible: false, actions: [
+    { label: 'Hapus deck', tone: 'danger', onPress: async () => { await deleteDeck(database, deckId); router.dismissTo('/'); } }, { label: 'Pertahankan deck', tone: 'neutral' },
+  ] }); }
 
   if (loading) return <View style={[styles.center, { backgroundColor: colors.paper }]}><ActivityIndicator color={colors.primary} /></View>;
   if (!deck) return <View style={[styles.center, { backgroundColor: colors.paper }]}><Text style={{ color: colors.ink }}>Deck tidak ditemukan.</Text></View>;

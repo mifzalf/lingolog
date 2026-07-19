@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { Alert } from 'react-native';
+import { useAppDialog } from '../../src/components/AppDialog';
 import { useDatabase } from '../../src/db/DatabaseProvider';
 import { createDeck, DeckInput } from '../../src/features/decks/deck.repository';
 import { DeckForm } from '../../src/features/decks/DeckForm';
 
 export default function NewDeckScreen() {
-  const database = useDatabase();
+  const database = useDatabase(); const { showDialog } = useAppDialog();
   const [saving, setSaving] = useState(false);
 
   async function save(input: DeckInput) {
@@ -16,7 +16,7 @@ export default function NewDeckScreen() {
       router.back();
     } catch (error) {
       console.error(error);
-      Alert.alert('Deck belum tersimpan', 'Coba simpan kembali. Data yang kamu isi masih ada di layar ini.');
+      showDialog({ title: 'Deck belum tersimpan', message: 'Coba simpan kembali. Data yang kamu isi masih ada di layar ini.', icon: 'cloud-offline-outline' });
     } finally {
       setSaving(false);
     }

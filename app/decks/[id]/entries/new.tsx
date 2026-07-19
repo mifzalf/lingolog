@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Alert, ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useAppDialog } from '../../../../src/components/AppDialog';
 import { useDatabase } from '../../../../src/db/DatabaseProvider';
 import { getDeck } from '../../../../src/features/decks/deck.repository';
 import { getLanguage } from '../../../../src/features/decks/languages';
@@ -9,7 +10,7 @@ import { createEntry, EntryInput, findDuplicate } from '../../../../src/features
 import { useTheme } from '../../../../src/theme/ThemeProvider';
 
 export default function NewEntryScreen() {
-  const database = useDatabase(); const { colors } = useTheme();
+  const database = useDatabase(); const { colors } = useTheme(); const { showDialog } = useAppDialog();
   const { id } = useLocalSearchParams<{ id: string }>(); const deckId = Number(id);
   const [deck, setDeck] = useState<Awaited<ReturnType<typeof getDeck>>>();
   const [saving, setSaving] = useState(false);
@@ -17,14 +18,12 @@ export default function NewEntryScreen() {
 
   async function persist(input: EntryInput) {
     try { setSaving(true); await createEntry(database, input); router.back(); }
-    catch (error) { console.error(error); Alert.alert('Entri belum tersimpan', 'Coba simpan kembali.'); setSaving(false); }
+    catch (error) { console.error(error); showDialog({ title: 'Entri belum tersimpan', message: 'Coba simpan kembali. Data yang kamu isi tetap ada.', icon: 'cloud-offline-outline' }); setSaving(false); }
   }
   async function save(input: EntryInput) {
     if (await findDuplicate(database, input)) {
       setSaving(false);
-      Alert.alert('Entri serupa sudah ada', 'Teks dan terjemahan yang sama sudah tersimpan di deck ini.', [
-        { text: 'Periksa lagi', style: 'cancel' }, { text: 'Simpan duplikat', onPress: () => persist(input) },
-      ]);
+      showDialog({ title: 'Entri serupa sudah ada', message: 'Teks dan terjemahan yang sama sudah tersimpan di deck ini.', icon: 'copy-outline', actions: [{ label: 'Simpan duplikat', tone: 'primary', onPress: () => persist(input) }, { label: 'Periksa lagi', tone: 'neutral' }] });
       return;
     }
     await persist(input);

@@ -1,7 +1,8 @@
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { PaperScreen } from '../../src/components/PaperScreen';
+import { useAppDialog } from '../../src/components/AppDialog';
 import { useDatabase } from '../../src/db/DatabaseProvider';
 import { setDeckArchived } from '../../src/features/decks/deck.repository';
 import { getLanguage } from '../../src/features/decks/languages';
@@ -12,11 +13,11 @@ import { radius, ThemeColors } from '../../src/theme/tokens';
 export default function ArchivedDecksScreen() {
   const database = useDatabase();
   const { colors } = useTheme();
-  const styles = createStyles(colors);
+  const styles = createStyles(colors); const { showDialog } = useAppDialog();
   const { decks, loading, error, reload } = useDecks(true);
 
   async function restore(id: number) {
-    try { await setDeckArchived(database, id, false); await reload(); } catch { Alert.alert('Deck belum dipulihkan', 'Coba lagi.'); }
+    try { await setDeckArchived(database, id, false); await reload(); } catch { showDialog({ title: 'Deck belum dipulihkan', message: 'Coba lagi tanpa meninggalkan halaman ini.', icon: 'alert-circle-outline' }); }
   }
 
   return <PaperScreen>

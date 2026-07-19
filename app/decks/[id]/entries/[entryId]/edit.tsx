@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Alert, ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useAppDialog } from '../../../../../src/components/AppDialog';
 import { useDatabase } from '../../../../../src/db/DatabaseProvider';
 import { getDeck } from '../../../../../src/features/decks/deck.repository';
 import { getLanguage } from '../../../../../src/features/decks/languages';
@@ -9,19 +10,16 @@ import { deleteEntry, EntryInput, findDuplicate, getEntry, updateEntry } from '.
 import { useTheme } from '../../../../../src/theme/ThemeProvider';
 
 export default function EditEntryScreen() {
-  const database = useDatabase(); const { colors } = useTheme();
+  const database = useDatabase(); const { colors } = useTheme(); const { showDialog } = useAppDialog();
   const params = useLocalSearchParams<{ id: string; entryId: string }>(); const deckId = Number(params.id); const entryId = Number(params.entryId);
   const [deck, setDeck] = useState<Awaited<ReturnType<typeof getDeck>>>();
   const [entry, setEntry] = useState<Awaited<ReturnType<typeof getEntry>>>();
   const [loading, setLoading] = useState(true); const [saving, setSaving] = useState(false);
   useEffect(() => { Promise.all([getDeck(database, deckId), getEntry(database, entryId)]).then(([d, e]) => { setDeck(d); setEntry(e); }).catch(console.error).finally(() => setLoading(false)); }, [database, deckId, entryId]);
 
-  async function persist(input: EntryInput) { try { setSaving(true); await updateEntry(database, entryId, input); router.back(); } catch (error) { console.error(error); Alert.alert('Perubahan belum tersimpan', 'Coba simpan kembali.'); setSaving(false); } }
-  async function save(input: EntryInput) {
-    if (await findDuplicate(database, input, entryId)) return Alert.alert('Entri serupa sudah ada', 'Teks dan terjemahan yang sama sudah tersimpan.', [{ text: 'Periksa lagi', style: 'cancel' }, { text: 'Tetap simpan', onPress: () => persist(input) }]);
-    await persist(input);
-  }
-  function remove() { Alert.alert('Hapus entri?', `“${entry?.sourceText}” akan dihapus beserta statistiknya.`, [{ text: 'Batal', style: 'cancel' }, { text: 'Hapus entri', style: 'destructive', onPress: async () => { await deleteEntry(database, entryId); router.back(); } }]); }
+  async function persist(input: EntryInput) { try { setSaving(true); await updateEntry(database, entryId, input); router.back(); } catch (error) { console.error(error); showDialog({ title: 'Perubahan belum tersimpan', message: 'Coba simpan kembali. Data yang kamu isi tetap ada.', icon: 'cloud-offline-outline' }); setSaving(false); } }
+  async function save(input: EntryInput) { if (await findDuplicate(database, input, entryId)) return showDialog({ title: 'Entri serupa sudah ada', message: 'Teks dan terjemahan yang sama sudah tersimpan.', icon: 'copy-outline', actions: [{ label: 'Tetap simpan', tone: 'primary', onPress: () => persist(input) }, { label: 'Periksa lagi', tone: 'neutral' }] }); await persist(input); }
+  function remove() { showDialog({ title: 'Hapus entri?', message: `“${entry?.sourceText}” akan dihapus beserta statistiknya.`, icon: 'trash-outline', dismissible: false, actions: [{ label: 'Hapus entri', tone: 'danger', onPress: async () => { await deleteEntry(database, entryId); router.back(); } }, { label: 'Pertahankan entri', tone: 'neutral' }] }); }
 
   if (loading) return <View style={[styles.center, { backgroundColor: colors.paper }]}><ActivityIndicator color={colors.primary} /></View>;
   if (!deck || !entry) return <View style={[styles.center, { backgroundColor: colors.paper }]}><Text style={{ color: colors.ink }}>Entri tidak ditemukan.</Text></View>;
