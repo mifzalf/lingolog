@@ -3,15 +3,14 @@ export type FlashcardRating = 'again' | 'hard' | 'good' | 'easy';
 
 /**
  * Makes dictation forgiving about typography, not vocabulary.
- * Keeps letters and numbers from every language, including German umlauts.
+ * Removes whitespace, punctuation, and symbols while retaining letters,
+ * numbers, and meaningful diacritics from every writing system.
  */
 export function normalizeDictationAnswer(value: string, locale?: string) {
   return value
     .normalize('NFKC')
     .toLocaleLowerCase(locale)
-    .replace(/[\p{P}\p{S}]/gu, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+    .replace(/[\p{P}\p{S}\s]/gu, '');
 }
 
 export function isDictationCorrect(actual: string, expected: string, locale?: string) {
