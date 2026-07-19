@@ -47,6 +47,13 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "30612f66-a082-41f5-af5c-f38e048f20a6"
+      }
+    },
+    "owner": "zalifzal"
   }
 }
