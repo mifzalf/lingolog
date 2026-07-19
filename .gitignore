@@ -33,6 +33,14 @@ yarn-error.*
 # local env files
 .env*.local
 
+# local AI assistant files
+CLAUDE.md
+AGENTS.md
+.claude/
+.cursor/
+.cursorrules
+.windsurfrules
+
 # typescript
 *.tsbuildinfo
 
