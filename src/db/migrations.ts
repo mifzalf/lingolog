@@ -1,6 +1,7 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 
-const DATABASE_VERSION = 5;
+export const DATABASE_VERSION = 5;
+export const DATABASE_APPLICATION_ID = 0x4c4c4f47; // "LLOG"
 
 const migrationV1 = `
 CREATE TABLE IF NOT EXISTS decks (
@@ -133,7 +134,7 @@ UPDATE mastery_states SET manual_grade = 3 WHERE manually_mastered = 1;
 `;
 
 export async function migrateDatabase(database: SQLiteDatabase) {
-  await database.execAsync('PRAGMA foreign_keys = ON;');
+  await database.execAsync(`PRAGMA foreign_keys = ON; PRAGMA application_id = ${DATABASE_APPLICATION_ID};`);
   const row = await database.getFirstAsync<{ user_version: number }>('PRAGMA user_version;');
   const currentVersion = row?.user_version ?? 0;
 
