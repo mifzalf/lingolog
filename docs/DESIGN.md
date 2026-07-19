@@ -36,6 +36,9 @@ Tema memiliki tiga preferensi: `system`, `light`, `dark`. Pilihan disimpan pada 
 - `ThemeButton`: berputar `system → light → dark`, bukan toggle biner yang ambigu.
 - `IconButton`: target sentuh 44×44 dan accessibility label.
 - `Pill`: label kecil seperti potongan anotasi, tidak digunakan sebagai dekorasi massal.
+- `AppDialog`: dialog konfirmasi/error global yang mengikuti token light/dark; dialog native tanpa tema tidak digunakan.
+- `MasteryPicker`: pemilih grade ringkas dari kartu entri dengan target sentuh dan label yang jelas.
+- Date picker sesi memakai kontrol kalender native agar format dan validasi tanggal tidak dibebankan kepada pengguna.
 
 ## Aturan penggunaan
 - Semua komponen baru mengambil warna dari `useTheme()`.

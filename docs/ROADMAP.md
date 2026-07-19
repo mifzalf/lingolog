@@ -19,12 +19,12 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
   - Pemutaran teks, bahasa/voice, kecepatan, stop, dan penanganan voice offline.
 - [x] **6. Fondasi sesi latihan**
   - Pemilihan multi-deck, rentang tanggal entri, status mastery, jumlah materi, arah/mode game, pengacakan, serta penyimpanan sesi.
-- [ ] **7. Game kartu flash**
-  - Balik kartu, TTS, rating Lupa/Sulit/Ingat/Kuat, dan histori hasil.
-- [ ] **8. Game dikte**
-  - TTS, input jawaban, normalisasi tanda baca, pemeriksaan, dan koreksi manual.
-- [ ] **9. Sistem mastery**
-  - Grade Baru/Dipelajari/Familiar/Dikuasai dari pilihan manual dan bukti statistik.
+- [x] **7. Game kartu flash**
+  - Balik kartu, TTS, rating Lupa/Sulit/Ingat/Kuat, resume sesi, dan histori hasil.
+- [x] **8. Game dikte**
+  - TTS, dua varian soal, input jawaban, normalisasi, pemeriksaan, koreksi manual, resume, dan ringkasan hasil.
+- [x] **9. Sistem mastery**
+  - Grade Baru/Dipelajari/Familiar/Dikuasai dari pilihan manual, bukti statistik, dan penurunan setelah kegagalan beruntun.
 - [ ] **10. Kalender dan histori**
   - Tanggal entri dibuat, aktivitas game, akurasi, durasi, dan perubahan mastery.
 - [ ] **11. Katalog lokal**
@@ -52,7 +52,7 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 
 ### Tahap 1, selesai
 - Database: `lingolog.db`.
-- Schema version awal: `1`; versi aktif kini `2`, disimpan melalui `PRAGMA user_version`.
+- Schema version awal: `1`; versi aktif kini `5`, disimpan melalui `PRAGMA user_version`.
 - Tabel: `decks`, `entries`, `mastery_states`, `practice_sessions`, `practice_answers`, `activity_events`, `tags`, `entry_tags`, dan `settings`.
 - Migrasi menggunakan transaksi; data lama tidak di-reset.
 - Seed contoh bersifat opt-in melalui `EXPO_PUBLIC_SEED_DATABASE=true` dan hanya mengisi database kosong.
@@ -100,3 +100,36 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 - Schema versi 2 menambahkan konfigurasi JSON, relasi multi-deck, dan snapshot urutan entri untuk setiap sesi tanpa menghapus data lama.
 - Pembuatan sesi, relasi deck, dan urutan materi berjalan dalam satu transaksi.
 - Kartu flash dan dikte membaca materi nyata dari snapshot sesi serta menandai waktu selesai dan durasi sesi.
+
+### Tahap 7, selesai
+- Kartu flash menggunakan materi nyata, arah sesi, TTS sesuai sisi kartu, animasi tekan ringan, dan haptic saat balik/rating.
+- Setiap rating Lupa/Sulit/Ingat/Kuat disimpan satu kali per entri dengan waktu respons; indeks unik mencegah rating ganda akibat ketukan berulang.
+- Lupa dan Sulit menjadi bukti belum berhasil; Ingat dan Kuat menjadi bukti berhasil untuk statistik mastery.
+- Rating, statistik sesi, mastery, serta event naik/turun Dikuasai diperbarui dalam satu transaksi.
+- Keluar menampilkan konfirmasi jeda; sesi yang belum selesai dapat dilanjutkan dari kartu pertama yang belum dinilai.
+- Tab Latihan menampilkan sesi kartu flash terbuka beserta progresnya.
+- Sesi lengkap membuka ringkasan persentase diingat, distribusi rating, durasi, dan rata-rata waktu respons.
+- Schema versi 3 menambahkan keunikan `(session_id, entry_id)` pada jawaban tanpa menghapus histori lama.
+
+### Tahap 8, selesai
+- Dikte mendukung mode dengar lalu tulis dengan autoplay TTS dan mode lihat arti lalu tulis teks yang dipelajari.
+- Pemeriksaan mengabaikan kapitalisasi, seluruh whitespace, simbol, tanda baca, dan Unicode kompatibel, tetapi mempertahankan diakritik bermakna seperti `ö` dan huruf `ß`.
+- Setelah diperiksa, jawaban pengguna dan acuan ditampilkan; pengguna dapat menandai hasil sebagai seharusnya benar atau salah sebelum menyimpan.
+- Hasil otomatis, hasil final, indikator koreksi manual, teks jawaban, dan waktu respons disimpan untuk setiap soal.
+- Jawaban, statistik sesi, mastery, dan event naik/turun Dikuasai diperbarui atomik memakai hasil final pengguna.
+- Keluar menampilkan konfirmasi jeda; sesi dapat dilanjutkan dari soal pertama yang belum memiliki jawaban tersimpan.
+- Tab Latihan menampilkan sesi dikte terbuka beserta progres jawaban.
+- Ringkasan akhir menampilkan akurasi final, jumlah tepat/belum tepat, jumlah koreksi manual, durasi, dan rata-rata waktu respons.
+- Schema versi 4 menambahkan `auto_is_correct` dan `manually_corrected` tanpa menghapus jawaban lama.
+
+### Tahap 9, selesai
+- Detail entri menampilkan status mastery, sumber status (manual atau bukti game), alasan, akurasi, percobaan, streak benar, dan streak gagal.
+- Pengguna dapat memilih grade Baru/Dipelajari/Familiar/Dikuasai secara manual dari detail maupun langsung dari chip mastery pada kartu entri, atau kembali ke perhitungan bukti game tanpa menghapus statistik.
+- Familiar memerlukan minimal 4 percobaan dan akurasi 70%; Dikuasai memerlukan minimal 8 percobaan, streak benar 5, dan akurasi 85%.
+- Satu atau dua kegagalan tidak langsung menurunkan grade; 3 kegagalan beruntun melepas override manual dan membatasi grade maksimal Familiar, sedangkan 5 menurunkannya ke Dipelajari.
+- Keberhasilan mereset streak gagal dan bukti kuat berikutnya dapat menaikkan status kembali.
+- Perubahan manual dan perubahan statistik sama-sama mencatat event masuk/keluar Dikuasai secara transaksional.
+- Lembar mastery menampilkan delapan bukti game terbaru, termasuk jenis game, rating/hasil, waktu, dan tanda koreksi manual dikte.
+- Schema versi 5 menambahkan `manual_grade` dan `failure_streak`; status manual Dikuasai lama dimigrasikan tanpa kehilangan data.
+- Filter tanggal persiapan game memakai date picker native dengan batas awal/akhir dan pilihan menghapus tanggal, bukan input string.
+- Semua dialog aksi, error, duplikat, hapus, pengelolaan deck, dan jeda game memakai komponen bertema Lingolog; tidak ada lagi `Alert.alert` native putih.

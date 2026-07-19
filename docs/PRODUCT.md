@@ -15,9 +15,10 @@ Aplikasi mobile offline untuk mencatat, mendengar, mengelola, dan melatih kata/f
 - Satu deck memiliki tepat satu pasangan bahasa.
 - Game MVP hanya **Kartu flash** dan **Dikte**.
 - Tidak ada pilihan ganda. Materi game selalu berasal dari entri pengguna.
-- Dikte toleran terhadap kapitalisasi, spasi, simbol, dan tanda baca, tetapi tidak menghapus diakritik/huruf bermakna (mis. ä, ö, ü, ß).
+- Dikte toleran terhadap kapitalisasi, spasi, simbol, tanda baca, dan bentuk Unicode ekuivalen, tetapi tidak menghapus diakritik/huruf bermakna (mis. ä, ö, ü, ß).
+- Hasil otomatis dikte dapat dikoreksi pengguna sebelum disimpan; hasil final pengguna menjadi bukti statistik dan mastery.
 - Game adalah bahan belajar dan sumber statistik, bukan jadwal belajar wajib.
-- Mastery dapat ditandai manual atau dicapai dari bukti statistik yang kuat. Grade dapat turun setelah kegagalan berulang.
+- Mastery dapat dipilih manual pada grade mana pun atau dicapai dari bukti statistik yang kuat. Pilihan manual tidak menghapus statistik dan dilepas setelah 3 kegagalan beruntun agar status tidak menyesatkan.
 - Kalender menampilkan (1) entri yang dibuat pada tanggal itu dan (2) histori latihan/game.
 
 ## Status mastery
@@ -29,7 +30,8 @@ Aplikasi mobile offline untuk mencatat, mendengar, mengelola, dan melatih kata/f
 Ambang awal statistik (dapat dikalibrasi setelah pengujian):
 - Familiar: minimal 4 percobaan dan akurasi >= 70%.
 - Dikuasai: minimal 8 percobaan, streak benar >= 5, akurasi >= 85%.
-- Grade dikuasai turun setelah kegagalan berulang; penanda manual juga dilepas agar status tidak menyesatkan.
+- Satu atau dua kegagalan tidak langsung menurunkan grade. Setelah 3 kegagalan beruntun, override manual dilepas dan grade maksimal Familiar; setelah 5 kegagalan beruntun grade menjadi Dipelajari.
+- Keberhasilan berikutnya mereset streak gagal; bukti kuat dapat menaikkan grade kembali.
 
 ## Batas MVP berikutnya
 - CRUD deck dan entri.
