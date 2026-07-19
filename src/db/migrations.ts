@@ -1,6 +1,6 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 
-const DATABASE_VERSION = 2;
+const DATABASE_VERSION = 5;
 
 const migrationV1 = `
 CREATE TABLE IF NOT EXISTS decks (
@@ -117,6 +117,21 @@ CREATE TABLE IF NOT EXISTS practice_session_entries (
 CREATE UNIQUE INDEX IF NOT EXISTS session_entries_position_unique ON practice_session_entries(session_id, position);
 `;
 
+const migrationV3 = `
+CREATE UNIQUE INDEX IF NOT EXISTS answers_session_entry_unique ON practice_answers(session_id, entry_id);
+`;
+
+const migrationV4 = `
+ALTER TABLE practice_answers ADD COLUMN auto_is_correct INTEGER;
+ALTER TABLE practice_answers ADD COLUMN manually_corrected INTEGER NOT NULL DEFAULT 0;
+`;
+
+const migrationV5 = `
+ALTER TABLE mastery_states ADD COLUMN manual_grade INTEGER CHECK(manual_grade IS NULL OR manual_grade BETWEEN 0 AND 3);
+ALTER TABLE mastery_states ADD COLUMN failure_streak INTEGER NOT NULL DEFAULT 0;
+UPDATE mastery_states SET manual_grade = 3 WHERE manually_mastered = 1;
+`;
+
 export async function migrateDatabase(database: SQLiteDatabase) {
   await database.execAsync('PRAGMA foreign_keys = ON;');
   const row = await database.getFirstAsync<{ user_version: number }>('PRAGMA user_version;');
@@ -130,6 +145,9 @@ export async function migrateDatabase(database: SQLiteDatabase) {
   await database.withTransactionAsync(async () => {
     if (currentVersion < 1) await database.execAsync(migrationV1);
     if (currentVersion < 2) await database.execAsync(migrationV2);
+    if (currentVersion < 3) await database.execAsync(migrationV3);
+    if (currentVersion < 4) await database.execAsync(migrationV4);
+    if (currentVersion < 5) await database.execAsync(migrationV5);
     await database.execAsync(`PRAGMA user_version = ${DATABASE_VERSION};`);
   });
 }

@@ -30,10 +30,12 @@ export const entries = sqliteTable('entries', {
 export const masteryStates = sqliteTable('mastery_states', {
   entryId: integer('entry_id').primaryKey().references(() => entries.id, { onDelete: 'cascade' }),
   grade: integer('grade').notNull().default(0), // 0 new, 1 learning, 2 familiar, 3 mastered
-  manuallyMastered: integer('manually_mastered', { mode: 'boolean' }).notNull().default(false),
+  manuallyMastered: integer('manually_mastered', { mode: 'boolean' }).notNull().default(false), // legacy compatibility: true when manual_grade = 3
+  manualGrade: integer('manual_grade'),
   correctCount: integer('correct_count').notNull().default(0),
   incorrectCount: integer('incorrect_count').notNull().default(0),
   correctStreak: integer('correct_streak').notNull().default(0),
+  failureStreak: integer('failure_streak').notNull().default(0),
   masteryScore: real('mastery_score').notNull().default(0),
   lastPracticedAt: integer('last_practiced_at', { mode: 'timestamp' }),
   masteredAt: integer('mastered_at', { mode: 'timestamp' }),
@@ -71,9 +73,11 @@ export const practiceAnswers = sqliteTable('practice_answers', {
   rating: text('rating', { enum: ['again', 'hard', 'good', 'easy'] }),
   userAnswer: text('user_answer'),
   isCorrect: integer('is_correct', { mode: 'boolean' }).notNull(),
+  autoIsCorrect: integer('auto_is_correct', { mode: 'boolean' }),
+  manuallyCorrected: integer('manually_corrected', { mode: 'boolean' }).notNull().default(false),
   responseTimeMs: integer('response_time_ms').notNull().default(0),
   answeredAt: integer('answered_at', { mode: 'timestamp' }).notNull(),
-}, (table) => [index('answers_entry_idx').on(table.entryId), index('answers_date_idx').on(table.answeredAt)]);
+}, (table) => [index('answers_entry_idx').on(table.entryId), index('answers_date_idx').on(table.answeredAt), uniqueIndex('answers_session_entry_unique').on(table.sessionId, table.entryId)]);
 
 export const activityEvents = sqliteTable('activity_events', {
   id: integer('id').primaryKey({ autoIncrement: true }),
