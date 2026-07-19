@@ -6,6 +6,7 @@ import { useDatabase } from '../../../src/db/DatabaseProvider';
 import { DeckForm } from '../../../src/features/decks/DeckForm';
 import { DeckInput, deleteDeck, getDeck, hasEntries, setDeckArchived, updateDeck } from '../../../src/features/decks/deck.repository';
 import { useTheme } from '../../../src/theme/ThemeProvider';
+import { backOrReplace } from '../../../src/navigation/back';
 
 export default function EditDeckScreen() {
   const database = useDatabase();
@@ -27,7 +28,7 @@ export default function EditDeckScreen() {
     try {
       setSaving(true);
       await updateDeck(database, deckId, input);
-      router.back();
+      backOrReplace(`/decks/${deckId}`);
     } catch (error) {
       console.error(error);
       showDialog({ title: 'Perubahan belum tersimpan', message: 'Coba simpan kembali. Data yang kamu isi tetap ada.', icon: 'cloud-offline-outline' });
@@ -47,7 +48,7 @@ export default function EditDeckScreen() {
   if (loading) return <View style={[styles.center, { backgroundColor: colors.paper }]}><ActivityIndicator color={colors.primary} /></View>;
   if (!deck) return <View style={[styles.center, { backgroundColor: colors.paper }]}><Text style={{ color: colors.ink }}>Deck tidak ditemukan.</Text></View>;
 
-  return <DeckForm title="Ubah deck" note="Catatan yang rapi lebih mudah dikunjungi lagi." initial={{ name: deck.name, description: deck.description ?? '', sourceLanguage: deck.sourceLanguage, targetLanguage: deck.targetLanguage, color: deck.color ?? undefined }} saving={saving} languageLocked={languageLocked} onCancel={() => router.back()} onMore={showActions} onSave={save} />;
+  return <DeckForm title="Ubah deck" note="Catatan yang rapi lebih mudah dikunjungi lagi." initial={{ name: deck.name, description: deck.description ?? '', sourceLanguage: deck.sourceLanguage, targetLanguage: deck.targetLanguage, color: deck.color ?? undefined }} saving={saving} languageLocked={languageLocked} onCancel={() => backOrReplace(`/decks/${deckId}`)} onMore={showActions} onSave={save} />;
 }
 
 const styles = StyleSheet.create({ center: { flex: 1, alignItems: 'center', justifyContent: 'center' } });

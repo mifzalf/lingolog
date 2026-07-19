@@ -11,6 +11,7 @@ import { getLanguage } from '../../src/features/decks/languages';
 import { useDecks } from '../../src/features/decks/useDecks';
 import { countPracticeCandidates, createPracticeSession, DictationVariant, FlashcardDirection, isValidPracticeDate, PracticeConfig, PracticeMode } from '../../src/features/practice/session.repository';
 import { useTheme } from '../../src/theme/ThemeProvider';
+import { backOrReplace } from '../../src/navigation/back';
 import { radius, ThemeColors } from '../../src/theme/tokens';
 
 const gradeOptions = [{ value: 0, label: 'Baru', note: 'Masih asing' }, { value: 1, label: 'Dipelajari', note: 'Sedang dibangun' }, { value: 2, label: 'Familiar', note: 'Mulai dikenal' }, { value: 3, label: 'Dikuasai', note: 'Sudah kuat' }];
@@ -34,7 +35,7 @@ export default function PracticeSetupScreen() {
   async function start() { if (!selectedDecks.length) return showDialog({ title: 'Pilih deck', message: 'Pilih setidaknya satu deck untuk latihan.', icon: 'albums-outline' }); if (!grades.length) return showDialog({ title: 'Pilih tingkat penguasaan', message: 'Pilih setidaknya satu status mastery.', icon: 'ribbon-outline' }); if (!datesValid) return showDialog({ title: 'Rentang tanggal belum valid', message: 'Pastikan tanggal awal tidak melewati tanggal akhir.', icon: 'calendar-outline' }); if (!available) return showDialog({ title: 'Tidak ada materi', message: 'Ubah deck, tanggal, atau status mastery agar ada materi yang cocok.', icon: 'search-outline' }); try { setStarting(true); const { session } = await createPracticeSession(database, mode, config); router.replace({ pathname: mode === 'dictation' ? '/practice/dictation' : '/practice/flashcard', params: { sessionId: String(session.id) } }); } catch (cause) { console.error(cause); showDialog({ title: 'Sesi belum dapat dimulai', message: 'Coba lagi setelah memeriksa pilihan materi.', icon: 'alert-circle-outline' }); setStarting(false); } }
 
   return <PaperScreen keyboardShouldPersistTaps="handled">
-    <View style={styles.topbar}><IconButton name="arrow-back" label="Kembali" onPress={() => router.back()} /><View style={styles.heading}><Text style={styles.note}>Siapkan sesi</Text><Text style={styles.title}>{mode === 'dictation' ? 'Dikte' : 'Kartu flash'}</Text></View></View>
+    <View style={styles.topbar}><IconButton name="arrow-back" label="Kembali" onPress={() => backOrReplace('/practice')} /><View style={styles.heading}><Text style={styles.note}>Siapkan sesi</Text><Text style={styles.title}>{mode === 'dictation' ? 'Dikte' : 'Kartu flash'}</Text></View></View>
     <Text style={styles.intro}>Pilih bahan latihanmu. Semua filter dapat digabungkan.</Text>
     {loading ? <ActivityIndicator color={colors.primary} /> : null}{error ? <Pressable onPress={reload}><Text style={styles.error}>{error} Muat ulang.</Text></Pressable> : null}
 

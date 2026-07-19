@@ -15,6 +15,7 @@ import { MasteryPicker } from '../../../src/features/practice/MasteryPicker';
 import { MasteryGrade } from '../../../src/features/practice/mastery';
 import { setManualMasteryGrade } from '../../../src/features/practice/mastery.repository';
 import { useTheme } from '../../../src/theme/ThemeProvider';
+import { backOrReplace } from '../../../src/navigation/back';
 import { radius, ThemeColors } from '../../../src/theme/tokens';
 
 const typeLabels = { word: 'Kata', phrase: 'Frasa', sentence: 'Kalimat' };
@@ -37,7 +38,7 @@ export default function DeckScreen() {
   const filtering = Boolean(search.trim()) || activeFilterCount(filters) > 0;
 
   return <PaperScreen keyboardShouldPersistTaps="handled">
-    <View style={styles.topbar}><IconButton name="arrow-back" label="Kembali" onPress={() => router.back()} /><View style={styles.heading}><Text style={styles.title} numberOfLines={1}>{deck?.name ?? 'Deck'}</Text>{deck ? <Text style={styles.pair}>{getLanguage(deck.sourceLanguage).short} → {getLanguage(deck.targetLanguage).short}</Text> : null}</View><View style={styles.headerActions}><IconButton name="analytics-outline" label="Statistik deck" onPress={() => router.push(`/statistics/deck/${deckId}`)} /><IconButton name="volume-medium-outline" label="Pengaturan suara" onPress={() => setSpeechSettings(true)} /><IconButton name="settings-outline" label="Pengaturan deck" onPress={() => router.push(`/decks/${deckId}/edit`)} /></View></View>
+    <View style={styles.topbar}><IconButton name="arrow-back" label="Kembali" onPress={() => backOrReplace('/')} /><View style={styles.heading}><Text style={styles.title} numberOfLines={1}>{deck?.name ?? 'Deck'}</Text>{deck ? <Text style={styles.pair}>{getLanguage(deck.sourceLanguage).short} → {getLanguage(deck.targetLanguage).short}</Text> : null}</View><View style={styles.headerActions}><IconButton name="analytics-outline" label="Statistik deck" onPress={() => router.push(`/statistics/deck/${deckId}`)} /><IconButton name="volume-medium-outline" label="Pengaturan suara" onPress={() => setSpeechSettings(true)} /><IconButton name="settings-outline" label="Pengaturan deck" onPress={() => router.push(`/decks/${deckId}/edit`)} /></View></View>
     <View style={styles.summary}><View><Text style={styles.summaryCount}>{filtering ? items.length : total}</Text><Text style={styles.summaryText}>{filtering ? ` dari ${total} entri` : ' entri dalam deck ini'}</Text></View><Pressable onPress={() => router.push(`/decks/${deckId}/entries/new`)} style={styles.add}><Ionicons name="add" size={19} color={colors.primaryInk} /><Text style={styles.addText}>Tambah</Text></Pressable></View>
     <SpeechNotice />
     {total > 0 ? <LibraryControls search={search} onSearchChange={setSearch} filters={filters} onFiltersChange={setFilters} tags={tags} open={filterOpen} onOpen={() => setFilterOpen(true)} onClose={() => setFilterOpen(false)} /> : null}

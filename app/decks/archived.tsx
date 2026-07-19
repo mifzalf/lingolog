@@ -8,6 +8,7 @@ import { setDeckArchived } from '../../src/features/decks/deck.repository';
 import { getLanguage } from '../../src/features/decks/languages';
 import { useDecks } from '../../src/features/decks/useDecks';
 import { useTheme } from '../../src/theme/ThemeProvider';
+import { backOrReplace } from '../../src/navigation/back';
 import { radius, ThemeColors } from '../../src/theme/tokens';
 
 export default function ArchivedDecksScreen() {
@@ -21,7 +22,7 @@ export default function ArchivedDecksScreen() {
   }
 
   return <PaperScreen>
-    <View style={styles.header}><Pressable onPress={() => router.back()} style={styles.back}><Ionicons name="arrow-back" size={23} color={colors.ink} /></Pressable><Text style={styles.title}>Deck diarsipkan</Text></View>
+    <View style={styles.header}><Pressable onPress={() => backOrReplace('/')} style={styles.back}><Ionicons name="arrow-back" size={23} color={colors.ink} /></Pressable><Text style={styles.title}>Deck diarsipkan</Text></View>
     <Text style={styles.note}>Deck tersimpan di sini dan tidak muncul di Pustaka.</Text>
     {!loading && !error && decks.length === 0 ? <View style={styles.empty}><Ionicons name="archive-outline" size={35} color={colors.primary} /><Text style={styles.emptyTitle}>Arsip masih kosong</Text><Text style={styles.meta}>Deck yang diarsipkan akan muncul di halaman ini.</Text></View> : null}
     {error ? <Text style={styles.error}>{error}</Text> : null}
