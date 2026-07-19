@@ -3,22 +3,40 @@
     "name": "Lingolog",
     "slug": "lingolog",
     "version": "1.0.0",
+    "description": "Catat, dengarkan, dan latih kosakata secara privat tanpa koneksi internet.",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
+    "backgroundColor": "#F4F3EF",
+    "primaryColor": "#355A46",
     "scheme": "lingolog",
     "plugins": [
       "expo-router",
       "expo-sqlite",
       "expo-font",
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F4F3EF",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 180,
+          "resizeMode": "contain",
+          "dark": {
+            "backgroundColor": "#171A17",
+            "image": "./assets/splash-icon-dark.png"
+          }
+        }
+      ]
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.lingolog.app"
+      "bundleIdentifier": "com.lingolog.app",
+      "buildNumber": "1"
     },
     "android": {
       "package": "com.lingolog.app",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#F4F3EF",
         "foregroundImage": "./assets/android-icon-foreground.png",

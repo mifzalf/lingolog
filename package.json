@@ -18,6 +18,7 @@
     "expo-router": "~6.0.24",
     "expo-sharing": "~14.0.8",
     "expo-speech": "~14.0.8",
+    "expo-splash-screen": "~31.0.13",
     "expo-sqlite": "~16.0.10",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
@@ -42,7 +43,9 @@
     "test": "tsx --test tests/*.test.ts && npm run test:migrations",
     "test:migrations": "node scripts/test-migrations.mjs",
     "benchmark:sqlite": "node scripts/benchmark-sqlite.mjs",
-    "verify": "npm run typecheck && npm test && npm run benchmark:sqlite"
+    "validate:release": "node scripts/validate-release.mjs",
+    "release:check": "node scripts/release-check.mjs",
+    "verify": "npm run typecheck && npm test && npm run benchmark:sqlite && npm run validate:release"
   },
   "private": true
 }
