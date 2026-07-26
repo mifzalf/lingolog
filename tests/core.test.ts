@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { isDictationCorrect, normalizeDictationAnswer } from '../src/features/practice/answer';
+import { applyFillAnswer, completeFillAnswer, createFillPrompt, isDictationCorrect, isFillAnswerCorrect, normalizeDictationAnswer } from '../src/features/practice/answer';
 import { calculateMastery, evidenceGrade } from '../src/features/practice/mastery';
 import { isValidPracticeDate } from '../src/features/practice/session.repository';
 import { DeckTransferError, parseDeckFile, safeDeckFileName } from '../src/features/transfer/deck-transfer';
@@ -17,6 +17,43 @@ test('normalisasi Dikte mengabaikan tipografi tetapi mempertahankan huruf bermak
   assert.equal(isDictationCorrect('schon', 'schön'), false);
   assert.equal(isDictationCorrect('Masse', 'Maße'), false);
   assert.equal(isDictationCorrect('  HALLO! ', 'hallo'), true);
+});
+
+test('fill dikte menyembunyikan huruf secara stabil dan merekonstruksi jawaban utuh', () => {
+  const first = createFillPrompt('Deutschkurse', 42, 'medium');
+  const second = createFillPrompt('Deutschkurse', 42, 'medium');
+  assert.deepEqual(first, second);
+  assert.equal(first.hiddenCount, 5);
+  assert.equal(first.template[0], 'D');
+  assert.equal((first.template.match(/_/g) ?? []).length, first.hiddenCount);
+  const expected = Array.from('Deutschkurse');
+  const missing = first.hiddenIndexes.map((index) => expected[index]).join('');
+  assert.equal(applyFillAnswer('Deutschkurse', first, missing), 'Deutschkurse');
+  assert.equal(completeFillAnswer('Deutschkurse', first, missing), 'Deutschkurse');
+  assert.equal(isFillAnswerCorrect(missing, 'Deutschkurse', first, 'de-DE'), true);
+  assert.equal(isFillAnswerCorrect(missing.slice(0, -1), 'Deutschkurse', first, 'de-DE'), false);
+});
+
+test('tingkat fill menambah kekosongan tanpa menghilangkan seluruh kata pendek', () => {
+  const easy = createFillPrompt('Deutschkurse Haus ab I', 7, 'easy');
+  const medium = createFillPrompt('Deutschkurse Haus ab I', 7, 'medium');
+  const hard = createFillPrompt('Deutschkurse Haus ab I', 7, 'hard');
+  assert.ok(easy.hiddenCount < medium.hiddenCount);
+  assert.ok(medium.hiddenCount < hard.hiddenCount);
+  for (const word of hard.template.split(' ')) {
+    assert.notEqual(word[0], '_');
+    assert.match(word, /[^_]/);
+  }
+  assert.equal(hard.template.endsWith('I'), true);
+});
+
+test('fill dikte mempertahankan spasi, tanda baca, Unicode, dan awal kata sebagai petunjuk', () => {
+  const prompt = createFillPrompt('Grüße, schöne Welt!', 7, 'hard');
+  assert.equal(prompt.template.includes(', '), true);
+  assert.equal(prompt.template.endsWith('!'), true);
+  assert.equal(prompt.template[0], 'G');
+  assert.equal(prompt.template[prompt.template.indexOf(' ') + 1], 's');
+  assert.equal(prompt.template[prompt.template.lastIndexOf(' ') + 1], 'W');
 });
 
 test('tanggal latihan menolak tanggal palsu dan menerima leap day nyata', () => {

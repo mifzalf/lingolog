@@ -4,7 +4,10 @@ import { decks, entries, masteryStates, practiceSessionDecks, practiceSessionEnt
 
 export type PracticeMode = 'flashcard' | 'dictation';
 export type FlashcardDirection = 'source_to_target' | 'target_to_source' | 'mixed';
-export type DictationVariant = 'audio_to_source' | 'meaning_to_source';
+export type DictationVariant = 'audio_to_source' | 'meaning_to_source' | 'fill_to_source';
+export type DictationCue = 'audio' | 'meaning';
+export type DictationAnswerMode = 'full' | 'fill';
+export type FillDifficulty = 'easy' | 'medium' | 'hard';
 export type PracticeConfig = {
   deckIds: number[];
   dateFrom?: string;
@@ -13,8 +16,21 @@ export type PracticeConfig = {
   itemLimit: number;
   shuffle: boolean;
   flashcardDirection: FlashcardDirection;
+  /** Kept for sessions created before cue and answer mode became separate filters. */
   dictationVariant: DictationVariant;
+  dictationCue?: DictationCue;
+  dictationAnswerMode?: DictationAnswerMode;
+  fillDifficulty?: FillDifficulty;
 };
+
+export function resolveDictationConfig(config?: Partial<PracticeConfig>) {
+  const legacy = config?.dictationVariant ?? 'audio_to_source';
+  return {
+    cue: config?.dictationCue ?? (legacy === 'meaning_to_source' ? 'meaning' : 'audio'),
+    answerMode: config?.dictationAnswerMode ?? (legacy === 'fill_to_source' ? 'fill' : 'full'),
+    difficulty: config?.fillDifficulty ?? 'medium',
+  } as const;
+}
 export type PracticeCandidate = {
   id: number; deckId: number; type: 'word' | 'phrase' | 'sentence'; sourceText: string; translatedText: string;
   exampleText: string | null; sourceLanguage: string; targetLanguage: string; deckName: string; grade: number;
