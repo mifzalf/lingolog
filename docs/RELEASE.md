@@ -11,7 +11,7 @@ Build pertama memakai:
 
 ```text
 Marketing version: 1.0.0
-Android versionCode: 1
+Android versionCode: 3
 iOS buildNumber: 1
 Database schema: 9
 Deck transfer format: 1

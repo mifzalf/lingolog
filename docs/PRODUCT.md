@@ -5,7 +5,7 @@ Aplikasi mobile offline untuk mencatat, mendengar, mengelola, dan melatih kata/f
 
 ## Identitas visual
 - Nama aplikasi: **Lingolog**.
-- Identitas rilis pertama memakai marketing version `1.0.0`, Android `versionCode` 1, iOS `buildNumber` 1, package/bundle identifier `com.lingolog.app`, ikon bunglon garis, dan splash light/dark bertema.
+- Identitas rilis pertama memakai marketing version `1.0.0`, Android `versionCode` 3, iOS `buildNumber` 1, package/bundle identifier `com.lingolog.app`, ikon bunglon garis, dan splash light/dark bertema.
 - Tema: sistem, terang, atau gelap; preferensi disimpan lokal dan dipilih secara eksplisit dari layar Pengaturan.
 - Metafora visual: lembar catatan bahasa, garis buku samar, tinta, stabilo, dan anotasi pena.
 - Font tulisan tangan hanya menjadi aksen. Teks materi belajar tetap memakai sans-serif yang jelas agar mendukung berbagai aksara.

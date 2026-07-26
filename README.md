@@ -13,7 +13,7 @@ The first release is focused on Android and includes a curated German-to-Indones
 | Version | `1.0.0` |
 | Release target | Android |
 | Package | `com.lingolog.app` |
-| Android build | `versionCode 1` |
+| Android build | `versionCode 3` |
 | Database schema | `9` |
 | Internal APK | Built, signed, and accepted on a physical device |
 | Production AAB | Built and signed |

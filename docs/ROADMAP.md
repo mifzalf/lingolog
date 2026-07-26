@@ -293,7 +293,7 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 - Tidak ada perubahan schema database atau dependency baru.
 
 ### Tahap 19, selesai
-- Identitas binary dikunci sebagai Lingolog `1.0.0`, Android package `com.lingolog.app`/`versionCode` 1, iOS bundle identifier `com.lingolog.app`/`buildNumber` 1, scheme `lingolog`, dan orientation portrait.
+- Identitas binary dikunci sebagai Lingolog `1.0.0`, Android package `com.lingolog.app`/`versionCode` 3, iOS bundle identifier `com.lingolog.app`/`buildNumber` 1, scheme `lingolog`, dan orientation portrait.
 - Ikon bunglon yang telah disetujui dipertahankan untuk launcher, adaptive foreground/background, monochrome themed icon, dan favicon; bunglon tetap tidak dipakai sebagai ornamen halaman.
 - Splash berpindah ke config plugin `expo-splash-screen` yang direkomendasikan dokumentasi Expo versi 57, dengan image width 180, contain, kertas terang `#F4F3EF`, serta aset transparan tinta terang khusus dark mode pada `#171A17`.
 - `docs/PRIVACY.md` menjelaskan data lokal, retensi, TTS perangkat, share sheet, ekspor deck, backup privat, restore, keamanan, kendali penghapusan, anak-anak, dan perubahan kebijakan. Dokumen menandai kontak dukungan/URL publik sebagai gate pemilik rilis, bukan mengarang identitas legal.

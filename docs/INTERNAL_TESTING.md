@@ -6,7 +6,7 @@ Dokumen ini adalah lembar hasil Tahap 20 untuk target rilis Android. Kandidat An
 
 ```text
 Marketing version: 1.0.0
-Android package/versionCode: com.lingolog.app / 1
+Android package/versionCode: com.lingolog.app / 3
 iOS bundle/buildNumber: com.lingolog.app / 1
 Katalog: 11 deck Jerman / 1.083 materi
 EAS project: @zalifzal/lingolog / 30612f66-a082-41f5-af5c-f38e048f20a6
@@ -24,7 +24,7 @@ Keputusan kandidat: LULUS — APK internal dan AAB production Android selesai
 Cakupan iOS: DITUNDA — memerlukan Apple Developer credential dan perangkat iOS
 ```
 
-Build number `1` telah digunakan untuk APK internal dan AAB production kandidat pertama. Naikkan `android.versionCode` sebelum membuat binary Android berikutnya. Naikkan `ios.buildNumber` setelah build iOS pertama berhasil dibuat; build iOS belum pernah berhasil dibuat.
+Build number `1` telah digunakan untuk APK internal dan AAB production kandidat pertama; versionCode `2` telah digunakan oleh APK peningkatan TTS. Kandidat fitur terbaru memakai Android versionCode `3`. Naikkan `android.versionCode` sebelum membuat binary Android berikutnya. Naikkan `ios.buildNumber` setelah build iOS pertama berhasil dibuat; build iOS belum pernah berhasil dibuat.
 
 ## Artefak dan integritas Android
 
@@ -40,7 +40,7 @@ SHA-256: cc6c76d39e5f5468c36e55c8a72e2d9fa78146e2acec4b893da0b0b8d4d01364
 
 URL artefak langsung EAS bersifat sementara; gunakan build URL stabil di bagian status untuk mengunduh ulang selama retensi build masih aktif. Keystore Android dibuat dan dikelola pada server Expo; credential tidak disimpan di repository.
 
-Build preview pertama `9279439a-49cd-40b2-9670-bc872cd3935c` gagal pada fase install dependency karena lockfile belum memuat peer opsional `react-dom`. Dependency dikunci ke `react-dom@19.1.0`, sesuai React 19.1.0 Expo SDK 54, lalu `npm ci --include=dev`, Expo Doctor, dan build ulang berhasil. Percobaan build `versionCode` 2 dibatalkan sebelum dipakai; konfigurasi source tetap pada kandidat build 1.
+Build preview pertama `9279439a-49cd-40b2-9670-bc872cd3935c` gagal pada fase install dependency karena lockfile belum memuat peer opsional `react-dom`. Dependency dikunci ke `react-dom@19.1.0`, sesuai React 19.1.0 Expo SDK 54, lalu `npm ci --include=dev`, Expo Doctor, dan build ulang berhasil. APK `versionCode` 2 kemudian selesai dibangun melalui build `ae3e1731-6640-4769-be9a-cc468f744dbc`; kandidat fitur terbaru dilanjutkan sebagai versionCode 3.
 
 ## Hasil pengujian perangkat Android
 

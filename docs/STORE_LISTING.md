@@ -10,7 +10,7 @@ Dokumen sumber untuk Google Play Console dan App Store Connect. Bahasa utama: In
 - **Kategori utama:** Education / Pendidikan
 - **Kategori sekunder yang disarankan:** Reference / Referensi
 - **Versi pemasaran:** 1.0.0
-- **Android versionCode:** 1
+- **Android versionCode:** 3
 - **iOS buildNumber:** 1
 - **Android package:** `com.lingolog.app`
 - **iOS bundle identifier:** `com.lingolog.app`
