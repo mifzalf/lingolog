@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { applyFillAnswer, completeFillAnswer, createFillPrompt, isDictationCorrect, isFillAnswerCorrect, normalizeDictationAnswer } from '../src/features/practice/answer';
 import { calculateMastery, evidenceGrade } from '../src/features/practice/mastery';
+import { resolveDelayedRecallSeconds } from '../src/features/practice/session.repository';
 import { createMatchupRounds, stableShuffle } from '../src/features/practice/matchup';
 import { createDelayedRecallRounds } from '../src/features/practice/delayed-recall';
 import { isValidPracticeDate } from '../src/features/practice/session.repository';
@@ -73,6 +74,13 @@ test('ronde Jodohkan kata stabil, berisi maksimal lima pasangan, dan kedua sisi 
     assert.equal(new Set(round.items.map((item) => item.sourceText)).size, round.items.length);
     assert.equal(new Set(round.items.map((item) => item.translatedText)).size, round.items.length);
   }
+});
+
+test('opsi waktu Ingat Lagi menerima 3/5/8/10 detik dan sesi lama tetap 5 detik', () => {
+  assert.equal(resolveDelayedRecallSeconds(), 5);
+  assert.equal(resolveDelayedRecallSeconds({ delayedRecallSeconds: 3 }), 3);
+  assert.equal(resolveDelayedRecallSeconds({ delayedRecallSeconds: 8 }), 8);
+  assert.equal(resolveDelayedRecallSeconds({ delayedRecallSeconds: 10 }), 10);
 });
 
 test('Ingat Lagi membentuk tiga kata, menanyakan kata kedua atau ketiga, dan stabil saat resume', () => {

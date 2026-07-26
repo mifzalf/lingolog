@@ -21,6 +21,7 @@ export type PracticeConfig = {
   dictationCue?: DictationCue;
   dictationAnswerMode?: DictationAnswerMode;
   fillDifficulty?: FillDifficulty;
+  delayedRecallSeconds?: 3 | 5 | 8 | 10;
 };
 
 export function resolveDictationConfig(config?: Partial<PracticeConfig>) {
@@ -30,6 +31,9 @@ export function resolveDictationConfig(config?: Partial<PracticeConfig>) {
     answerMode: config?.dictationAnswerMode ?? (legacy === 'fill_to_source' ? 'fill' : 'full'),
     difficulty: config?.fillDifficulty ?? 'medium',
   } as const;
+}
+export function resolveDelayedRecallSeconds(config?: Partial<PracticeConfig>) {
+  return config?.delayedRecallSeconds === 3 || config?.delayedRecallSeconds === 8 || config?.delayedRecallSeconds === 10 ? config.delayedRecallSeconds : 5;
 }
 export type PracticeCandidate = {
   id: number; deckId: number; type: 'word' | 'phrase' | 'sentence'; sourceText: string; translatedText: string;
