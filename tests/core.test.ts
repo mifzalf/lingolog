@@ -3,7 +3,7 @@ import test from 'node:test';
 import { applyFillAnswer, completeFillAnswer, createFillPrompt, isDictationCorrect, isFillAnswerCorrect, normalizeDictationAnswer } from '../src/features/practice/answer';
 import { calculateMastery, evidenceGrade } from '../src/features/practice/mastery';
 import { resolveDelayedRecallSeconds } from '../src/features/practice/session.repository';
-import { shuffledMixedModes } from '../src/features/practice/mixed.repository';
+import { createMixedModeQueue, shuffledMixedModes } from '../src/features/practice/mixed.repository';
 import { createMatchupRounds, stableShuffle } from '../src/features/practice/matchup';
 import { createDelayedRecallRounds } from '../src/features/practice/delayed-recall';
 import { isValidPracticeDate } from '../src/features/practice/session.repository';
@@ -82,6 +82,13 @@ test('urutan game campuran stabil dan mempertahankan semua game terpilih', () =>
   const first = shuffledMixedModes([...modes], 91);
   assert.deepEqual(first, shuffledMixedModes([...modes], 91));
   assert.deepEqual([...first].sort(), [...modes].sort());
+});
+
+test('antrean campuran berganti setelah setiap pengerjaan tanpa game berulang bersebelahan', () => {
+  const queue = createMixedModeQueue(['flashcard', 'dictation', 'matchup'], 20, 2026);
+  assert.equal(queue.length, 20);
+  assert.ok(queue.every((mode, index) => index === 0 || mode !== queue[index - 1]));
+  assert.deepEqual([...new Set(queue)].sort(), ['dictation', 'flashcard', 'matchup']);
 });
 
 test('opsi waktu Ingat Lagi menerima 3/5/8/10 detik dan sesi lama tetap 5 detik', () => {
