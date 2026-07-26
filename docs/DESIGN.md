@@ -62,6 +62,8 @@ Tema memiliki tiga preferensi: `system`, `light`, `dark`. Pilihan disimpan pada 
 - Progress game dan onboarding memakai role/value semantik; radio, checkbox, switch, status disabled/busy, dialog modal, dan error memakai state/role aksesibilitas yang sesuai.
 - Pengaturan Dikte memisahkan `Petunjuk soal` dari `Cara menjawab`, bukan mencampur empat kombinasi dalam satu daftar. Tingkat kekosongan Mudah/Sedang/Sulit hanya muncul secara progresif saat Fill dipilih.
 - Varian `Isi bagian kosong` tidak memiliki input kedua. Setiap huruf yang hilang menjadi kotak input langsung di dalam kata atau kalimat; fokus maju setelah satu huruf dan pengguna tetap dapat mengetuk kotak mana pun. Hitungan progres melengkapi kotak visual, sementara screen reader membaca nomor setiap slot.
+- `Jodohkan kata` memakai dua kolom familiar, kata di kiri dan arti di kanan, dengan maksimal lima baris per ronde. Pilihan aktif memakai outline tinta dan instruksi berubah untuk meminta sisi lawan; pasangan salah diberi feedback singkat tanpa menggeser layout, sedangkan pasangan benar meredup pada posisi yang sama agar pengguna tidak kehilangan orientasi. Ketuk menjadi interaksi utama, bukan drag-and-drop, agar TalkBack dan target sentuh tetap andal.
+- `Ingat Lagi` memisahkan dua fase dengan tegas: tiga kartu kata bernomor dan countdown lingkaran saat mengingat, lalu ikon mata tertutup, satu pertanyaan besar, dan pilihan arti saat recall. Tidak ada kontrol yang dapat memperpanjang lima detik. Ronde aktif dimulai ulang setelah resume agar lifecycle aplikasi tidak mengurangi waktu belajar secara tersembunyi.
 - Target ikon minimum 44×44 atau memperoleh `hitSlop`; status tidak pernah disampaikan hanya melalui warna.
 
 ## Aturan penggunaan

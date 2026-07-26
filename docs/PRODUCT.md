@@ -21,8 +21,10 @@ Aplikasi mobile offline untuk mencatat, mendengar, mengelola, dan melatih kata/f
 - Deck dapat dibagikan sebagai JSON `lingolog.deck` berversi. File hanya berisi metadata deck, materi, contoh, catatan, dan tag; ID lokal, favorit, mastery, jawaban, sesi, serta histori pribadi tidak diekspor atau diimpor.
 - Backup penuh adalah file privat yang berbeda dari ekspor deck: backup mencakup seluruh database, statistik, histori, favorit, arsip, serta preferensi tema/TTS dan hanya dipindahkan melalui penyimpanan/share sheet perangkat.
 - Satu deck memiliki tepat satu pasangan bahasa.
-- Game MVP hanya **Kartu flash** dan **Dikte**.
+- Game inti adalah **Kartu flash**, **Dikte**, **Jodohkan kata**, dan **Ingat Lagi**.
 - Tidak ada pilihan ganda. Materi game selalu berasal dari entri pengguna.
+- Jodohkan kata menampilkan maksimal lima kata sumber dan lima arti dalam urutan acak terpisah. Interaksi utama adalah ketuk kata lalu ketuk arti agar cepat, stabil pada layar kecil, dan tetap dapat digunakan dengan screen reader; pasangan salah tetap tersedia untuk dicoba kembali.
+- Ingat Lagi menampilkan tiga kata sumber selama tepat lima detik, kemudian menyembunyikannya dan menanyakan arti kata kedua atau ketiga. Jawaban memakai maksimal empat pilihan arti; sasaran, urutan pilihan, dan ronde stabil saat sesi dilanjutkan.
 - Konfigurasi Dikte memisahkan petunjuk soal (Dengar audio atau Lihat arti) dari cara menjawab (Tulis lengkap atau Isi bagian kosong), sehingga empat kombinasi dapat digunakan. Fill memakai kotak input langsung di posisi huruf yang hilang, mempertahankan awal setiap kata, dan menyediakan tingkat Mudah/Sedang/Sulit yang menyesuaikan jumlah kotak dengan panjang tiap kata.
 - Dikte toleran terhadap kapitalisasi, spasi, simbol, tanda baca, dan bentuk Unicode ekuivalen, tetapi tidak menghapus diakritik/huruf bermakna (mis. ä, ö, ü, ß).
 - Hasil otomatis dikte dapat dikoreksi pengguna sebelum disimpan; hasil final pengguna menjadi bukti statistik dan mastery.

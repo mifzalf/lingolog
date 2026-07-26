@@ -13,7 +13,7 @@ Perintah tersebut mencakup:
 - TypeScript tanpa emit.
 - Unit test normalisasi Dikte, tanggal sesi, mastery, parser/format deck, dan nama file.
 - Integration contract katalog bawaan: 11 deck Jerman/1.083 entri, cakupan A1–C1, parser, batas tag, keunikan pasangan dalam dan lintas deck, pemisahan deck kalimat, larangan pola generator lama, serta identitas pasangan ter-normalisasi untuk deteksi materi satuan yang sudah tersalin.
-- Migrasi SQLite fresh serta v1/v2/v3/v4 ke v5, termasuk `application_id`, `integrity_check`, `foreign_key_check`, dan retensi data lama.
+- Migrasi SQLite fresh serta v1/v2/v3/v4/v5/v6/v7 ke v8, termasuk `application_id`, `integrity_check`, `foreign_key_check`, dan retensi data lama.
 - Benchmark query SQLite dengan fixture 20.000 entri. Anggaran median pada mesin pengembangan adalah 500 ms.
 
 Sebelum kandidat build, jalankan gate gabungan:
@@ -49,6 +49,14 @@ Checklist ini wajib dijalankan pada APK/archive internal yang sudah ditandatanga
 ### Latihan dan audio
 
 - [ ] Kartu flash dapat dijeda, dilanjutkan, dan tidak merekam jawaban ganda saat tombol diketuk cepat.
+- [ ] Jodohkan kata menampilkan maksimal 5 pasangan per ronde; kedua kolom memiliki isi sama dalam urutan berbeda dan susunan tetap stabil setelah resume.
+- [ ] Ketuk sisi yang sama mengganti pilihan, ketuk pilihan aktif membatalkan, pasangan salah tetap tersedia, dan pasangan benar hanya tersimpan satu kali saat diketuk cepat.
+- [ ] Jodohkan kata diuji dengan materi panjang, Dynamic Type terbesar, layar kecil, TalkBack, Reduce Motion, dark mode, beberapa deck, serta ronde terakhir kurang dari lima pasangan.
+- [ ] Jeda Jodohkan kata mempertahankan pasangan tersimpan; hasil, Kalender, statistik, mastery, durasi, dan percobaan salah sesuai data sesi.
+- [ ] Ingat Lagi menampilkan tepat 3 kata selama 5 detik nyata lalu menyembunyikannya; soal selalu berasal dari kata ke-2 atau ke-3.
+- [ ] Pilihan Ingat Lagi memuat jawaban benar dan maksimal tiga pengecoh unik, tidak berubah setelah resume, serta tidak dapat dijawab dua kali dengan ketukan cepat.
+- [ ] Background/foreground atau jeda pada fase mengingat memulai ulang ronde aktif; jawaban tersimpan tetap dilewati.
+- [ ] Ingat Lagi diuji dengan TalkBack, Reduce Motion, Dynamic Type, teks panjang, layar kecil, dark mode, dan sesi 3/6/9/15 kata; hasil, Kalender, statistik, serta mastery sesuai.
 - [ ] Dikte audio, arti-ke-tulisan, dan Isi bagian kosong menyimpan hasil final setelah koreksi manual.
 - [ ] Petunjuk Audio/Arti dapat dipadukan dengan jawaban Tulis lengkap/Fill, dan tingkat kekosongan hanya muncul saat Fill dipilih.
 - [ ] Pola Fill stabil saat sesi dijeda/dilanjutkan, awal tiap kata terlihat, serta spasi dan tanda baca tidak berubah.

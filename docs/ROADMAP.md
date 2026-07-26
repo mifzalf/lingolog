@@ -49,10 +49,29 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
   - Ikon, splash, privacy policy, materi toko aplikasi, dan versi.
 - [x] **20. Build dan internal testing** *(selesai untuk target rilis Android)*
   - APK/AAB, distribusi internal, perbaikan bug, dan kandidat rilis pertama.
+- [x] **23. Ingat Lagi (Delayed Recall)**
+  - Tiga kata selama 5 detik, pertanyaan stabil untuk kata kedua/ketiga, pilihan ganda arti, feedback, mastery, resume, hasil, histori, statistik, dan migrasi schema v7.
+- [x] **22. Jodohkan kata**
+  - Lima kata dan lima arti per ronde, pilihan ketuk yang aksesibel, urutan stabil-teracak, feedback pasangan, resume, mastery, histori, statistik, serta ringkasan waktu dan kesalahan.
 - [ ] **21. Peningkatan TTS perangkat** *(implementasi dan gate lokal selesai; menunggu uji APK pada handphone)*
   - Preview voice, rekomendasi locale/kualitas, mode Jelas/Natural/Pelan lalu natural, serta pintasan pengaturan TTS Android tanpa cloud API atau model suara tambahan.
 
 ## Catatan progres
+
+### Tahap 23, Ingat Lagi selesai
+- Satu ronde mengambil tepat tiga materi dan menampilkannya selama lima detik dengan nomor urutan serta countdown yang mengikuti waktu nyata.
+- Setelah kata disembunyikan, aplikasi memilih kata kedua atau ketiga secara deterministik dan menampilkan jawaban arti hingga empat pilihan yang tidak identik.
+- Target dan susunan opsi stabil berdasarkan ID sesi sehingga resume tidak mengubah soal. Ronde yang belum dijawab dimulai kembali dari fase mengingat selama lima detik.
+- Jawaban memperbarui mastery, streak, statistik sesi, dan event Dikuasai secara transaksional. Hasil menampilkan akurasi, tepat/belum tepat, durasi, dan rata-rata waktu menjawab.
+- Tab Latihan, resume, Kalender, statistik, dan jejak mastery mengenali `delayed_recall`. Schema v7 memperluas CHECK mode sambil mempertahankan seluruh histori v1–v6.
+
+### Tahap 22, Jodohkan kata selesai
+- Fondasi sesi bersama menerima mode `matchup`; pilihan deck, tanggal, mastery, jumlah, dan shuffle tetap konsisten dengan game lain. Jumlah materi dibulatkan ke ronde lima saat diperlukan.
+- Setiap ronde menampilkan maksimal lima kata dan lima arti dalam dua urutan deterministik yang berbeda. Resume menghasilkan susunan yang sama dan melewati pasangan yang sudah tersimpan.
+- Pengguna mengetuk salah satu sisi lalu sisi lawan. Pasangan salah memperoleh feedback visual, haptic, dan screen-reader tanpa dihapus; pasangan benar langsung disimpan dan disingkirkan secara visual.
+- Entri yang cocok pada percobaan pertama menjadi bukti berhasil. Entri yang sempat terlibat pilihan salah menjadi bukti perlu latihan; mastery dan event masuk/keluar Dikuasai diperbarui dalam transaksi yang sama.
+- Hasil menampilkan durasi, jumlah sekali cocok, total percobaan salah, akurasi, dan rata-rata waktu. Tab Latihan, resume, Kalender, statistik, dan bukti mastery mengenali mode baru.
+- Schema v6 memperluas CHECK mode sesi/jawaban menjadi `flashcard`, `dictation`, dan `matchup` sambil menyalin seluruh histori lama secara aman.
 
 ### Pengembangan latihan Dikte: Isi bagian kosong, selesai
 - Konfigurasi tidak lagi mencampur petunjuk dan format jawaban. `Petunjuk soal` memilih Audio atau Arti, sedangkan `Cara menjawab` memilih Tulis lengkap atau Isi bagian kosong, sehingga keempat kombinasi tersedia.
@@ -99,7 +118,7 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 
 ### Tahap 1, selesai
 - Database: `lingolog.db`.
-- Schema version awal: `1`; versi aktif kini `5`, disimpan melalui `PRAGMA user_version`.
+- Schema version awal: `1`; versi aktif kini `8`, disimpan melalui `PRAGMA user_version`.
 - Tabel: `decks`, `entries`, `mastery_states`, `practice_sessions`, `practice_answers`, `activity_events`, `tags`, `entry_tags`, dan `settings`.
 - Migrasi menggunakan transaksi; data lama tidak di-reset.
 - Seed contoh bersifat opt-in melalui `EXPO_PUBLIC_SEED_DATABASE=true` dan hanya mengisi database kosong.
@@ -286,7 +305,7 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 - Test runner ringan memakai Node test melalui `tsx`, tanpa memasukkan framework test ke bundle produksi. `npm test` mencakup normalisasi Dikte, tanggal sesi, ambang/penurunan mastery, parser deck strict, versi format, pasangan bahasa, dan nama file aman.
 - Test kontrak katalog memuat seluruh materi bawaan dan kini memverifikasi 11 deck Jerman/1.083 entri, cakupan A1/A2/B1/C1, batas tag, parser, keunikan dalam dan lintas deck, pemisahan deck kalimat, serta tidak munculnya pola generator lama.
 - Test tersebut menemukan satu pasangan `husten → batuk` ganda pada deck Jerman A2 Kesehatan; sumber verba diperbaiki menjadi `abhusten → mengeluarkan batuk` dan test regresi mempertahankan keunikannya.
-- `scripts/test-migrations.mjs` menguji fresh serta database v1/v2/v3/v4 ke v5 melalui SQLite nyata, termasuk retensi baris lama, `user_version`, `application_id`, kolom mastery terbaru, integrity check, dan foreign-key check.
+- `scripts/test-migrations.mjs` menguji fresh serta database v1/v2/v3/v4/v5/v6/v7 ke v8 melalui SQLite nyata, termasuk retensi baris lama, `user_version`, `application_id`, kolom mastery terbaru, integrity check, dan foreign-key check.
 - `scripts/benchmark-sqlite.mjs` membangun fixture 100 deck/20.000 entri dan mengukur query ringkasan deck serta pencarian/filter. Median lokal 9 proses cold-ish sekitar 5–6 ms, di bawah anggaran 500 ms.
 - Script `npm run verify` menyatukan typecheck, unit/integration test, migrasi, dan benchmark. `docs/TESTING.md` mendokumentasikan production checks, matriks Android/iOS fisik, lifecycle/audio/storage/file edge cases, profil performa, serta prosedur crash yang menjaga privasi materi pengguna.
 - Audit dependency produksi tidak menemukan high/critical; temuan moderate berasal dari rantai tool Expo/transitif dan tidak dipaksa diperbarui di luar versi SDK yang kompatibel.

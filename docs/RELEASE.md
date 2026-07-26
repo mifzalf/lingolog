@@ -13,7 +13,7 @@ Build pertama memakai:
 Marketing version: 1.0.0
 Android versionCode: 1
 iOS buildNumber: 1
-Database schema: 5
+Database schema: 8
 Deck transfer format: 1
 ```
 

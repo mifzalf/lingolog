@@ -14,7 +14,7 @@ The first release is focused on Android and includes a curated German-to-Indones
 | Release target | Android |
 | Package | `com.lingolog.app` |
 | Android build | `versionCode 1` |
-| Database schema | `5` |
+| Database schema | `8` |
 | Internal APK | Built, signed, and accepted on a physical device |
 | Production AAB | Built and signed |
 | iOS | Deferred to a future milestone |
@@ -65,7 +65,7 @@ tests/                   Core logic and bundled catalog contracts
 - Zod
 - Zustand
 
-SQLite is the source of truth for persistent user data. Schema changes use explicit, transactional migrations, with the active schema currently at version `5`.
+SQLite is the source of truth for persistent user data. Schema changes use explicit, transactional migrations, with the active schema currently at version `8`.
 
 ## Privacy model
 
@@ -115,7 +115,7 @@ The seed is opt-in and is not used in release builds.
 | `npm run android` | Start Expo and open Android |
 | `npm run typecheck` | Run TypeScript without emitting files |
 | `npm test` | Run core, catalog, and migration tests |
-| `npm run test:migrations` | Test fresh and v1–v4 database migration paths |
+| `npm run test:migrations` | Test fresh and v1–v7 database migration paths |
 | `npm run benchmark:sqlite` | Benchmark representative queries with 20,000 entries |
 | `npm run validate:release` | Validate release identity, versions, and assets |
 | `npm run verify` | Run typecheck, tests, benchmark, and release validation |
@@ -128,7 +128,7 @@ The release pipeline currently verifies:
 - TypeScript compilation.
 - Core behavior and file-format contracts.
 - The complete 11-deck/1,083-item bundled catalog contract.
-- Fresh database creation and migration from schema versions 1–4 to 5.
+- Fresh database creation and migration from schema versions 1–7 to 8.
 - SQLite integrity, foreign keys, application ID, and legacy-data retention.
 - Representative SQLite performance with 20,000 entries.
 - Expo dependency compatibility and Expo Doctor.
