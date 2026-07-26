@@ -45,7 +45,7 @@ export const masteryStates = sqliteTable('mastery_states', {
 export const practiceSessions = sqliteTable('practice_sessions', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   deckId: integer('deck_id').references(() => decks.id, { onDelete: 'set null' }),
-  mode: text('mode', { enum: ['flashcard', 'dictation', 'matchup', 'delayed_recall', 'word_wheel'] }).notNull(),
+  mode: text('mode', { enum: ['flashcard', 'dictation', 'matchup', 'delayed_recall', 'word_wheel', 'mixed'] }).notNull(),
   startedAt: integer('started_at', { mode: 'timestamp' }).notNull(),
   completedAt: integer('completed_at', { mode: 'timestamp' }),
   totalItems: integer('total_items').notNull().default(0),

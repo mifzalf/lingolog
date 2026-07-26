@@ -20,11 +20,11 @@ type Selection = { side: Side; id: number } | null;
 
 export default function MatchupScreen() {
   const database = useDatabase(); const { colors } = useTheme(); const styles = createStyles(colors); const { announce, reduceMotion } = useAccessibility(); const haptics = useHaptics(); const { speakFast, stop: stopSpeech } = useSpeech(); const { showDialog } = useAppDialog();
-  const { sessionId } = useLocalSearchParams<{ sessionId: string }>(); const id = Number(sessionId); const { data, loading, error, reload } = usePracticeSession(id);
+  const { sessionId, mixedSessionId } = useLocalSearchParams<{ sessionId: string; mixedSessionId?: string }>(); const id = Number(sessionId); const { data, loading, error, reload } = usePracticeSession(id);
   const [progressLoading, setProgressLoading] = useState(true); const [answeredIds, setAnsweredIds] = useState<Set<number>>(new Set()); const [selection, setSelection] = useState<Selection>(null); const [mistakes, setMistakes] = useState<Record<number, number>>({}); const [wrong, setWrong] = useState<number[]>([]); const [saving, setSaving] = useState(false); const roundStartedAt = useRef(Date.now());
   const rounds = useMemo(() => createMatchupRounds(data?.items ?? [], id), [data?.items, id]);
   const roundIndex = rounds.findIndex((round) => round.items.some((item) => !answeredIds.has(item.id))); const round = rounds[roundIndex];
-  useEffect(() => { if (!data) return; getMatchupProgress(database, id).then(async (progress) => { setAnsweredIds(progress.answeredIds); if (progress.answeredIds.size >= data.items.length) { if (!data.session.completedAt) await completePracticeSession(database, data.session.id, data.session.startedAt); router.replace({ pathname: '/practice/matchup-result', params: { sessionId } }); } }).catch(console.error).finally(() => setProgressLoading(false)); }, [data, database, id, sessionId]);
+  useEffect(() => { if (!data) return; getMatchupProgress(database, id).then(async (progress) => { setAnsweredIds(progress.answeredIds); if (progress.answeredIds.size >= data.items.length) { if (!data.session.completedAt) await completePracticeSession(database, data.session.id, data.session.startedAt); router.replace(mixedSessionId ? { pathname: '/practice/mixed', params: { sessionId: mixedSessionId } } : { pathname: '/practice/matchup-result', params: { sessionId } }); } }).catch(console.error).finally(() => setProgressLoading(false)); }, [data, database, id, sessionId]);
   useEffect(() => { roundStartedAt.current = Date.now(); setSelection(null); setMistakes({}); setWrong([]); }, [roundIndex]);
   useEffect(() => () => { void stopSpeech(); }, [stopSpeech]);
   if (loading || progressLoading) return <View style={styles.center}><ActivityIndicator color={colors.primary} /><Text style={styles.help}>Menyiapkan pasangan…</Text></View>;
@@ -48,7 +48,7 @@ export default function MatchupScreen() {
     try {
       setSaving(true); await recordMatchupPair(database, { sessionId: sessionData.session.id, entryId: item.id, deckId: item.deckId, mistakes: mistakes[item.id] ?? 0, responseTimeMs: Date.now() - roundStartedAt.current });
       const nextAnswered = new Set(answeredIds).add(item.id); setAnsweredIds(nextAnswered); setSelection(null); announce(`Cocok: ${item.sourceText}, ${item.translatedText}`); void haptics.notification(Haptics.NotificationFeedbackType.Success);
-      if (nextAnswered.size >= sessionData.items.length) { await completePracticeSession(database, sessionData.session.id, sessionData.session.startedAt); router.replace({ pathname: '/practice/matchup-result', params: { sessionId } }); }
+      if (nextAnswered.size >= sessionData.items.length) { await completePracticeSession(database, sessionData.session.id, sessionData.session.startedAt); router.replace(mixedSessionId ? { pathname: '/practice/mixed', params: { sessionId: mixedSessionId } } : { pathname: '/practice/matchup-result', params: { sessionId } }); }
     } catch (cause) { console.error(cause); showDialog({ title: 'Pasangan belum tersimpan', message: 'Coba pilih pasangan itu kembali.', icon: 'alert-circle-outline' }); } finally { setSaving(false); }
   }
 

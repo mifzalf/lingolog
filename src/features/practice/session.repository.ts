@@ -2,7 +2,8 @@ import { and, asc, eq, gte, inArray, lt, sql } from 'drizzle-orm';
 import type { Database } from '../decks/deck.repository';
 import { decks, entries, masteryStates, practiceSessionDecks, practiceSessionEntries, practiceSessions } from '../../db/schema';
 
-export type PracticeMode = 'flashcard' | 'dictation' | 'matchup' | 'delayed_recall' | 'word_wheel';
+export type GameMode = 'flashcard' | 'dictation' | 'matchup' | 'delayed_recall';
+export type PracticeMode = GameMode | 'word_wheel' | 'mixed';
 export type FlashcardDirection = 'source_to_target' | 'target_to_source' | 'mixed';
 export type DictationVariant = 'audio_to_source' | 'meaning_to_source' | 'fill_to_source';
 export type DictationCue = 'audio' | 'meaning';
@@ -22,6 +23,9 @@ export type PracticeConfig = {
   dictationAnswerMode?: DictationAnswerMode;
   fillDifficulty?: FillDifficulty;
   delayedRecallSeconds?: 3 | 5 | 8 | 10;
+  mixedModes?: GameMode[];
+  mixedSegments?: { mode: GameMode; sessionId: number }[];
+  mixedParentSessionId?: number;
 };
 
 export function resolveDictationConfig(config?: Partial<PracticeConfig>) {
@@ -77,9 +81,9 @@ export async function listPracticeCandidates(database: Database, config: Practic
     .where(and(...conditions(config))).orderBy(config.shuffle ? sql`random()` : asc(entries.createdAt), asc(entries.id)).limit(limit);
 }
 
-export async function createPracticeSession(database: Database, mode: PracticeMode, config: PracticeConfig) {
+export async function createPracticeSession(database: Database, mode: PracticeMode, config: PracticeConfig, sharedCandidates?: PracticeCandidate[]) {
   const requestedLimit = mode === 'matchup' ? Math.max(5, Math.ceil(config.itemLimit / 5) * 5) : mode === 'delayed_recall' ? Math.max(3, Math.ceil(config.itemLimit / 3) * 3) : config.itemLimit;
-  const candidates = await listPracticeCandidates(database, config, requestedLimit);
+  const candidates = sharedCandidates ?? await listPracticeCandidates(database, config, requestedLimit);
   if (!candidates.length) throw new Error('NO_CANDIDATES');
   return database.transaction(async (transaction) => {
     const [session] = await transaction.insert(practiceSessions).values({

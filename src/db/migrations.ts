@@ -1,6 +1,6 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 
-export const DATABASE_VERSION = 8;
+export const DATABASE_VERSION = 9;
 export const DATABASE_APPLICATION_ID = 0x4c4c4f47; // "LLOG"
 
 const migrationV1 = `
@@ -249,6 +249,24 @@ CREATE INDEX answers_date_idx ON practice_answers(answered_at);
 CREATE UNIQUE INDEX answers_session_entry_unique ON practice_answers(session_id, entry_id);
 `;
 
+const migrationV9 = `
+CREATE TABLE practice_sessions_v9 (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  deck_id INTEGER REFERENCES decks(id) ON DELETE SET NULL,
+  mode TEXT NOT NULL CHECK(mode IN ('flashcard', 'dictation', 'matchup', 'delayed_recall', 'word_wheel', 'mixed')),
+  started_at INTEGER NOT NULL,
+  completed_at INTEGER,
+  total_items INTEGER NOT NULL DEFAULT 0,
+  correct_items INTEGER NOT NULL DEFAULT 0,
+  duration_ms INTEGER NOT NULL DEFAULT 0,
+  config_json TEXT
+);
+INSERT INTO practice_sessions_v9 SELECT id, deck_id, mode, started_at, completed_at, total_items, correct_items, duration_ms, config_json FROM practice_sessions;
+DROP TABLE practice_sessions;
+ALTER TABLE practice_sessions_v9 RENAME TO practice_sessions;
+CREATE INDEX sessions_started_idx ON practice_sessions(started_at);
+`;
+
 export async function migrateDatabase(database: SQLiteDatabase) {
   await database.execAsync(`PRAGMA foreign_keys = ON; PRAGMA application_id = ${DATABASE_APPLICATION_ID};`);
   const row = await database.getFirstAsync<{ user_version: number }>('PRAGMA user_version;');
@@ -259,7 +277,7 @@ export async function migrateDatabase(database: SQLiteDatabase) {
   }
   if (currentVersion === DATABASE_VERSION) return;
 
-  if (currentVersion < 8) await database.execAsync('PRAGMA foreign_keys = OFF;');
+  if (currentVersion < 9) await database.execAsync('PRAGMA foreign_keys = OFF;');
   await database.withTransactionAsync(async () => {
     if (currentVersion < 1) await database.execAsync(migrationV1);
     if (currentVersion < 2) await database.execAsync(migrationV2);
@@ -269,6 +287,7 @@ export async function migrateDatabase(database: SQLiteDatabase) {
     if (currentVersion < 6) await database.execAsync(migrationV6);
     if (currentVersion < 7) await database.execAsync(migrationV7);
     if (currentVersion < 8) await database.execAsync(migrationV8);
+    if (currentVersion < 9) await database.execAsync(migrationV9);
     await database.execAsync(`PRAGMA user_version = ${DATABASE_VERSION};`);
   });
   await database.execAsync('PRAGMA foreign_keys = ON;');

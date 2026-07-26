@@ -35,7 +35,7 @@ export async function getDelayedRecallResult(database: Database, sessionId: numb
 
 export async function getLatestOpenDelayedRecallSession(database: Database) {
   const rows = await database.select({ id: practiceSessions.id, startedAt: practiceSessions.startedAt, totalItems: practiceSessions.totalItems, answered: sql<number>`count(${practiceAnswers.id})` }).from(practiceSessions)
-    .leftJoin(practiceAnswers, eq(practiceAnswers.sessionId, practiceSessions.id)).where(and(eq(practiceSessions.mode, 'delayed_recall'), sql`${practiceSessions.completedAt} is null`)).groupBy(practiceSessions.id)
+    .leftJoin(practiceAnswers, eq(practiceAnswers.sessionId, practiceSessions.id)).where(and(eq(practiceSessions.mode, 'delayed_recall'), sql`${practiceSessions.completedAt} is null`, sql`coalesce(json_extract(${practiceSessions.configJson}, '$.mixedParentSessionId'), 0) = 0`)).groupBy(practiceSessions.id)
     .having(sql`count(${practiceAnswers.id}) < cast(${practiceSessions.totalItems} / 3 as integer)`).orderBy(desc(practiceSessions.startedAt)).limit(1);
   return rows[0];
 }
