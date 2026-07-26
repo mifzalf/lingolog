@@ -56,7 +56,7 @@ Checklist ini wajib dijalankan pada APK/archive internal yang sudah ditandatanga
 - [ ] Ingat Lagi menampilkan tepat 3 kata selama 5 detik nyata lalu menyembunyikannya; soal selalu berasal dari kata ke-2 atau ke-3.
 - [ ] Pilihan Ingat Lagi memuat jawaban benar dan maksimal tiga pengecoh unik, tidak berubah setelah resume, serta tidak dapat dijawab dua kali dengan ketukan cepat.
 - [ ] Background/foreground atau jeda pada fase mengingat memulai ulang ronde aktif; jawaban tersimpan tetap dilewati.
-- [ ] Latihan campuran diuji dengan 2–4 game, urutan acak stabil per sesi, resume antargame, setup lama/setup baru, hasil gabungan, layar kecil, TalkBack, dan dark mode.
+- [ ] Latihan campuran diuji dengan 2–4 game, pergantian setelah setiap satu pengerjaan, tidak ada game sama yang bersebelahan, resume antarbagian, filter deck/tanggal/mastery/jumlah/urutan, seluruh filter khusus game, setup lama/setup baru, hasil gabungan, layar kecil, TalkBack, dan dark mode.
 - [ ] Ingat Lagi diuji dengan TalkBack, Reduce Motion, Dynamic Type, teks panjang, layar kecil, dark mode, dan sesi 3/6/9/15 kata; hasil, Kalender, statistik, serta mastery sesuai.
 - [ ] Dikte audio, arti-ke-tulisan, dan Isi bagian kosong menyimpan hasil final setelah koreksi manual.
 - [ ] Petunjuk Audio/Arti dapat dipadukan dengan jawaban Tulis lengkap/Fill, dan tingkat kekosongan hanya muncul saat Fill dipilih.

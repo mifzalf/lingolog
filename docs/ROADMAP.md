@@ -50,7 +50,7 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 - [x] **20. Build dan internal testing** *(selesai untuk target rilis Android)*
   - APK/AAB, distribusi internal, perbaikan bug, dan kandidat rilis pertama.
 - [x] **24. Latihan campuran dan grid game ringkas**
-  - Empat game tampil 2×2; sesi campuran mengacak game terpilih, memakai setup dua tahap, resume, hasil gabungan, serta setup terakhir lokal. Schema v9 menambahkan mode induk `mixed`.
+  - Empat game tampil 2×2; sesi campuran mengacak antrean per pengerjaan dan langsung berganti game setelah satu bagian selesai. Setup dua tahap memuat filter bahan lengkap serta filter khusus setiap game, berikut resume, hasil gabungan, dan setup terakhir lokal. Schema v9 menambahkan mode induk `mixed`.
 - [x] **23. Ingat Lagi (Delayed Recall)**
   - Tiga kata selama 5 detik, pertanyaan stabil untuk kata kedua/ketiga, pilihan ganda arti, feedback, mastery, resume, hasil, histori, statistik, dan migrasi schema v7.
 - [x] **22. Jodohkan kata**
