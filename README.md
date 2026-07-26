@@ -14,7 +14,7 @@ The first release is focused on Android and includes a curated German-to-Indones
 | Release target | Android |
 | Package | `com.lingolog.app` |
 | Android build | `versionCode 1` |
-| Database schema | `8` |
+| Database schema | `9` |
 | Internal APK | Built, signed, and accepted on a physical device |
 | Production AAB | Built and signed |
 | iOS | Deferred to a future milestone |
@@ -65,7 +65,7 @@ tests/                   Core logic and bundled catalog contracts
 - Zod
 - Zustand
 
-SQLite is the source of truth for persistent user data. Schema changes use explicit, transactional migrations, with the active schema currently at version `8`.
+SQLite is the source of truth for persistent user data. Schema changes use explicit, transactional migrations, with the active schema currently at version `9`.
 
 ## Privacy model
 

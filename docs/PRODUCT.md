@@ -21,7 +21,7 @@ Aplikasi mobile offline untuk mencatat, mendengar, mengelola, dan melatih kata/f
 - Deck dapat dibagikan sebagai JSON `lingolog.deck` berversi. File hanya berisi metadata deck, materi, contoh, catatan, dan tag; ID lokal, favorit, mastery, jawaban, sesi, serta histori pribadi tidak diekspor atau diimpor.
 - Backup penuh adalah file privat yang berbeda dari ekspor deck: backup mencakup seluruh database, statistik, histori, favorit, arsip, serta preferensi tema/TTS dan hanya dipindahkan melalui penyimpanan/share sheet perangkat.
 - Satu deck memiliki tepat satu pasangan bahasa.
-- Game inti adalah **Kartu flash**, **Dikte**, **Jodohkan kata**, dan **Ingat Lagi**.
+- Game inti adalah **Kartu flash**, **Dikte**, **Jodohkan kata**, dan **Ingat Lagi**. Latihan campuran menjalankan dua atau lebih game terpilih dalam satu sesi berurutan acak; bahan dan pengaturan tiap game disimpan lokal agar dapat digunakan kembali.
 - Tidak ada pilihan ganda. Materi game selalu berasal dari entri pengguna.
 - Jodohkan kata menampilkan maksimal lima kata sumber dan lima arti dalam urutan acak terpisah. Interaksi utama adalah ketuk kata lalu ketuk arti agar cepat, stabil pada layar kecil, dan tetap dapat digunakan dengan screen reader; pasangan salah tetap tersedia untuk dicoba kembali.
 - Ingat Lagi menampilkan tiga kata sumber selama tepat lima detik, kemudian menyembunyikannya dan menanyakan arti kata kedua atau ketiga. Jawaban memakai maksimal empat pilihan arti; sasaran, urutan pilihan, dan ronde stabil saat sesi dilanjutkan.
