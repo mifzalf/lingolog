@@ -49,8 +49,19 @@ Checklist ini wajib dijalankan pada APK/archive internal yang sudah ditandatanga
 ### Latihan dan audio
 
 - [ ] Kartu flash dapat dijeda, dilanjutkan, dan tidak merekam jawaban ganda saat tombol diketuk cepat.
-- [ ] Dikte audio dan arti-ke-tulisan menyimpan hasil final setelah koreksi manual.
+- [ ] Dikte audio, arti-ke-tulisan, dan Isi bagian kosong menyimpan hasil final setelah koreksi manual.
+- [ ] Petunjuk Audio/Arti dapat dipadukan dengan jawaban Tulis lengkap/Fill, dan tingkat kekosongan hanya muncul saat Fill dipilih.
+- [ ] Pola Fill stabil saat sesi dijeda/dilanjutkan, awal tiap kata terlihat, serta spasi dan tanda baca tidak berubah.
+- [ ] Kotak Fill menerima satu huruf langsung pada posisi kosong, fokus maju otomatis, Backspace dapat kembali, kotak dapat diketuk bebas, dan Periksa nonaktif sampai semua slot terisi.
+- [ ] Mudah menghasilkan lebih sedikit kotak daripada Sedang dan Sulit; kata satu huruf tidak dikosongkan dan kata pendek tidak pernah kosong seluruhnya.
+- [ ] Fill diuji pada `Deutschkurse`, kata satu hingga tiga huruf, frasa dengan tanda baca, kalimat panjang, angka, `ä/ö/ü/ß`, dan aksara non-Latin.
+- [ ] Jawaban Fill direkonstruksi menjadi teks utuh pada hasil, histori, koreksi manual, statistik, mastery, dan sesi yang dilanjutkan.
 - [ ] TTS memakai bahasa deck; voice yang tidak tersedia tidak berganti bahasa diam-diam.
+- [ ] Preview voice otomatis dan setiap voice manual memakai kalimat bahasa yang benar, dapat dihentikan, dan tidak mengubah radio pilihan.
+- [ ] Rekomendasi voice memprioritaskan locale persis dan kualitas Enhanced; label kualitas sesuai informasi yang benar-benar diberikan perangkat.
+- [ ] Mode Jelas membaca sekali pada 0,82× dan mode Natural sekali pada 0,95×. Mode Pelan lalu natural membaca pada 0,78×, berhenti 500 ms, lalu mengulang pada 0,98× tanpa tumpang tindih.
+- [ ] Menutup sheet, berpindah layar, mengganti mode/voice, atau menekan Stop saat jeda mencegah pemutaran kedua dimulai.
+- [ ] Pintasan pengaturan TTS Android membuka halaman sistem dan daftar voice diperbarui setelah kembali.
 - [ ] TTS diuji dalam mode pesawat dengan paket voice offline terpasang.
 - [ ] Haptic mati benar-benar menonaktifkan feedback kedua game.
 - [ ] Interupsi telepon/audio dan background/foreground tidak membuat game crash.

@@ -22,7 +22,7 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 - [x] **7. Game kartu flash**
   - Balik kartu, TTS, rating Lupa/Sulit/Ingat/Kuat, resume sesi, dan histori hasil.
 - [x] **8. Game dikte**
-  - TTS, dua varian soal, input jawaban, normalisasi, pemeriksaan, koreksi manual, resume, dan ringkasan hasil.
+  - TTS, tiga varian soal termasuk Isi bagian kosong, input jawaban, normalisasi, pemeriksaan, koreksi manual, resume, dan ringkasan hasil.
 - [x] **9. Sistem mastery**
   - Grade Baru/Dipelajari/Familiar/Dikuasai dari pilihan manual, bukti statistik, dan penurunan setelah kegagalan beruntun.
 - [x] **10. Kalender dan histori**
@@ -49,8 +49,29 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
   - Ikon, splash, privacy policy, materi toko aplikasi, dan versi.
 - [x] **20. Build dan internal testing** *(selesai untuk target rilis Android)*
   - APK/AAB, distribusi internal, perbaikan bug, dan kandidat rilis pertama.
+- [ ] **21. Peningkatan TTS perangkat** *(implementasi dan gate lokal selesai; menunggu uji APK pada handphone)*
+  - Preview voice, rekomendasi locale/kualitas, mode Jelas/Natural/Pelan lalu natural, serta pintasan pengaturan TTS Android tanpa cloud API atau model suara tambahan.
 
 ## Catatan progres
+
+### Pengembangan latihan Dikte: Isi bagian kosong, selesai
+- Konfigurasi tidak lagi mencampur petunjuk dan format jawaban. `Petunjuk soal` memilih Audio atau Arti, sedangkan `Cara menjawab` memilih Tulis lengkap atau Isi bagian kosong, sehingga keempat kombinasi tersedia.
+- Fill menyediakan Mudah `25%`, Sedang `42%`, dan Sulit `60%` sebagai rasio awal per kata. Jumlah aktual dibatasi oleh panjang kata: kata satu karakter tidak dikosongkan, huruf awal selalu terlihat, dan seluruh kata tidak pernah menjadi kotak kosong.
+- Setiap huruf yang hilang menjadi kotak input langsung di posisi aslinya, tanpa input terpisah di bawah. Fokus bergerak ke kotak berikutnya setelah mengetik dan pengguna dapat memilih kotak tertentu untuk memperbaiki jawaban.
+- Penilaian tetap mempertahankan diakritik bermakna dan merekonstruksi teks lengkap sebelum disimpan. Dengan demikian histori, perbandingan jawaban, statistik, mastery, resume, dan koreksi manual memakai kontrak data lama tanpa migrasi database.
+- Kalender membedakan histori varian baru sebagai `Audio → isi bagian kosong`.
+
+### Tahap 21, implementasi selesai; validasi perangkat menunggu
+- Engine tetap `expo-speech` dan voice perangkat sehingga tidak ada biaya API, backend, akun, atau model neural besar di dalam aplikasi.
+- Pemilihan otomatis kini memprioritaskan locale persis seperti `de-DE`, kemudian kualitas `Enhanced`, sebelum memakai voice kompatibel lain; fallback ke bahasa berbeda tetap dilarang.
+- Pengaturan menyediakan preview langsung dengan kalimat sesuai bahasa untuk voice otomatis maupun setiap voice perangkat. Preview selalu memakai tempo Natural dan tidak mengubah pilihan pengguna.
+- Tiga cara dengar menggantikan pilihan angka teknis: Jelas `0,82×`, Natural `0,95×`, dan Pelan lalu natural `0,78×` lalu `0,98×` setelah jeda 500 ms. Pitch tetap alami `1,0`.
+- Stop, penutupan sheet, pergantian mode/voice, dan ketukan preview lain membatalkan rangkaian aktif sehingga pemutaran kedua tidak berjalan setelah pengguna keluar.
+- Android memiliki pintasan native menuju pengaturan text-to-speech melalui `expo-intent-launcher`; daftar voice diperiksa ulang ketika pengguna kembali.
+- Preferensi lama pada `lingolog.speech-preferences.v1` tetap dapat dibaca: rate lama dipetakan ke mode terdekat dan voice manual dipertahankan. Tidak ada migrasi SQLite.
+- Label UI membedakan kualitas tinggi/standar, menunjukkan voice rekomendasi, menjelaskan bahwa preview tidak memilih voice, dan tetap mengarahkan pengguna mengunduh paket voice untuk mode pesawat.
+
+
 
 ### Tahap 20, selesai untuk target rilis Android
 - Proyek telah terhubung ke EAS sebagai `@zalifzal/lingolog`; `eas.json` menyediakan profile `preview` untuk internal distribution/APK Android dan `production` untuk AAB Android serta archive iOS. Build version tetap bersumber dari `app.json` agar setiap kenaikan tercatat di Git.

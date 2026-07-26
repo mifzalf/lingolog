@@ -41,7 +41,8 @@ Tema memiliki tiga preferensi: `system`, `light`, `dark`. Pilihan disimpan pada 
 - `Pill`: label kecil seperti potongan anotasi, tidak digunakan sebagai dekorasi massal.
 - `AppDialog`: dialog konfirmasi/error global yang mengikuti token light/dark; dialog native tanpa tema tidak digunakan.
 - `MasteryPicker`: pemilih grade ringkas dari kartu entri dengan target sentuh dan label yang jelas.
-- Layar `Pengaturan`: daftar preferensi global yang tenang, dengan pilihan tema langsung, ringkasan TTS yang membuka `SpeechSettings`, sakelar haptic, dan penjelasan penyimpanan lokal.
+- Layar `Pengaturan`: daftar preferensi global yang tenang, dengan pilihan tema langsung, ringkasan mode TTS yang membuka `SpeechSettings`, sakelar haptic, dan penjelasan penyimpanan lokal.
+- `SpeechSettings` memakai istilah Jelas/Natural/Pelan lalu natural alih-alih angka kecepatan sebagai hierarki utama. Setiap voice memiliki aksi Preview terpisah yang tidak mengubah radio pilihan; voice locale persis dan kualitas tinggi ditandai sebagai rekomendasi. Android menyediakan pintasan ke pengaturan TTS perangkat agar paket voice dapat dipasang tanpa membebani bundle Lingolog.
 - `HapticsProvider`: satu gerbang feedback getaran agar semua game menghormati sakelar pengguna.
 - Statistik memakai komponen tanpa dependency grafik: `Metric`, `ActivityBars`, `MasteryBars`, dan `ModeBreakdown`. Grafik batang 14 hari sederhana, berlabel accessibility, dan tetap selaras dengan metafora catatan.
 - Hierarki statistik bergerak dari global → deck → detail entri. Angka utama selalu disertai label/basis data agar persentase tanpa jumlah sampel tidak menyesatkan.
@@ -59,6 +60,8 @@ Tema memiliki tiga preferensi: `system`, `light`, `dark`. Pilihan disimpan pada 
 - `AccessibilityProvider` mengikuti Reduce Motion perangkat, menonaktifkan transisi route/modal dan transform feedback yang tidak diperlukan, serta menyediakan announcement untuk perubahan penting dalam game.
 - Dynamic Type diakomodasi dengan layar yang dapat digulir, kontrol yang memakai `minHeight`, dan susunan aksi yang dapat membungkus. Elemen dekoratif tidak masuk urutan fokus.
 - Progress game dan onboarding memakai role/value semantik; radio, checkbox, switch, status disabled/busy, dialog modal, dan error memakai state/role aksesibilitas yang sesuai.
+- Pengaturan Dikte memisahkan `Petunjuk soal` dari `Cara menjawab`, bukan mencampur empat kombinasi dalam satu daftar. Tingkat kekosongan Mudah/Sedang/Sulit hanya muncul secara progresif saat Fill dipilih.
+- Varian `Isi bagian kosong` tidak memiliki input kedua. Setiap huruf yang hilang menjadi kotak input langsung di dalam kata atau kalimat; fokus maju setelah satu huruf dan pengguna tetap dapat mengetuk kotak mana pun. Hitungan progres melengkapi kotak visual, sementara screen reader membaca nomor setiap slot.
 - Target ikon minimum 44×44 atau memperoleh `hitSlop`; status tidak pernah disampaikan hanya melalui warna.
 
 ## Aturan penggunaan

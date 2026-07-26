@@ -23,12 +23,13 @@ Aplikasi mobile offline untuk mencatat, mendengar, mengelola, dan melatih kata/f
 - Satu deck memiliki tepat satu pasangan bahasa.
 - Game MVP hanya **Kartu flash** dan **Dikte**.
 - Tidak ada pilihan ganda. Materi game selalu berasal dari entri pengguna.
+- Konfigurasi Dikte memisahkan petunjuk soal (Dengar audio atau Lihat arti) dari cara menjawab (Tulis lengkap atau Isi bagian kosong), sehingga empat kombinasi dapat digunakan. Fill memakai kotak input langsung di posisi huruf yang hilang, mempertahankan awal setiap kata, dan menyediakan tingkat Mudah/Sedang/Sulit yang menyesuaikan jumlah kotak dengan panjang tiap kata.
 - Dikte toleran terhadap kapitalisasi, spasi, simbol, tanda baca, dan bentuk Unicode ekuivalen, tetapi tidak menghapus diakritik/huruf bermakna (mis. ä, ö, ü, ß).
 - Hasil otomatis dikte dapat dikoreksi pengguna sebelum disimpan; hasil final pengguna menjadi bukti statistik dan mastery.
 - Game adalah bahan belajar dan sumber statistik, bukan jadwal belajar wajib.
 - Mastery dapat dipilih manual pada grade mana pun atau dicapai dari bukti statistik yang kuat. Pilihan manual tidak menghapus statistik dan dilepas setelah 3 kegagalan beruntun agar status tidak menyesatkan.
 - Kalender menampilkan entri yang dibuat, histori latihan/game selesai atau dijeda, akurasi, durasi, waktu, deck, arah/varian game, koreksi Dikte, dan perubahan mastery pada tanggal terpilih. Kalender adalah jurnal, bukan jadwal review wajib.
-- Pengaturan aplikasi menyatukan tema, kecepatan/voice TTS, serta haptic latihan. Semua preferensi tersimpan lokal; haptic dapat dimatikan tanpa mengubah fungsi game.
+- Pengaturan aplikasi menyatukan tema, voice dan cara dengar TTS, serta haptic latihan. TTS tetap memakai engine perangkat tanpa API cloud: voice locale persis/kualitas tinggi diprioritaskan, setiap voice dapat dipreview, dan pengguna memilih mode Jelas, Natural, atau Pelan lalu natural. Semua preferensi tersimpan lokal; haptic dapat dimatikan tanpa mengubah fungsi game.
 - Statistik tersedia global, per deck, dan per entri. Akurasi selalu memakai hasil final yang tersimpan; koreksi manual Dikte ikut dihitung, sedangkan mastery manual tidak mengubah hasil latihan historis.
 - Onboarding pertama kali menjelaskan penyimpanan lokal/offline, deck pertama, materi/TTS, latihan/mastery, serta perbedaan ekspor deck dan backup penuh. Pengguna dapat melewati, kembali, memilih jalur deck siap pakai atau deck sendiri, dan mengulang pengenalan dari Pengaturan.
 - Pengguna lama yang sudah memiliki deck tidak dipaksa melewati onboarding baru setelah pembaruan aplikasi. Status penyelesaian onboarding disimpan lokal dan ikut dalam backup penuh.
@@ -54,7 +55,7 @@ Ambang awal statistik (dapat dikalibrasi setelah pengujian):
 - SQLite dan migrasi.
 - Pemilihan satu atau beberapa deck sebelum sesi game.
 - Filter materi sesi dapat menggabungkan deck, rentang tanggal entri dibuat, dan satu atau beberapa status mastery.
-- Dikte memiliki dua varian: audio bahasa yang dipelajari lalu menulis, atau melihat arti lalu menulis teks bahasa yang dipelajari.
+- Dikte memisahkan petunjuk audio/arti dan jawaban lengkap/Fill; tingkat kekosongan Fill dapat dipilih Mudah, Sedang, atau Sulit.
 - Persistensi konfigurasi sesi, urutan materi, jawaban, dan mastery.
 - Kalender berasal dari query data nyata.
 - Impor/ekspor deck lokal melalui document picker dan share sheet perangkat.
