@@ -29,6 +29,7 @@ type SpeechContextValue = {
   rate: number;
   error: string;
   speak: (text: string, language: string, key?: string) => Promise<void>;
+  speakFast: (text: string, language: string, key?: string) => Promise<void>;
   previewVoice: (text: string, language: string, voiceIdentifier: string, key: string) => Promise<void>;
   stop: () => Promise<void>;
   setMode: (mode: SpeechMode) => void;
@@ -197,6 +198,15 @@ export function SpeechProvider({ children }: PropsWithChildren) {
   const speak = useCallback(async (text: string, language: string, key = language) => {
     await play(text, language, selectedVoice(language)?.identifier, key, mode);
   }, [mode, play, selectedVoice]);
+  const speakFast = useCallback(async (text: string, language: string, key = language) => {
+    const cleanText = validate(text, language);
+    if (!cleanText) return;
+    setError('');
+    await Speech.stop();
+    const current = ++utterance.current;
+    await playOnce(cleanText, language, selectedVoice(language)?.identifier, 1.15, key, current);
+    if (utterance.current === current) setSpeakingKey(null);
+  }, [playOnce, selectedVoice, validate]);
   const previewVoice = useCallback(async (text: string, language: string, voiceIdentifier: string, key: string) => {
     await play(text, language, voiceIdentifier, key, 'natural');
   }, [play]);
@@ -209,6 +219,7 @@ export function SpeechProvider({ children }: PropsWithChildren) {
     rate: speechModes.find((item) => item.value === mode)!.rate,
     error,
     speak,
+    speakFast,
     previewVoice,
     stop,
     setMode: (nextMode) => save({ ...preferences, mode: nextMode, rate: speechModes.find((item) => item.value === nextMode)!.rate }),
@@ -224,7 +235,7 @@ export function SpeechProvider({ children }: PropsWithChildren) {
     compatibleVoices,
     refreshVoices,
     clearError: () => setError(''),
-  }), [voices, loadingVoices, speakingKey, mode, error, speak, previewVoice, stop, save, preferences, selectedVoice, compatibleVoices, refreshVoices]);
+  }), [voices, loadingVoices, speakingKey, mode, error, speak, speakFast, previewVoice, stop, save, preferences, selectedVoice, compatibleVoices, refreshVoices]);
 
   return <SpeechContext.Provider value={value}>{children}</SpeechContext.Provider>;
 }

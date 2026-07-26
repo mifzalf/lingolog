@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { applyFillAnswer, completeFillAnswer, createFillPrompt, isDictationCorrect, isFillAnswerCorrect, normalizeDictationAnswer } from '../src/features/practice/answer';
 import { calculateMastery, evidenceGrade } from '../src/features/practice/mastery';
+import { createMatchupRounds, stableShuffle } from '../src/features/practice/matchup';
+import { createDelayedRecallRounds } from '../src/features/practice/delayed-recall';
 import { isValidPracticeDate } from '../src/features/practice/session.repository';
 import { DeckTransferError, parseDeckFile, safeDeckFileName } from '../src/features/transfer/deck-transfer';
 
@@ -54,6 +56,36 @@ test('fill dikte mempertahankan spasi, tanda baca, Unicode, dan awal kata sebaga
   assert.equal(prompt.template[0], 'G');
   assert.equal(prompt.template[prompt.template.indexOf(' ') + 1], 's');
   assert.equal(prompt.template[prompt.template.lastIndexOf(' ') + 1], 'W');
+});
+
+test('ronde Jodohkan kata stabil, berisi maksimal lima pasangan, dan kedua sisi diacak terpisah', () => {
+  const items = Array.from({ length: 12 }, (_, index) => ({ id: index + 1, deckId: 1, deckName: 'Dasar', sourceLanguage: 'de-DE', position: index, sourceText: `Kata ${index}`, translatedText: `Arti ${index}` }));
+  const rounds = createMatchupRounds(items, 91);
+  assert.deepEqual(rounds.map((round) => round.items.length), [5, 5, 2]);
+  assert.deepEqual(rounds, createMatchupRounds(items, 91));
+  for (const round of rounds) {
+    assert.deepEqual([...round.sourceOrder].sort((a, b) => a - b), round.items.map((item) => item.id).sort((a, b) => a - b));
+    assert.deepEqual([...round.targetOrder].sort((a, b) => a - b), round.items.map((item) => item.id).sort((a, b) => a - b));
+  }
+  assert.notDeepEqual(stableShuffle([1, 2, 3, 4, 5], 1), stableShuffle([1, 2, 3, 4, 5], 18));
+  const ambiguous = [...items.slice(0, 3), { ...items[3], id: 20, sourceText: items[0].sourceText }, { ...items[4], id: 21, translatedText: items[1].translatedText }];
+  for (const round of createMatchupRounds(ambiguous, 91)) {
+    assert.equal(new Set(round.items.map((item) => item.sourceText)).size, round.items.length);
+    assert.equal(new Set(round.items.map((item) => item.translatedText)).size, round.items.length);
+  }
+});
+
+test('Ingat Lagi membentuk tiga kata, menanyakan kata kedua atau ketiga, dan stabil saat resume', () => {
+  const items = Array.from({ length: 9 }, (_, index) => ({ id: index + 1, sourceText: `Kata ${index + 1}`, translatedText: `Arti ${index + 1}` }));
+  const rounds = createDelayedRecallRounds(items, 77);
+  assert.equal(rounds.length, 3);
+  assert.deepEqual(rounds, createDelayedRecallRounds(items, 77));
+  for (const round of rounds) {
+    assert.equal(round.items.length, 3);
+    assert.ok(round.target.id === round.items[1].id || round.target.id === round.items[2].id);
+    assert.ok(round.options.some((option) => option.id === round.target.id));
+    assert.equal(new Set(round.options.map((option) => option.translatedText)).size, round.options.length);
+  }
 });
 
 test('tanggal latihan menolak tanggal palsu dan menerima leap day nyata', () => {

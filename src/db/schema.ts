@@ -45,7 +45,7 @@ export const masteryStates = sqliteTable('mastery_states', {
 export const practiceSessions = sqliteTable('practice_sessions', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   deckId: integer('deck_id').references(() => decks.id, { onDelete: 'set null' }),
-  mode: text('mode', { enum: ['flashcard', 'dictation'] }).notNull(),
+  mode: text('mode', { enum: ['flashcard', 'dictation', 'matchup', 'delayed_recall', 'word_wheel'] }).notNull(),
   startedAt: integer('started_at', { mode: 'timestamp' }).notNull(),
   completedAt: integer('completed_at', { mode: 'timestamp' }),
   totalItems: integer('total_items').notNull().default(0),
@@ -69,7 +69,7 @@ export const practiceAnswers = sqliteTable('practice_answers', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   sessionId: integer('session_id').notNull().references(() => practiceSessions.id, { onDelete: 'cascade' }),
   entryId: integer('entry_id').notNull().references(() => entries.id, { onDelete: 'cascade' }),
-  mode: text('mode', { enum: ['flashcard', 'dictation'] }).notNull(),
+  mode: text('mode', { enum: ['flashcard', 'dictation', 'matchup', 'delayed_recall', 'word_wheel'] }).notNull(),
   rating: text('rating', { enum: ['again', 'hard', 'good', 'easy'] }),
   userAnswer: text('user_answer'),
   isCorrect: integer('is_correct', { mode: 'boolean' }).notNull(),

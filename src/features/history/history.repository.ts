@@ -4,7 +4,7 @@ import { activityEvents, decks, entries, practiceAnswers, practiceSessionDecks, 
 
 export type DayActivity = { dateKey: string; entries: number; sessions: number; mastery: number; answers: number; intensity: number };
 export type HistoryEntry = { id: number; deckId: number; sourceText: string; translatedText: string; deckName: string; createdAt: Date };
-export type HistorySession = { id: number; mode: 'flashcard' | 'dictation'; startedAt: Date; completedAt: Date | null; totalItems: number; correctItems: number; durationMs: number; answered: number; corrected: number; deckNames: string[]; configJson: string | null };
+export type HistorySession = { id: number; mode: 'flashcard' | 'dictation' | 'matchup' | 'delayed_recall' | 'word_wheel'; startedAt: Date; completedAt: Date | null; totalItems: number; correctItems: number; durationMs: number; answered: number; corrected: number; deckNames: string[]; configJson: string | null };
 export type MasteryEvent = { id: number; type: 'entry_mastered' | 'entry_unmastered' | 'deck_imported'; entryId: number | null; deckId: number | null; sourceText: string | null; deckName: string | null; occurredAt: Date };
 export type DayHistory = { entries: HistoryEntry[]; sessions: HistorySession[]; masteryEvents: MasteryEvent[]; answers: number; correct: number };
 export type PracticeOverview = { practicedToday: number; accuracyThisWeek: number | null; answersThisWeek: number; completedThisWeek: number };

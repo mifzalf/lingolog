@@ -1,6 +1,6 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 
-export const DATABASE_VERSION = 5;
+export const DATABASE_VERSION = 8;
 export const DATABASE_APPLICATION_ID = 0x4c4c4f47; // "LLOG"
 
 const migrationV1 = `
@@ -133,6 +133,122 @@ ALTER TABLE mastery_states ADD COLUMN failure_streak INTEGER NOT NULL DEFAULT 0;
 UPDATE mastery_states SET manual_grade = 3 WHERE manually_mastered = 1;
 `;
 
+const migrationV6 = `
+CREATE TABLE practice_sessions_v6 (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  deck_id INTEGER REFERENCES decks(id) ON DELETE SET NULL,
+  mode TEXT NOT NULL CHECK(mode IN ('flashcard', 'dictation', 'matchup')),
+  started_at INTEGER NOT NULL,
+  completed_at INTEGER,
+  total_items INTEGER NOT NULL DEFAULT 0,
+  correct_items INTEGER NOT NULL DEFAULT 0,
+  duration_ms INTEGER NOT NULL DEFAULT 0,
+  config_json TEXT
+);
+INSERT INTO practice_sessions_v6 SELECT id, deck_id, mode, started_at, completed_at, total_items, correct_items, duration_ms, config_json FROM practice_sessions;
+
+CREATE TABLE practice_answers_v6 (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  session_id INTEGER NOT NULL REFERENCES practice_sessions_v6(id) ON DELETE CASCADE,
+  entry_id INTEGER NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
+  mode TEXT NOT NULL CHECK(mode IN ('flashcard', 'dictation', 'matchup')),
+  rating TEXT CHECK(rating IS NULL OR rating IN ('again', 'hard', 'good', 'easy')),
+  user_answer TEXT,
+  is_correct INTEGER NOT NULL,
+  response_time_ms INTEGER NOT NULL DEFAULT 0,
+  answered_at INTEGER NOT NULL,
+  auto_is_correct INTEGER,
+  manually_corrected INTEGER NOT NULL DEFAULT 0
+);
+INSERT INTO practice_answers_v6 SELECT id, session_id, entry_id, mode, rating, user_answer, is_correct, response_time_ms, answered_at, auto_is_correct, manually_corrected FROM practice_answers;
+
+DROP TABLE practice_answers;
+DROP TABLE practice_sessions;
+ALTER TABLE practice_sessions_v6 RENAME TO practice_sessions;
+ALTER TABLE practice_answers_v6 RENAME TO practice_answers;
+
+CREATE INDEX sessions_started_idx ON practice_sessions(started_at);
+CREATE INDEX answers_entry_idx ON practice_answers(entry_id);
+CREATE INDEX answers_date_idx ON practice_answers(answered_at);
+CREATE UNIQUE INDEX answers_session_entry_unique ON practice_answers(session_id, entry_id);
+`;
+
+const migrationV7 = `
+CREATE TABLE practice_sessions_v7 (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  deck_id INTEGER REFERENCES decks(id) ON DELETE SET NULL,
+  mode TEXT NOT NULL CHECK(mode IN ('flashcard', 'dictation', 'matchup', 'delayed_recall')),
+  started_at INTEGER NOT NULL,
+  completed_at INTEGER,
+  total_items INTEGER NOT NULL DEFAULT 0,
+  correct_items INTEGER NOT NULL DEFAULT 0,
+  duration_ms INTEGER NOT NULL DEFAULT 0,
+  config_json TEXT
+);
+INSERT INTO practice_sessions_v7 SELECT id, deck_id, mode, started_at, completed_at, total_items, correct_items, duration_ms, config_json FROM practice_sessions;
+
+CREATE TABLE practice_answers_v7 (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  session_id INTEGER NOT NULL REFERENCES practice_sessions_v7(id) ON DELETE CASCADE,
+  entry_id INTEGER NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
+  mode TEXT NOT NULL CHECK(mode IN ('flashcard', 'dictation', 'matchup', 'delayed_recall')),
+  rating TEXT CHECK(rating IS NULL OR rating IN ('again', 'hard', 'good', 'easy')),
+  user_answer TEXT,
+  is_correct INTEGER NOT NULL,
+  response_time_ms INTEGER NOT NULL DEFAULT 0,
+  answered_at INTEGER NOT NULL,
+  auto_is_correct INTEGER,
+  manually_corrected INTEGER NOT NULL DEFAULT 0
+);
+INSERT INTO practice_answers_v7 SELECT id, session_id, entry_id, mode, rating, user_answer, is_correct, response_time_ms, answered_at, auto_is_correct, manually_corrected FROM practice_answers;
+
+DROP TABLE practice_answers;
+DROP TABLE practice_sessions;
+ALTER TABLE practice_sessions_v7 RENAME TO practice_sessions;
+ALTER TABLE practice_answers_v7 RENAME TO practice_answers;
+CREATE INDEX sessions_started_idx ON practice_sessions(started_at);
+CREATE INDEX answers_entry_idx ON practice_answers(entry_id);
+CREATE INDEX answers_date_idx ON practice_answers(answered_at);
+CREATE UNIQUE INDEX answers_session_entry_unique ON practice_answers(session_id, entry_id);
+`;
+
+const migrationV8 = `
+CREATE TABLE practice_sessions_v8 (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  deck_id INTEGER REFERENCES decks(id) ON DELETE SET NULL,
+  mode TEXT NOT NULL CHECK(mode IN ('flashcard', 'dictation', 'matchup', 'delayed_recall', 'word_wheel')),
+  started_at INTEGER NOT NULL,
+  completed_at INTEGER,
+  total_items INTEGER NOT NULL DEFAULT 0,
+  correct_items INTEGER NOT NULL DEFAULT 0,
+  duration_ms INTEGER NOT NULL DEFAULT 0,
+  config_json TEXT
+);
+INSERT INTO practice_sessions_v8 SELECT id, deck_id, mode, started_at, completed_at, total_items, correct_items, duration_ms, config_json FROM practice_sessions;
+CREATE TABLE practice_answers_v8 (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  session_id INTEGER NOT NULL REFERENCES practice_sessions_v8(id) ON DELETE CASCADE,
+  entry_id INTEGER NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
+  mode TEXT NOT NULL CHECK(mode IN ('flashcard', 'dictation', 'matchup', 'delayed_recall', 'word_wheel')),
+  rating TEXT CHECK(rating IS NULL OR rating IN ('again', 'hard', 'good', 'easy')),
+  user_answer TEXT,
+  is_correct INTEGER NOT NULL,
+  response_time_ms INTEGER NOT NULL DEFAULT 0,
+  answered_at INTEGER NOT NULL,
+  auto_is_correct INTEGER,
+  manually_corrected INTEGER NOT NULL DEFAULT 0
+);
+INSERT INTO practice_answers_v8 SELECT id, session_id, entry_id, mode, rating, user_answer, is_correct, response_time_ms, answered_at, auto_is_correct, manually_corrected FROM practice_answers;
+DROP TABLE practice_answers;
+DROP TABLE practice_sessions;
+ALTER TABLE practice_sessions_v8 RENAME TO practice_sessions;
+ALTER TABLE practice_answers_v8 RENAME TO practice_answers;
+CREATE INDEX sessions_started_idx ON practice_sessions(started_at);
+CREATE INDEX answers_entry_idx ON practice_answers(entry_id);
+CREATE INDEX answers_date_idx ON practice_answers(answered_at);
+CREATE UNIQUE INDEX answers_session_entry_unique ON practice_answers(session_id, entry_id);
+`;
+
 export async function migrateDatabase(database: SQLiteDatabase) {
   await database.execAsync(`PRAGMA foreign_keys = ON; PRAGMA application_id = ${DATABASE_APPLICATION_ID};`);
   const row = await database.getFirstAsync<{ user_version: number }>('PRAGMA user_version;');
@@ -143,12 +259,17 @@ export async function migrateDatabase(database: SQLiteDatabase) {
   }
   if (currentVersion === DATABASE_VERSION) return;
 
+  if (currentVersion < 8) await database.execAsync('PRAGMA foreign_keys = OFF;');
   await database.withTransactionAsync(async () => {
     if (currentVersion < 1) await database.execAsync(migrationV1);
     if (currentVersion < 2) await database.execAsync(migrationV2);
     if (currentVersion < 3) await database.execAsync(migrationV3);
     if (currentVersion < 4) await database.execAsync(migrationV4);
     if (currentVersion < 5) await database.execAsync(migrationV5);
+    if (currentVersion < 6) await database.execAsync(migrationV6);
+    if (currentVersion < 7) await database.execAsync(migrationV7);
+    if (currentVersion < 8) await database.execAsync(migrationV8);
     await database.execAsync(`PRAGMA user_version = ${DATABASE_VERSION};`);
   });
+  await database.execAsync('PRAGMA foreign_keys = ON;');
 }

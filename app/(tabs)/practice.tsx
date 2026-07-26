@@ -9,14 +9,17 @@ import { sql } from 'drizzle-orm';
 import { entries } from '../../src/db/schema';
 import { getLatestOpenFlashcardSession } from '../../src/features/practice/flashcard.repository';
 import { getLatestOpenDictationSession } from '../../src/features/practice/dictation.repository';
+import { getLatestOpenMatchupSession } from '../../src/features/practice/matchup.repository';
+import { getLatestOpenDelayedRecallSession } from '../../src/features/practice/delayed-recall.repository';
+import { getLatestOpenWordWheelSession } from '../../src/features/practice/word-wheel.repository';
 import { getPracticeOverview, PracticeOverview } from '../../src/features/history/history.repository';
 import { useTheme } from '../../src/theme/ThemeProvider';
 
 export default function PracticeScreen() {
   const { colors } = useTheme(); const styles = createStyles(colors); const database = useDatabase();
   const [openFlashcard, setOpenFlashcard] = useState<Awaited<ReturnType<typeof getLatestOpenFlashcardSession>>>();
-  const [openDictation, setOpenDictation] = useState<Awaited<ReturnType<typeof getLatestOpenDictationSession>>>(); const [overview, setOverview] = useState<PracticeOverview>(); const [entryCount, setEntryCount] = useState<number>();
-  useFocusEffect(useCallback(() => { Promise.all([getLatestOpenFlashcardSession(database), getLatestOpenDictationSession(database), getPracticeOverview(database), database.select({ value: sql<number>`count(*)` }).from(entries)]).then(([flashcard, dictation, stats, count]) => { setOpenFlashcard(flashcard); setOpenDictation(dictation); setOverview(stats); setEntryCount(count[0]?.value ?? 0); }).catch(console.error); }, [database]));
+  const [openDictation, setOpenDictation] = useState<Awaited<ReturnType<typeof getLatestOpenDictationSession>>>(); const [openMatchup, setOpenMatchup] = useState<Awaited<ReturnType<typeof getLatestOpenMatchupSession>>>(); const [openRecall, setOpenRecall] = useState<Awaited<ReturnType<typeof getLatestOpenDelayedRecallSession>>>(); const [openWheel, setOpenWheel] = useState<Awaited<ReturnType<typeof getLatestOpenWordWheelSession>>>(); const [overview, setOverview] = useState<PracticeOverview>(); const [entryCount, setEntryCount] = useState<number>();
+  useFocusEffect(useCallback(() => { Promise.all([getLatestOpenFlashcardSession(database), getLatestOpenDictationSession(database), getLatestOpenMatchupSession(database), getLatestOpenDelayedRecallSession(database), getLatestOpenWordWheelSession(database), getPracticeOverview(database), database.select({ value: sql<number>`count(*)` }).from(entries)]).then(([flashcard, dictation, matchup, recall, wheel, stats, count]) => { setOpenFlashcard(flashcard); setOpenDictation(dictation); setOpenMatchup(matchup); setOpenRecall(recall); setOpenWheel(wheel); setOverview(stats); setEntryCount(count[0]?.value ?? 0); }).catch(console.error); }, [database]));
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <ScreenHeader eyebrow="Latihan bebas" title="Dua cara untuk benar-benar mengingat." action={<IconButton name="analytics-outline" label="Buka statistik" onPress={() => router.push('/statistics')} />} />
@@ -28,6 +31,9 @@ export default function PracticeScreen() {
 
       {openFlashcard && openFlashcard.answered < openFlashcard.totalItems ? <Pressable onPress={() => router.push({ pathname: '/practice/flashcard', params: { sessionId: String(openFlashcard.id) } })} style={styles.resume}><View style={styles.resumeIcon}><Ionicons name="play" size={20} color={colors.primaryInk} /></View><View style={{ flex: 1 }}><Text style={styles.resumeTitle}>Lanjutkan kartu flash</Text><Text style={styles.resumeMeta}>{openFlashcard.answered} dari {openFlashcard.totalItems} kartu sudah dinilai</Text></View><Ionicons name="chevron-forward" size={19} color={colors.primary} /></Pressable> : null}
       {openDictation && openDictation.answered < openDictation.totalItems ? <Pressable onPress={() => router.push({ pathname: '/practice/dictation', params: { sessionId: String(openDictation.id) } })} style={styles.resume}><View style={styles.resumeIcon}><Ionicons name="headset-outline" size={20} color={colors.primaryInk} /></View><View style={{ flex: 1 }}><Text style={styles.resumeTitle}>Lanjutkan dikte</Text><Text style={styles.resumeMeta}>{openDictation.answered} dari {openDictation.totalItems} jawaban tersimpan</Text></View><Ionicons name="chevron-forward" size={19} color={colors.primary} /></Pressable> : null}
+      {openMatchup && openMatchup.answered < openMatchup.totalItems ? <Pressable onPress={() => router.push({ pathname: '/practice/matchup', params: { sessionId: String(openMatchup.id) } })} style={styles.resume}><View style={styles.resumeIcon}><Ionicons name="git-compare-outline" size={20} color={colors.primaryInk} /></View><View style={{ flex: 1 }}><Text style={styles.resumeTitle}>Lanjutkan Jodohkan kata</Text><Text style={styles.resumeMeta}>{openMatchup.answered} dari {openMatchup.totalItems} pasangan ditemukan</Text></View><Ionicons name="chevron-forward" size={19} color={colors.primary} /></Pressable> : null}
+      {openRecall && openRecall.answered < Math.floor(openRecall.totalItems / 3) ? <Pressable onPress={() => router.push({ pathname: '/practice/delayed-recall', params: { sessionId: String(openRecall.id) } })} style={styles.resume}><View style={styles.resumeIcon}><Ionicons name="hourglass-outline" size={20} color={colors.primaryInk} /></View><View style={{ flex: 1 }}><Text style={styles.resumeTitle}>Lanjutkan Ingat Lagi</Text><Text style={styles.resumeMeta}>{openRecall.answered} dari {Math.floor(openRecall.totalItems / 3)} ronde dijawab</Text></View><Ionicons name="chevron-forward" size={19} color={colors.primary} /></Pressable> : null}
+      {openWheel && openWheel.answered < openWheel.totalItems ? <Pressable onPress={() => router.push({ pathname: '/practice/word-wheel', params: { sessionId: String(openWheel.id) } })} style={styles.resume}><View style={styles.resumeIcon}><Ionicons name="radio-button-on-outline" size={20} color={colors.primaryInk} /></View><View style={{ flex: 1 }}><Text style={styles.resumeTitle}>Lanjutkan Roda Huruf</Text><Text style={styles.resumeMeta}>{openWheel.answered} dari {openWheel.totalItems} kata disusun</Text></View><Ionicons name="chevron-forward" size={19} color={colors.primary} /></Pressable> : null}
       {entryCount === 0 ? <View style={styles.empty}><View style={styles.emptyIcon}><Ionicons name="library-outline" size={25} color={colors.primary} /></View><View style={{ flex: 1 }}><Text style={styles.emptyTitle}>Tambahkan materi sebelum berlatih</Text><Text style={styles.emptyText}>Pilih deck siap pakai atau buat entri pertamamu di Pustaka.</Text><Pressable onPress={() => router.push('/starter-decks')} style={styles.emptyAction}><Text style={styles.emptyActionText}>Pilih deck siap pakai</Text></Pressable></View></View> : null}
       <SectionTitle>Pilih permainan</SectionTitle>
       <Pressable onPress={() => router.push({ pathname: '/practice/setup', params: { mode: 'flashcard' } })} style={({ pressed }) => [styles.game, pressed && styles.pressed]}>
@@ -41,6 +47,20 @@ export default function PracticeScreen() {
         <View style={{ flex: 1 }}><Pill>Mendengar</Pill><Text style={styles.gameTitle}>Dikte</Text><Text style={styles.description}>Dengar lalu tulis, atau lihat arti lalu tulis teks yang dipelajari.</Text></View>
         <Ionicons name="arrow-forward" size={22} color={colors.ink} />
       </Pressable>
+
+      <Pressable onPress={() => router.push({ pathname: '/practice/setup', params: { mode: 'matchup' } })} style={({ pressed }) => [styles.game, pressed && styles.pressed]}>
+        <View style={[styles.gameIcon, { backgroundColor: colors.primarySoft }]}><Ionicons name="git-compare-outline" size={30} color={colors.primary} /></View>
+        <View style={{ flex: 1 }}><Pill>Memasangkan</Pill><Text style={styles.gameTitle}>Jodohkan kata</Text><Text style={styles.description}>Temukan pasangan kata dan arti dari dua daftar acak.</Text></View>
+        <Ionicons name="arrow-forward" size={22} color={colors.ink} />
+      </Pressable>
+
+      <Pressable onPress={() => router.push({ pathname: '/practice/setup', params: { mode: 'delayed_recall' } })} style={({ pressed }) => [styles.game, pressed && styles.pressed]}>
+        <View style={[styles.gameIcon, { backgroundColor: colors.highlightSoft }]}><Ionicons name="hourglass-outline" size={30} color={colors.ink} /></View>
+        <View style={{ flex: 1 }}><Pill tone="amber">Memori tertunda</Pill><Text style={styles.gameTitle}>Ingat Lagi</Text><Text style={styles.description}>Ingat tiga kata selama 5 detik, lalu pilih arti kata yang ditanyakan.</Text></View>
+        <Ionicons name="arrow-forward" size={22} color={colors.ink} />
+      </Pressable>
+
+      <Pressable onPress={() => router.push({ pathname: '/practice/setup', params: { mode: 'word_wheel' } })} style={({ pressed }) => [styles.game, pressed && styles.pressed]}><View style={[styles.gameIcon, { backgroundColor: colors.mossSoft }]}><Ionicons name="radio-button-on-outline" size={31} color={colors.moss} /></View><View style={{ flex: 1 }}><Pill>Menyusun ejaan</Pill><Text style={styles.gameTitle}>Roda Huruf</Text><Text style={styles.description}>Lihat arti, lalu susun kata dari huruf unik dan huruf jebakan.</Text></View><Ionicons name="arrow-forward" size={22} color={colors.ink} /></Pressable>
 
       <View style={styles.note}>
         <Ionicons name="analytics-outline" size={22} color={colors.moss} />

@@ -2,7 +2,7 @@ import { and, asc, eq, gte, inArray, lt, sql } from 'drizzle-orm';
 import type { Database } from '../decks/deck.repository';
 import { decks, entries, masteryStates, practiceSessionDecks, practiceSessionEntries, practiceSessions } from '../../db/schema';
 
-export type PracticeMode = 'flashcard' | 'dictation';
+export type PracticeMode = 'flashcard' | 'dictation' | 'matchup' | 'delayed_recall' | 'word_wheel';
 export type FlashcardDirection = 'source_to_target' | 'target_to_source' | 'mixed';
 export type DictationVariant = 'audio_to_source' | 'meaning_to_source' | 'fill_to_source';
 export type DictationCue = 'audio' | 'meaning';
@@ -74,7 +74,8 @@ export async function listPracticeCandidates(database: Database, config: Practic
 }
 
 export async function createPracticeSession(database: Database, mode: PracticeMode, config: PracticeConfig) {
-  const candidates = await listPracticeCandidates(database, config);
+  const requestedLimit = mode === 'matchup' ? Math.max(5, Math.ceil(config.itemLimit / 5) * 5) : mode === 'delayed_recall' ? Math.max(3, Math.ceil(config.itemLimit / 3) * 3) : config.itemLimit;
+  const candidates = await listPracticeCandidates(database, config, requestedLimit);
   if (!candidates.length) throw new Error('NO_CANDIDATES');
   return database.transaction(async (transaction) => {
     const [session] = await transaction.insert(practiceSessions).values({

@@ -1,6 +1,6 @@
 import type { FillDifficulty } from './session.repository';
 
-export type QuizMode = 'flashcard' | 'dictation';
+export type QuizMode = 'flashcard' | 'dictation' | 'matchup' | 'delayed_recall' | 'word_wheel';
 export type FlashcardRating = 'again' | 'hard' | 'good' | 'easy';
 
 /**
