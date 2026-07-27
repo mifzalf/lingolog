@@ -26,7 +26,6 @@ export function curatedGermanDeck(config: {
   featured?: boolean;
   entries: CuratedGermanEntry[];
 }): StarterDeck {
-  if (config.entries.length < 60) throw new Error(`Deck ${config.id} harus memiliki minimal 60 materi kurasi.`);
   const seen = new Set<string>();
   const entries = config.entries.map(([sourceText, translatedText, type, tags]) => {
     const key = `${sourceText.normalize('NFKC').trim().toLocaleLowerCase('de-DE')}\u0000${translatedText.normalize('NFKC').trim().toLocaleLowerCase('id-ID')}`;

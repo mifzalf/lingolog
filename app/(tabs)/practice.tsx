@@ -57,7 +57,7 @@ export default function PracticeScreen() {
 
       <Pressable onPress={() => router.push({ pathname: '/practice/setup', params: { mode: 'delayed_recall' } })} style={({ pressed }) => [styles.game, pressed && styles.pressed]}>
         <View style={[styles.gameIcon, { backgroundColor: colors.highlightSoft }]}><Ionicons name="hourglass-outline" size={30} color={colors.ink} /></View>
-        <View style={{ flex: 1 }}><Pill tone="amber">Memori tertunda</Pill><Text style={styles.gameTitle}>Ingat Lagi</Text><Text style={styles.description}>Ingat tiga kata selama 5 detik, lalu pilih arti kata yang ditanyakan.</Text></View>
+        <View style={{ flex: 1 }}><Pill tone="amber">Memori tertunda</Pill><Text style={styles.gameTitle}>Ingat Lagi</Text><Text style={styles.description}>Ingat tiga kata atau arti bernomor, lalu jawab pasangan dari nomor yang ditanyakan.</Text></View>
         <Ionicons name="arrow-forward" size={22} color={colors.ink} />
       </Pressable>
 

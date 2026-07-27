@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { applyFillAnswer, completeFillAnswer, createFillPrompt, isDictationCorrect, isFillAnswerCorrect, normalizeDictationAnswer } from '../src/features/practice/answer';
 import { calculateMastery, evidenceGrade } from '../src/features/practice/mastery';
-import { resolveDelayedRecallSeconds } from '../src/features/practice/session.repository';
+import { resolveDelayedRecallDisplay, resolveDelayedRecallSeconds } from '../src/features/practice/session.repository';
 import { createMixedModeQueue, shuffledMixedModes } from '../src/features/practice/mixed.repository';
 import { createMatchupRounds, stableShuffle } from '../src/features/practice/matchup';
 import { createDelayedRecallRounds } from '../src/features/practice/delayed-recall';
@@ -96,19 +96,26 @@ test('opsi waktu Ingat Lagi menerima 3/5/8/10 detik dan sesi lama tetap 5 detik'
   assert.equal(resolveDelayedRecallSeconds({ delayedRecallSeconds: 3 }), 3);
   assert.equal(resolveDelayedRecallSeconds({ delayedRecallSeconds: 8 }), 8);
   assert.equal(resolveDelayedRecallSeconds({ delayedRecallSeconds: 10 }), 10);
+  assert.equal(resolveDelayedRecallDisplay(), 'source');
+  assert.equal(resolveDelayedRecallDisplay({ delayedRecallDisplay: 'meaning' }), 'meaning');
+  assert.equal(resolveDelayedRecallDisplay({ delayedRecallDisplay: 'mixed' }), 'mixed');
 });
 
-test('Ingat Lagi membentuk tiga kata, menanyakan kata kedua atau ketiga, dan stabil saat resume', () => {
+test('Ingat Lagi bertanya berdasarkan nomor dan arah tampilannya stabil saat resume', () => {
   const items = Array.from({ length: 9 }, (_, index) => ({ id: index + 1, sourceText: `Kata ${index + 1}`, translatedText: `Arti ${index + 1}` }));
   const rounds = createDelayedRecallRounds(items, 77);
   assert.equal(rounds.length, 3);
   assert.deepEqual(rounds, createDelayedRecallRounds(items, 77));
   for (const round of rounds) {
     assert.equal(round.items.length, 3);
-    assert.ok(round.target.id === round.items[1].id || round.target.id === round.items[2].id);
+    assert.equal(round.target.id, round.items[round.targetPosition].id);
+    assert.ok(round.targetPosition >= 0 && round.targetPosition <= 2);
+    assert.equal(round.display, 'source');
     assert.ok(round.options.some((option) => option.id === round.target.id));
     assert.equal(new Set(round.options.map((option) => option.translatedText)).size, round.options.length);
   }
+  assert.equal(createDelayedRecallRounds(items, 77, 'meaning')[0].display, 'meaning');
+  assert.deepEqual(createDelayedRecallRounds(items, 77, 'mixed'), createDelayedRecallRounds(items, 77, 'mixed'));
 });
 
 test('tanggal latihan menolak tanggal palsu dan menerima leap day nyata', () => {

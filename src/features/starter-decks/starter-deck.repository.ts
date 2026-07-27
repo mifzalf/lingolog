@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import type { Database } from '../decks/deck.repository';
 import { createEntry, findDuplicate } from '../entries/entry.repository';
 import { activityEvents, entries, entryTags, masteryStates, settings, tags, decks } from '../../db/schema';
@@ -25,6 +25,26 @@ export function starterEntryKey(entry: Pick<StarterEntry, 'sourceText' | 'transl
 export async function listCopiedStarterEntryKeys(database: Database, deckId: number) {
   const rows = await database.select({ sourceText: entries.sourceText, translatedText: entries.translatedText }).from(entries).where(eq(entries.deckId, deckId));
   return new Set(rows.map(starterEntryKey));
+}
+
+export type CopiedStarterEntryLocation = { deckId: number; deckName: string };
+export async function listCopiedStarterEntryLocations(database: Database, sourceLanguage: string, targetLanguage: string) {
+  const rows = await database.select({ sourceText: entries.sourceText, translatedText: entries.translatedText, deckId: decks.id, deckName: decks.name })
+    .from(entries).innerJoin(decks, eq(decks.id, entries.deckId))
+    .where(and(eq(decks.sourceLanguage, sourceLanguage), eq(decks.targetLanguage, targetLanguage)));
+  const result = new Map<string, CopiedStarterEntryLocation[]>();
+  for (const row of rows) {
+    const entryKey = starterEntryKey(row); const locations = result.get(entryKey) ?? [];
+    locations.push({ deckId: row.deckId, deckName: row.deckName }); result.set(entryKey, locations);
+  }
+  return result;
+}
+
+export async function listStarterDeckCopyCounts(database: Database, starters: StarterDeck[]) {
+  const rows = await database.select({ sourceText: entries.sourceText, translatedText: entries.translatedText, sourceLanguage: decks.sourceLanguage, targetLanguage: decks.targetLanguage })
+    .from(entries).innerJoin(decks, eq(decks.id, entries.deckId));
+  const existing = new Set(rows.map((row) => `${row.sourceLanguage}\u0000${row.targetLanguage}\u0000${starterEntryKey(row)}`));
+  return new Map(starters.map((starter) => [starter.id, starter.file.deck.entries.filter((entry) => existing.has(`${starter.file.deck.sourceLanguage}\u0000${starter.file.deck.targetLanguage}\u0000${starterEntryKey(entry)}`)).length]));
 }
 
 export async function copyStarterEntry(database: Database, starter: StarterDeck, entry: StarterEntry, destinationDeckId: number) {

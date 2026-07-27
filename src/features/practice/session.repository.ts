@@ -9,6 +9,7 @@ export type DictationVariant = 'audio_to_source' | 'meaning_to_source' | 'fill_t
 export type DictationCue = 'audio' | 'meaning';
 export type DictationAnswerMode = 'full' | 'fill';
 export type FillDifficulty = 'easy' | 'medium' | 'hard';
+export type DelayedRecallDisplay = 'source' | 'meaning' | 'mixed';
 export type PracticeConfig = {
   deckIds: number[];
   dateFrom?: string;
@@ -23,6 +24,7 @@ export type PracticeConfig = {
   dictationAnswerMode?: DictationAnswerMode;
   fillDifficulty?: FillDifficulty;
   delayedRecallSeconds?: 3 | 5 | 8 | 10;
+  delayedRecallDisplay?: DelayedRecallDisplay;
   mixedModes?: GameMode[];
   mixedSegments?: { mode: GameMode; sessionId: number }[];
   mixedParentSessionId?: number;
@@ -38,6 +40,9 @@ export function resolveDictationConfig(config?: Partial<PracticeConfig>) {
 }
 export function resolveDelayedRecallSeconds(config?: Partial<PracticeConfig>) {
   return config?.delayedRecallSeconds === 3 || config?.delayedRecallSeconds === 8 || config?.delayedRecallSeconds === 10 ? config.delayedRecallSeconds : 5;
+}
+export function resolveDelayedRecallDisplay(config?: Partial<PracticeConfig>): DelayedRecallDisplay {
+  return config?.delayedRecallDisplay === 'meaning' || config?.delayedRecallDisplay === 'mixed' ? config.delayedRecallDisplay : 'source';
 }
 export type PracticeCandidate = {
   id: number; deckId: number; type: 'word' | 'phrase' | 'sentence'; sourceText: string; translatedText: string;
