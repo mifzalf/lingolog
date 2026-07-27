@@ -52,7 +52,7 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 - [x] **24. Latihan campuran dan grid game ringkas**
   - Empat game tampil 2×2; sesi campuran mengacak antrean per pengerjaan dan langsung berganti game setelah satu bagian selesai. Setup dua tahap memuat filter bahan lengkap serta filter khusus setiap game, berikut resume, hasil gabungan, dan setup terakhir lokal. Schema v9 menambahkan mode induk `mixed`.
 - [x] **23. Ingat Lagi (Delayed Recall)**
-  - Tiga kata selama 5 detik, pertanyaan stabil untuk kata kedua/ketiga, pilihan ganda arti, feedback, mastery, resume, hasil, histori, statistik, dan migrasi schema v7.
+  - Tiga item bernomor selama durasi terpilih, tampilan kata/arti/acak, pertanyaan berdasarkan nomor, pilihan pasangan, feedback, mastery, resume, hasil, histori, statistik, dan migrasi schema v7.
 - [x] **22. Jodohkan kata**
   - Lima kata dan lima arti per ronde, pilihan ketuk yang aksesibel, urutan stabil-teracak, feedback pasangan, resume, mastery, histori, statistik, serta ringkasan waktu dan kesalahan.
 - [ ] **21. Peningkatan TTS perangkat** *(implementasi dan gate lokal selesai; menunggu uji APK pada handphone)*
@@ -62,7 +62,7 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 
 ### Tahap 23, Ingat Lagi selesai
 - Satu ronde mengambil tepat tiga materi dan menampilkannya selama lima detik dengan nomor urutan serta countdown yang mengikuti waktu nyata.
-- Setelah kata disembunyikan, aplikasi memilih kata kedua atau ketiga secara deterministik dan menampilkan jawaban arti hingga empat pilihan yang tidak identik.
+- Setelah item disembunyikan, aplikasi memilih nomor 1–3 secara deterministik dan meminta pasangan kata/arti tanpa menampilkan ulang teks yang diingat; tersedia hingga empat pilihan yang tidak identik.
 - Target dan susunan opsi stabil berdasarkan ID sesi sehingga resume tidak mengubah soal. Ronde yang belum dijawab dimulai kembali dari fase mengingat selama lima detik.
 - Jawaban memperbarui mastery, streak, statistik sesi, dan event Dikuasai secara transaksional. Hasil menampilkan akurasi, tepat/belum tepat, durasi, dan rata-rata waktu menjawab.
 - Tab Latihan, resume, Kalender, statistik, dan jejak mastery mengenali `delayed_recall`. Schema v7 memperluas CHECK mode sambil mempertahankan seluruh histori v1–v6.
@@ -113,7 +113,7 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 
 ### Revisi editorial Deck siap pakai Jerman, selesai
 - Koleksi Jerman generator lama diganti total dengan materi eksplisit yang dikurasi berdasarkan penggunaan nyata. Referensi domain: halaman belajar dan ringkasan kosakata Deutsche Welle yang diberikan pengguna.
-- Sebelas deck Jerman versi 2 memuat 1.083 materi: 881 kata/frasa dan 202 kalimat dalam dua deck terpisah. Tidak ada pasangan yang sama di seluruh koleksi Jerman.
+- Empat puluh tiga deck Jerman versi 2 memuat 2.941 materi: 2.739 kata/frasa dan 202 kalimat dalam dua deck terpisah. Tidak ada pasangan yang sama di seluruh koleksi Jerman.
 - Empat deck baru menambah domain Waktu/Cuaca/Angka A1, Perjalanan/Akomodasi A2, Profesi/Kantor B1, dan Masyarakat/Debat C1. Deck Inggris dikeluarkan dari katalog bawaan agar produk berfokus pada kurasi Jerman.
 - Test regresi memastikan deck kalimat tidak bercampur kata/frasa dan pola substitusi massal lama tidak kembali.
 - Perubahan hanya memengaruhi katalog bundle. Deck bawaan yang sudah pernah ditambahkan pengguna tetap menjadi deck lokal dan tidak ditimpa atau dihapus.
@@ -280,12 +280,12 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 - Tabel `settings` menyimpan penanda `starter-deck:<id>` berisi versi, ID deck lokal, dan waktu pemasangan agar deck yang sama tidak terpasang dua kali.
 - Penanda instalasi yang deck-nya sudah dihapus diperbaiki otomatis sehingga pengguna dapat memasang ulang deck tersebut.
 - Setelah pemasangan berhasil, pengguna dapat langsung membuka deck baru; deck menjadi salinan lokal biasa yang bebas diubah, diarsipkan, digabungkan, diekspor, atau dihapus.
-- Koleksi Bahasa Jerman direvisi setelah audit penggunaan menemukan materi generator lama terlalu repetitif dan banyak kalimat tidak bernilai praktis. Katalog kini berisi sebelas deck kurasi A1–C1, termasuk domain waktu/cuaca/angka, perjalanan/akomodasi, profesi/kantor, masyarakat/debat, serta dua deck kalimat nyata.
+- Koleksi Bahasa Jerman direvisi setelah audit penggunaan menemukan materi generator lama terlalu repetitif dan banyak kalimat tidak bernilai praktis. Katalog kini berisi 43 deck kurasi A1–C1, termasuk masing-masing delapan deck segmen ujian A1 dan A2, enam deck tambahan khusus kata dan frasa A1/A2/B1, domain waktu/cuaca/angka, perjalanan/akomodasi, profesi/kantor, masyarakat/debat, serta dua deck kalimat nyata.
 - Kata/frasa dan kalimat kini dipisahkan secara tegas. Dua deck kalimat hanya memuat kalimat utuh; lima deck lain tidak mencampur kalimat.
-- Materi Jerman berjumlah 1.083 entri yang ditulis satu per satu: 100 kalimat A1, 102 kalimat A2–B1, dan 881 kata/frasa A1–C1. Jumlah sengaja lebih kecil daripada katalog generator lama agar setiap entri relevan, natural, dan dapat digunakan.
+- Materi Jerman berjumlah 2.941 entri yang ditulis satu per satu: 100 kalimat A1, 102 kalimat A2–B1, dan 2.739 kata/frasa A1–C1. Jumlah sengaja lebih kecil daripada katalog generator lama agar setiap entri relevan, natural, dan dapat digunakan.
 - Kosakata benda A1/A2/B1/C1 menyertakan artikel dan bentuk jamak bila relevan; frasa mencakup sapaan, layanan, kesehatan, perjalanan, komunikasi kerja, opini, dan register akademik.
 - Deutsche Welle Learn German dan ringkasan kosakatanya dipakai sebagai referensi domain/use case—termasuk model `Deutschtrainer` yang berfokus pada kosakata dan kalimat pendek—tanpa menyalin koleksi secara massal. Materi Lingolog tetap merupakan kurasi sendiri.
-- Builder lama yang menghasilkan sepuluh variasi untuk setiap nomina/verba dihapus. Builder baru hanya menerima baris eksplisit Jerman–Indonesia, minimal 60 materi, memvalidasi duplikat, dan menandai katalog Jerman sebagai versi 2.
+- Builder lama yang menghasilkan sepuluh variasi untuk setiap nomina/verba dihapus. Builder baru hanya menerima baris eksplisit Jerman–Indonesia, memvalidasi duplikat, dan menandai katalog Jerman sebagai versi 2. Jumlah entri mengikuti kecukupan alami setiap tema tanpa kuota minimum atau target seragam.
 - Koleksi Inggris dikeluarkan dari katalog bawaan. Aplikasi tetap mendukung deck bahasa Inggris buatan atau impor pengguna, tetapi rak siap pakai difokuskan pada materi Jerman.
 - Karena katalog hanya memiliki satu bahasa sumber, filter bahasa pada Deck siap pakai dihapus. Filter CEFR, level produk, kategori, dan pencarian tetap tersedia.
 - Pustaka dan Katalog lokal memakai komponen kontrol bersama: search bar di samping ikon filter, badge jumlah filter aktif, serta bottom sheet bahasa sumber, bahasa arti, isi deck, pengurutan, dan—khusus Katalog—status aktif/arsip.
@@ -305,7 +305,7 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 
 ### Tahap 18, selesai
 - Test runner ringan memakai Node test melalui `tsx`, tanpa memasukkan framework test ke bundle produksi. `npm test` mencakup normalisasi Dikte, tanggal sesi, ambang/penurunan mastery, parser deck strict, versi format, pasangan bahasa, dan nama file aman.
-- Test kontrak katalog memuat seluruh materi bawaan dan kini memverifikasi 11 deck Jerman/1.083 entri, cakupan A1/A2/B1/C1, batas tag, parser, keunikan dalam dan lintas deck, pemisahan deck kalimat, serta tidak munculnya pola generator lama.
+- Test kontrak katalog memuat seluruh materi bawaan dan kini memverifikasi 43 deck Jerman/2.941 entri, cakupan A1/A2/B1/C1, batas tag, parser, keunikan dalam dan lintas deck, pemisahan deck kalimat, serta tidak munculnya pola generator lama.
 - Test tersebut menemukan satu pasangan `husten → batuk` ganda pada deck Jerman A2 Kesehatan; sumber verba diperbaiki menjadi `abhusten → mengeluarkan batuk` dan test regresi mempertahankan keunikannya.
 - `scripts/test-migrations.mjs` menguji fresh serta database v1/v2/v3/v4/v5/v6/v7/v8 ke v9 melalui SQLite nyata, termasuk retensi baris lama, `user_version`, `application_id`, kolom mastery terbaru, integrity check, dan foreign-key check.
 - `scripts/benchmark-sqlite.mjs` membangun fixture 100 deck/20.000 entri dan mengukur query ringkasan deck serta pencarian/filter. Median lokal 9 proses cold-ish sekitar 5–6 ms, di bawah anggaran 500 ms.
@@ -336,3 +336,18 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 - Empty state pencarian/filter Pustaka, Katalog, dan Deck siap pakai mempertahankan reset yang tidak mengubah data pengguna.
 - Seluruh elemen onboarding dan aksi empty state memakai token tema, target sentuh, accessibility role/label, dan copy yang berlaku di light/dark mode.
 - Tidak ada perubahan schema database atau dependency baru.
+
+### Ekspansi Goethe Segmen 1 — A1, selesai
+- Delapan deck baru masing-masing berisi 60 materi: Makanan & Minuman, Restoran & Belanja Makanan, Profesi Dasar, Pekerjaan Sehari-hari, Hobi & Waktu Luang, Hobi/Akhir Pekan/Ajakan, Transportasi & Layanan Kota, serta Perjalanan & Meminta Bantuan.
+- Empat deck kata dan empat deck frasa dipisahkan tegas. Total segmen 480 materi kurasi tanpa pasangan identik dengan katalog sebelumnya.
+- Cakupan mengikuti inventaris tema resmi Start Deutsch 1: Essen/Trinken, Einkaufen, Arbeit/Beruf, Freizeit/Unterhaltung, Reisen/Verkehr, Unterkunft, dan Dienstleistungen.
+
+### Ekspansi Goethe Segmen 2 — A2, selesai
+- Delapan deck baru masing-masing berisi 60 materi: Sekolah & Kursus, Belajar & Ujian, Keluarga & Perayaan, Undangan & Membuat Rencana, Profesi & Pekerjaan, Dunia Kerja, Makanan & Gaya Hidup, serta Restoran/Alergi/Keluhan.
+- Empat deck kata dan empat deck frasa dipisahkan tegas. Total segmen 480 materi kurasi tanpa pasangan identik dengan katalog sebelumnya.
+- Cakupan memprioritaskan konteks resmi Goethe A2 pada ranah privat, publik, pekerjaan, sekolah, dan pendidikan serta fungsi komunikasi Schreiben/Sprechen.
+
+### Ekspansi Goethe Segmen 3 — B1 tema praktis, selesai
+- Sepuluh deck baru memuat 538 materi: Pendidikan & Karier (52+52), Kesehatan & Gaya Hidup/Keseimbangan (56+54), Tempat Tinggal & Konsumen/Sewa-Kontrak-Keluhan (56+54), Mobilitas & Perjalanan/Penyelesaian Masalah (53+52), dan Media & Dunia Digital/Informasi-Internet (55+54).
+- Jumlah materi mengikuti kebutuhan alami tiap tema, bukan target seragam. Deck tetap melewati ambang editorial minimum, memisahkan kata dan frasa, serta bebas pasangan identik lintas katalog.
+- Frasa memprioritaskan fungsi B1: meminta informasi, menjelaskan masalah dan sebab-akibat, membandingkan pilihan, mengajukan solusi atau keluhan, serta memberi alasan dan saran.

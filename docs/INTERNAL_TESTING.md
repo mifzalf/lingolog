@@ -1,4 +1,4 @@
-# Kandidat internal Lingolog 1.0.0 (build 1)
+# Kandidat internal Lingolog 1.0.0
 
 Dokumen ini adalah lembar hasil Tahap 20 untuk target rilis Android. Kandidat Android telah dibuat, diverifikasi, dan diterima pada perangkat fisik oleh pemilik aplikasi. Dukungan rilis iOS dipindahkan ke cakupan mendatang dan tidak menjadi gate kandidat Android 1.0.0.
 
@@ -8,15 +8,17 @@ Dokumen ini adalah lembar hasil Tahap 20 untuk target rilis Android. Kandidat An
 Marketing version: 1.0.0
 Android package/versionCode: com.lingolog.app / 3
 iOS bundle/buildNumber: com.lingolog.app / 1
-Katalog: 11 deck Jerman / 1.083 materi
+Katalog: 43 deck Jerman / 2.941 materi
 EAS project: @zalifzal/lingolog / 30612f66-a082-41f5-af5c-f38e048f20a6
-Android APK build: e2eca22e-6659-4d60-946e-19fe0876296f
-Android APK build URL: https://expo.dev/accounts/zalifzal/projects/lingolog/builds/e2eca22e-6659-4d60-946e-19fe0876296f
+Android APK build terbaru: 6d855e7a-20cd-473c-ba29-467f8b6587d1
+Android APK build URL terbaru: https://expo.dev/accounts/zalifzal/projects/lingolog/builds/6d855e7a-20cd-473c-ba29-467f8b6587d1
+Android APK build pertama: e2eca22e-6659-4d60-946e-19fe0876296f
 Android AAB build: fa728713-518e-4537-b84c-f93b5717071a
 Android AAB build URL: https://expo.dev/accounts/zalifzal/projects/lingolog/builds/fa728713-518e-4537-b84c-f93b5717071a
 iOS internal/TestFlight URL: belum tersedia
 Pemilik pengujian Android: pemilik aplikasi (laporan langsung; model perangkat/versi OS belum dicatat)
-Tanggal build dan pengujian Android: 19 Juli 2026
+Tanggal build terbaru: 26 Juli 2026
+Status pengujian build 3: menunggu validasi perangkat
 Gate otomatis lokal: LULUS
 Dependency audit produksi: 0 high/critical; 14 moderate pada rantai tool Expo/transitif
 Bug Android yang dilaporkan: tidak ada
@@ -28,10 +30,17 @@ Build number `1` telah digunakan untuk APK internal dan AAB production kandidat 
 
 ## Artefak dan integritas Android
 
-Artefak kandidat juga diverifikasi sebagai ZIP valid setelah diunduh:
+Kandidat APK build 3 telah diunduh dan diverifikasi:
 
 ```text
-APK: 74 MB
+APK build 3: 74 MB
+SHA-256: 75b7117d678974e74a53a0bfb7c58f78c1fbf5b8558e0d89480a625aef83ae1f
+```
+
+Artefak kandidat pertama juga diverifikasi sebagai ZIP valid setelah diunduh:
+
+```text
+APK build 1: 74 MB
 SHA-256: 161e62793242cab8eebd000e3dd3b255f719e535a4d955a0d0f73ff163cd0aed
 
 AAB: 50 MB
