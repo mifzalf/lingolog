@@ -1,6 +1,6 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 
-export const DATABASE_VERSION = 9;
+export const DATABASE_VERSION = 10;
 export const DATABASE_APPLICATION_ID = 0x4c4c4f47; // "LLOG"
 
 const migrationV1 = `
@@ -267,6 +267,14 @@ ALTER TABLE practice_sessions_v9 RENAME TO practice_sessions;
 CREATE INDEX sessions_started_idx ON practice_sessions(started_at);
 `;
 
+const migrationV10 = `
+ALTER TABLE decks ADD COLUMN content_type TEXT CHECK(content_type IS NULL OR content_type IN ('word', 'phrase', 'sentence'));
+UPDATE decks SET content_type = (
+  SELECT CASE WHEN count(DISTINCT entries.type) = 1 THEN min(entries.type) ELSE NULL END
+  FROM entries WHERE entries.deck_id = decks.id
+);
+`;
+
 export async function migrateDatabase(database: SQLiteDatabase) {
   await database.execAsync(`PRAGMA foreign_keys = ON; PRAGMA application_id = ${DATABASE_APPLICATION_ID};`);
   const row = await database.getFirstAsync<{ user_version: number }>('PRAGMA user_version;');
@@ -288,6 +296,7 @@ export async function migrateDatabase(database: SQLiteDatabase) {
     if (currentVersion < 7) await database.execAsync(migrationV7);
     if (currentVersion < 8) await database.execAsync(migrationV8);
     if (currentVersion < 9) await database.execAsync(migrationV9);
+    if (currentVersion < 10) await database.execAsync(migrationV10);
     await database.execAsync(`PRAGMA user_version = ${DATABASE_VERSION};`);
   });
   await database.execAsync('PRAGMA foreign_keys = ON;');

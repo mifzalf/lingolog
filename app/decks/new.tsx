@@ -8,8 +8,8 @@ import { backOrReplace } from '../../src/navigation/back';
 
 export default function NewDeckScreen() {
   const database = useDatabase(); const { showDialog } = useAppDialog();
-  const params = useLocalSearchParams<{ sourceLanguage?: string; targetLanguage?: string }>();
-  const initial = params.sourceLanguage && params.targetLanguage ? { name: '', description: '', sourceLanguage: params.sourceLanguage, targetLanguage: params.targetLanguage, color: '#355A46' } : undefined;
+  const params = useLocalSearchParams<{ sourceLanguage?: string; targetLanguage?: string; contentType?: 'word' | 'phrase' | 'sentence' }>();
+  const initial = params.sourceLanguage && params.targetLanguage ? { name: '', description: '', sourceLanguage: params.sourceLanguage, targetLanguage: params.targetLanguage, color: '#355A46', contentType: params.contentType ?? 'word' } : undefined;
   const [saving, setSaving] = useState(false);
 
   async function save(input: DeckInput) {

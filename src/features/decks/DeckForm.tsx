@@ -5,7 +5,7 @@ import { PaperScreen } from '../../components/PaperScreen';
 import { useTheme } from '../../theme/ThemeProvider';
 import { radius, ThemeColors } from '../../theme/tokens';
 import { LanguageOption, languages } from './languages';
-import type { DeckInput } from './deck.repository';
+import { deckContentTypes, type DeckContentType, type DeckInput } from './deck.repository';
 
 const coverColors = ['#355A46', '#C58A2A', '#9B5B4C', '#496786', '#755C83'];
 
@@ -15,12 +15,13 @@ type Props = {
   initial?: DeckInput;
   saving: boolean;
   languageLocked?: boolean;
+  contentTypeLocked?: boolean;
   onCancel: () => void;
   onMore?: () => void;
   onSave: (input: DeckInput) => void;
 };
 
-export function DeckForm({ title, note, initial, saving, languageLocked = false, onCancel, onMore, onSave }: Props) {
+export function DeckForm({ title, note, initial, saving, languageLocked = false, contentTypeLocked = false, onCancel, onMore, onSave }: Props) {
   const { colors } = useTheme();
   const styles = createStyles(colors);
   const [name, setName] = useState(initial?.name ?? '');
@@ -28,6 +29,7 @@ export function DeckForm({ title, note, initial, saving, languageLocked = false,
   const [source, setSource] = useState(initial?.sourceLanguage ?? 'en-US');
   const [target, setTarget] = useState(initial?.targetLanguage ?? 'id-ID');
   const [color, setColor] = useState(initial?.color ?? coverColors[0]);
+  const [contentType, setContentType] = useState<DeckContentType>(initial?.contentType ?? 'word');
   const [selecting, setSelecting] = useState<'source' | 'target' | null>(null);
   const [error, setError] = useState('');
 
@@ -35,7 +37,7 @@ export function DeckForm({ title, note, initial, saving, languageLocked = false,
     if (!name.trim()) return setError('Nama deck perlu diisi.');
     if (source === target) return setError('Pilih dua bahasa yang berbeda.');
     setError('');
-    onSave({ name, description, sourceLanguage: source, targetLanguage: target, color });
+    onSave({ name, description, sourceLanguage: source, targetLanguage: target, color, contentType });
   }
 
   return (
@@ -52,6 +54,10 @@ export function DeckForm({ title, note, initial, saving, languageLocked = false,
         <TextInput value={name} onChangeText={setName} maxLength={60} autoFocus placeholder="Contoh: Deutsch Alltag" placeholderTextColor={colors.inkFaint} style={styles.input} />
         <Text style={styles.label}>Deskripsi <Text style={styles.optional}>(opsional)</Text></Text>
         <TextInput value={description} onChangeText={setDescription} maxLength={180} multiline placeholder="Materi apa yang kamu catat di sini?" placeholderTextColor={colors.inkFaint} style={[styles.input, styles.textarea]} />
+
+        <Text style={styles.section}>Jenis materi</Text>
+        <Text style={styles.typeHelp}>Satu deck berisi satu jenis materi agar mudah dipilih saat latihan.</Text>
+        <View style={styles.typeRow}>{deckContentTypes.map((item) => <Pressable accessibilityRole="radio" accessibilityState={{ checked: contentType === item.value }} key={item.value} disabled={contentTypeLocked} onPress={() => setContentType(item.value)} style={[styles.typeChoice, contentType === item.value && styles.typeActive, contentTypeLocked && styles.disabledField]}><Text style={[styles.typeText, contentType === item.value && styles.typeTextActive]}>{item.label}</Text></Pressable>)}</View>
 
         <Text style={styles.section}>Pasangan bahasa</Text>
         <LanguageField label="Bahasa yang dipelajari" value={source} disabled={languageLocked} onPress={() => setSelecting(selecting === 'source' ? null : 'source')} styles={styles} colors={colors} />
@@ -86,6 +92,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   label: { color: colors.ink, fontSize: 13, fontWeight: '800', marginBottom: 8 }, optional: { color: colors.inkMuted, fontWeight: '500' },
   input: { minHeight: 52, backgroundColor: colors.paperRaised, borderWidth: 1, borderColor: colors.rule, borderRadius: radius.md, color: colors.ink, fontSize: 16, paddingHorizontal: 15, marginBottom: 19 }, textarea: { minHeight: 92, paddingTop: 14, textAlignVertical: 'top' },
   section: { color: colors.ink, fontSize: 17, fontWeight: '900', marginTop: 9, marginBottom: 12 },
+  typeHelp: { color: colors.inkMuted, fontSize: 12, lineHeight: 18, marginTop: -5, marginBottom: 10 }, typeRow: { flexDirection: 'row', gap: 8, marginBottom: 18 }, typeChoice: { flex: 1, minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: radius.md, borderWidth: 1, borderColor: colors.rule, backgroundColor: colors.paperRaised }, typeActive: { borderColor: colors.primary, backgroundColor: colors.primarySoft }, typeText: { color: colors.inkMuted, fontSize: 12, fontWeight: '900' }, typeTextActive: { color: colors.primary },
   languageField: { flexDirection: 'row', gap: 12, alignItems: 'center', minHeight: 67, backgroundColor: colors.paperRaised, borderWidth: 1, borderColor: colors.rule, borderRadius: radius.md, padding: 12 }, languageCode: { width: 40, height: 40, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySoft }, codeText: { color: colors.primary, fontWeight: '900', fontSize: 12 }, fieldHint: { color: colors.inkMuted, fontSize: 11 }, languageName: { color: colors.ink, fontSize: 15, fontWeight: '800', marginTop: 2 }, arrow: { height: 28, alignItems: 'center', justifyContent: 'center' },
   disabledField: { opacity: 0.72 }, lockedHint: { color: colors.inkMuted, fontSize: 12, lineHeight: 18, marginTop: 8 },
   languageList: { backgroundColor: colors.paperRaised, borderWidth: 1, borderColor: colors.rule, borderRadius: radius.md, marginTop: 7, paddingHorizontal: 12 }, languageOption: { minHeight: 47, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.rule }, optionName: { color: colors.ink, fontSize: 14, fontWeight: '600' },

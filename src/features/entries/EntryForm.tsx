@@ -11,14 +11,14 @@ const types: { value: EntryType; label: string }[] = [
 ];
 
 type Props = {
-  title: string; deckId: number; sourceName: string; targetName: string; initial?: Omit<EntryInput, 'deckId'>;
+  title: string; deckId: number; sourceName: string; targetName: string; contentType: EntryType; initial?: Omit<EntryInput, 'deckId'>;
   saving: boolean; onCancel: () => void; onMore?: () => void; onSave: (input: EntryInput) => void;
 };
 
-export function EntryForm({ title, deckId, sourceName, targetName, initial, saving, onCancel, onMore, onSave }: Props) {
+export function EntryForm({ title, deckId, sourceName, targetName, contentType, initial, saving, onCancel, onMore, onSave }: Props) {
   const { colors } = useTheme();
   const styles = createStyles(colors);
-  const [type, setType] = useState<EntryType>(initial?.type ?? 'word');
+  const type = initial?.type ?? contentType;
   const [sourceText, setSourceText] = useState(initial?.sourceText ?? '');
   const [translatedText, setTranslatedText] = useState(initial?.translatedText ?? '');
   const [notes, setNotes] = useState(initial?.notes ?? '');
@@ -43,7 +43,7 @@ export function EntryForm({ title, deckId, sourceName, targetName, initial, savi
         <View style={styles.actions}>{onMore ? <Pressable accessibilityRole="button" accessibilityLabel="Kelola entri" onPress={onMore} style={styles.more}><Ionicons name="ellipsis-horizontal" size={22} color={colors.ink} /></Pressable> : null}<Pressable disabled={saving} onPress={submit} style={[styles.save, saving && { opacity: 0.55 }]}><Text style={styles.saveText}>{saving ? 'Menyimpan…' : 'Simpan'}</Text></Pressable></View>
       </View>
 
-      <View style={styles.typeRow}>{types.map((item) => <Pressable accessibilityRole="radio" accessibilityState={{ checked: type === item.value }} key={item.value} onPress={() => setType(item.value)} style={[styles.type, type === item.value && styles.typeActive]}><Text style={[styles.typeText, type === item.value && styles.typeTextActive]}>{item.label}</Text></Pressable>)}</View>
+      <View style={styles.typeBadge}><Ionicons name="albums-outline" size={18} color={colors.primary} /><Text style={styles.typeBadgeText}>Deck {types.find((item) => item.value === type)?.label}</Text></View>
       <View style={styles.fieldHeader}><Text style={styles.label}>{sourceName}</Text><Pressable accessibilityRole="checkbox" accessibilityState={{ checked: isFavorite }} accessibilityLabel="Favorit" onPress={() => setFavorite(!isFavorite)}><Ionicons name={isFavorite ? 'star' : 'star-outline'} size={24} color={isFavorite ? colors.highlight : colors.inkMuted} /></Pressable></View>
       <TextInput value={sourceText} onChangeText={setSourceText} autoFocus multiline maxLength={500} placeholder="Tulis kata atau kalimat…" placeholderTextColor={colors.inkFaint} style={[styles.input, styles.mainInput]} />
       <Text style={styles.label}>{targetName}</Text>
@@ -64,7 +64,7 @@ export function EntryForm({ title, deckId, sourceName, targetName, initial, savi
 const createStyles = (colors: ThemeColors) => StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.paper }, content: { paddingTop: 54 },
   topbar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 25 }, iconButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }, topTitle: { color: colors.ink, fontSize: 18, fontWeight: '900' }, actions: { flexDirection: 'row', alignItems: 'center', gap: 4 }, more: { width: 37, height: 42, alignItems: 'center', justifyContent: 'center' }, save: { minWidth: 76, height: 42, paddingHorizontal: 13, borderRadius: radius.md, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }, saveText: { color: colors.primaryInk, fontWeight: '900' },
-  typeRow: { flexDirection: 'row', gap: 8, marginBottom: 24 }, type: { flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.rule, backgroundColor: colors.paperRaised }, typeActive: { backgroundColor: colors.primarySoft, borderColor: colors.primary }, typeText: { color: colors.inkMuted, fontSize: 13, fontWeight: '800' }, typeTextActive: { color: colors.primary },
+  typeBadge: { alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 24, paddingHorizontal: 12, paddingVertical: 9, borderRadius: radius.pill, backgroundColor: colors.primarySoft }, typeBadgeText: { color: colors.primary, fontSize: 12, fontWeight: '900' },
   fieldHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, label: { color: colors.ink, fontSize: 13, fontWeight: '800', marginBottom: 8 }, hint: { color: colors.inkMuted, fontWeight: '500' }, input: { minHeight: 52, color: colors.ink, fontSize: 15, backgroundColor: colors.paperRaised, borderWidth: 1, borderColor: colors.rule, borderRadius: radius.md, paddingHorizontal: 15, paddingVertical: 13, marginBottom: 18, textAlignVertical: 'top' }, mainInput: { minHeight: 76, fontSize: 18 }, textarea: { minHeight: 88 },
   advancedButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 14, marginBottom: 13, borderBottomWidth: 1, borderBottomColor: colors.rule }, advancedText: { color: colors.primary, fontSize: 14, fontWeight: '900' },
   error: { flexDirection: 'row', alignItems: 'center', gap: 9, padding: 13, borderRadius: radius.md, backgroundColor: colors.dangerSoft }, errorText: { color: colors.danger, fontSize: 13, fontWeight: '700' },

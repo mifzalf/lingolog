@@ -7,12 +7,14 @@ import { starterEntryKey } from '../src/features/starter-decks/starter-deck.repo
 const normalized = (value: string, locale: string) => value.normalize('NFKC').trim().toLocaleLowerCase(locale).replace(/[\p{P}\p{S}\s]+/gu, '');
 
 test('katalog bawaan khusus Jerman lolos format, batas tag, dan keunikan', () => {
-  assert.equal(starterDecks.length, 43);
+  assert.equal(starterDecks.length, 50);
   let totalEntries = 0;
   const coverage = new Set<string>();
   const allPairs = new Set<string>();
   for (const starter of starterDecks) {
     const { deck } = parseDeckFile(JSON.stringify(starter.file)); totalEntries += deck.entries.length;
+    assert.ok(deck.contentType, `${starter.id} belum memiliki kategori materi`);
+    assert.ok(deck.entries.every((entry) => entry.type === deck.contentType), `${starter.id} mencampur kategori materi`);
     assert.equal(deck.sourceLanguage, 'de-DE'); assert.equal(deck.targetLanguage, 'id-ID');
     for (const cefr of deck.name.match(/\b(A1|A2|B1|C1)\b/g) ?? []) coverage.add(cefr);
     const pairs = new Set<string>();

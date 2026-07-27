@@ -48,7 +48,7 @@ export default function EditDeckScreen() {
   if (loading) return <View style={[styles.center, { backgroundColor: colors.paper }]}><ActivityIndicator color={colors.primary} /></View>;
   if (!deck) return <View style={[styles.center, { backgroundColor: colors.paper }]}><Text style={{ color: colors.ink }}>Deck tidak ditemukan.</Text></View>;
 
-  return <DeckForm title="Ubah deck" note="Catatan yang rapi lebih mudah dikunjungi lagi." initial={{ name: deck.name, description: deck.description ?? '', sourceLanguage: deck.sourceLanguage, targetLanguage: deck.targetLanguage, color: deck.color ?? undefined }} saving={saving} languageLocked={languageLocked} onCancel={() => backOrReplace(`/decks/${deckId}`)} onMore={showActions} onSave={save} />;
+  return <DeckForm title="Ubah deck" note="Catatan yang rapi lebih mudah dikunjungi lagi." initial={{ name: deck.name, description: deck.description ?? '', sourceLanguage: deck.sourceLanguage, targetLanguage: deck.targetLanguage, color: deck.color ?? undefined, contentType: deck.contentType ?? 'word' }} saving={saving} languageLocked={languageLocked} contentTypeLocked={languageLocked} onCancel={() => backOrReplace(`/decks/${deckId}`)} onMore={showActions} onSave={save} />;
 }
 
 const styles = StyleSheet.create({ center: { flex: 1, alignItems: 'center', justifyContent: 'center' } });

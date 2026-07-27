@@ -13,7 +13,7 @@ const entrySchema = z.object({
   type: z.enum(['word', 'phrase', 'sentence']), sourceText: z.string().trim().min(1).max(500), translatedText: z.string().trim().min(1).max(500),
   notes: nullableText, exampleText: z.string().max(500).nullable(), exampleTranslation: z.string().max(500).nullable(), tags: z.array(z.string().trim().min(1).max(60)).max(12),
 }).strict();
-const deckSchema = z.object({ name: z.string().trim().min(1).max(60), description: z.string().max(180).nullable(), sourceLanguage: z.string().min(2).max(35), targetLanguage: z.string().min(2).max(35), color: z.string().max(30).nullable(), entries: z.array(entrySchema).max(MAX_IMPORT_ENTRIES) }).strict().refine((deck) => deck.sourceLanguage !== deck.targetLanguage, { message: 'Language pair must differ' });
+const deckSchema = z.object({ name: z.string().trim().min(1).max(60), description: z.string().max(180).nullable(), sourceLanguage: z.string().min(2).max(35), targetLanguage: z.string().min(2).max(35), color: z.string().max(30).nullable(), contentType: z.enum(['word', 'phrase', 'sentence']).optional(), entries: z.array(entrySchema).max(MAX_IMPORT_ENTRIES) }).strict().refine((deck) => deck.sourceLanguage !== deck.targetLanguage, { message: 'Language pair must differ' }).refine((deck) => !deck.contentType || deck.entries.every((entry) => entry.type === deck.contentType), { message: 'Entries must match deck content type' });
 const deckFileSchema = z.object({ format: z.literal(DECK_FORMAT), version: z.literal(DECK_FORMAT_VERSION), exportedAt: z.string().datetime(), deck: deckSchema }).strict();
 export type LingologDeckFile = z.infer<typeof deckFileSchema>;
 
@@ -30,14 +30,16 @@ export function parseDeckFile(text: string): LingologDeckFile {
 export async function buildDeckExport(database: Database, deckId: number): Promise<LingologDeckFile> {
   const deck = await database.query.decks.findFirst({ where: eq(decks.id, deckId) }); if (!deck) throw new DeckTransferError('NOT_FOUND');
   const rows = await database.select({ id: entries.id, type: entries.type, sourceText: entries.sourceText, translatedText: entries.translatedText, notes: entries.notes, exampleText: entries.exampleText, exampleTranslation: entries.exampleTranslation, tagNames: sql<string>`coalesce(group_concat(${tags.name}, '|||'), '')` }).from(entries).leftJoin(entryTags, eq(entryTags.entryId, entries.id)).leftJoin(tags, eq(tags.id, entryTags.tagId)).where(eq(entries.deckId, deckId)).groupBy(entries.id).orderBy(asc(entries.id));
-  return { format: DECK_FORMAT, version: DECK_FORMAT_VERSION, exportedAt: new Date().toISOString(), deck: { name: deck.name, description: deck.description, sourceLanguage: deck.sourceLanguage, targetLanguage: deck.targetLanguage, color: deck.color, entries: rows.map(({ id: _id, tagNames, ...entry }) => ({ ...entry, tags: tagNames ? tagNames.split('|||') : [] })) } };
+  return { format: DECK_FORMAT, version: DECK_FORMAT_VERSION, exportedAt: new Date().toISOString(), deck: { name: deck.name, description: deck.description, sourceLanguage: deck.sourceLanguage, targetLanguage: deck.targetLanguage, color: deck.color, contentType: deck.contentType ?? undefined, entries: rows.map(({ id: _id, tagNames, ...entry }) => ({ ...entry, tags: tagNames ? tagNames.split('|||') : [] })) } };
 }
 
 function cleanTags(values: string[]) { return [...new Set(values.map((value) => value.trim().toLocaleLowerCase()).filter(Boolean))].slice(0, 12); }
 export async function importDeckFile(database: Database, file: LingologDeckFile) {
   return database.transaction(async (transaction) => {
     const now = new Date(); const input = file.deck;
-    const [deck] = await transaction.insert(decks).values({ name: input.name, description: input.description?.trim() || null, sourceLanguage: input.sourceLanguage, targetLanguage: input.targetLanguage, color: input.color ?? '#355A46', createdAt: now, updatedAt: now }).returning();
+    const inferredType = input.contentType ?? (new Set(input.entries.map((entry) => entry.type)).size === 1 ? input.entries[0]?.type : undefined);
+    if (!inferredType) throw new DeckTransferError('INVALID_FORMAT');
+    const [deck] = await transaction.insert(decks).values({ name: input.name, description: input.description?.trim() || null, sourceLanguage: input.sourceLanguage, targetLanguage: input.targetLanguage, color: input.color ?? '#355A46', contentType: inferredType, createdAt: now, updatedAt: now }).returning();
     for (const item of input.entries) {
       const [entry] = await transaction.insert(entries).values({ deckId: deck.id, type: item.type, sourceText: item.sourceText, translatedText: item.translatedText, notes: item.notes?.trim() || null, exampleText: item.exampleText?.trim() || null, exampleTranslation: item.exampleTranslation?.trim() || null, isFavorite: false, createdAt: now, updatedAt: now }).returning();
       await transaction.insert(masteryStates).values({ entryId: entry.id, updatedAt: now });

@@ -27,6 +27,9 @@ export function curatedGermanDeck(config: {
   entries: CuratedGermanEntry[];
 }): StarterDeck {
   const seen = new Set<string>();
+  const contentTypes = new Set(config.entries.map((entry) => entry[2]));
+  const contentType = contentTypes.size === 1 ? config.entries[0]?.[2] : undefined;
+  if (!config.entries.length) throw new Error(`Deck ${config.id} tidak memiliki materi.`);
   const entries = config.entries.map(([sourceText, translatedText, type, tags]) => {
     const key = `${sourceText.normalize('NFKC').trim().toLocaleLowerCase('de-DE')}\u0000${translatedText.normalize('NFKC').trim().toLocaleLowerCase('id-ID')}`;
     if (seen.has(key)) throw new Error(`Duplikat dalam ${config.id}: ${sourceText}`);
@@ -50,6 +53,7 @@ export function curatedGermanDeck(config: {
         sourceLanguage: 'de-DE',
         targetLanguage: 'id-ID',
         color: config.color,
+        ...(contentType ? { contentType } : {}),
         entries,
       },
     },

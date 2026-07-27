@@ -31,6 +31,6 @@ export default function NewEntryScreen() {
   }
 
   if (!deck) return <View style={[styles.center, { backgroundColor: colors.paper }]}><ActivityIndicator color={colors.primary} /></View>;
-  return <EntryForm title="Entri baru" deckId={deckId} sourceName={getLanguage(deck.sourceLanguage).name} targetName={getLanguage(deck.targetLanguage).name} saving={saving} onCancel={() => backOrReplace(`/decks/${deckId}`)} onSave={save} />;
+  return <EntryForm title="Entri baru" deckId={deckId} sourceName={getLanguage(deck.sourceLanguage).name} targetName={getLanguage(deck.targetLanguage).name} contentType={deck.contentType ?? 'word'} saving={saving} onCancel={() => backOrReplace(`/decks/${deckId}`)} onSave={save} />;
 }
 const styles = StyleSheet.create({ center: { flex: 1, alignItems: 'center', justifyContent: 'center' } });

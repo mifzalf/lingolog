@@ -9,28 +9,29 @@ const body = (name) => {
   const match = source.match(new RegExp('const ' + name + ' = `([\\s\\S]*?)`;'));
   assert.ok(match, `SQL ${name} tidak ditemukan`); return match[1];
 };
-const migrations = [body('migrationV1'), body('migrationV2'), body('migrationV3'), body('migrationV4'), body('migrationV5'), body('migrationV6'), body('migrationV7'), body('migrationV8'), body('migrationV9')];
+const migrations = [body('migrationV1'), body('migrationV2'), body('migrationV3'), body('migrationV4'), body('migrationV5'), body('migrationV6'), body('migrationV7'), body('migrationV8'), body('migrationV9'), body('migrationV10')];
 const applicationId = 0x4c4c4f47;
 const dir = mkdtempSync(join(tmpdir(), 'lingolog-migrations-'));
 const sql = (db, statement) => execFileSync('sqlite3', [db, statement], { encoding: 'utf8' }).trim();
 try {
-  for (let from = 0; from <= 8; from += 1) {
+  for (let from = 0; from <= 9; from += 1) {
     const db = join(dir, `from-v${from}.db`);
     if (from > 0) {
       const setup = `${migrations.slice(0, from).join('\n')}\nPRAGMA user_version=${from}; PRAGMA application_id=${applicationId};`;
       writeFileSync(join(dir, 'setup.sql'), setup); execFileSync('sh', ['-c', `sqlite3 "$1" < "$2"`, 'sh', db, join(dir, 'setup.sql')]);
       sql(db, "INSERT INTO decks(name,source_language,target_language,created_at,updated_at) VALUES('Tetap ada','de-DE','id-ID',1,1);");
     }
-    const migrate = `PRAGMA foreign_keys=OFF;\n${migrations.slice(from).join('\n')}\nPRAGMA user_version=9; PRAGMA application_id=${applicationId}; PRAGMA foreign_keys=ON;`;
+    const migrate = `PRAGMA foreign_keys=OFF;\n${migrations.slice(from).join('\n')}\nPRAGMA user_version=10; PRAGMA application_id=${applicationId}; PRAGMA foreign_keys=ON;`;
     writeFileSync(join(dir, 'migrate.sql'), migrate); execFileSync('sh', ['-c', `sqlite3 "$1" < "$2"`, 'sh', db, join(dir, 'migrate.sql')]);
-    assert.equal(Number(sql(db, 'PRAGMA user_version;')), 9);
+    assert.equal(Number(sql(db, 'PRAGMA user_version;')), 10);
     assert.equal(Number(sql(db, 'PRAGMA application_id;')), applicationId);
     assert.equal(sql(db, 'PRAGMA integrity_check;'), 'ok');
     assert.equal(sql(db, 'PRAGMA foreign_key_check;'), '');
     if (from > 0) assert.equal(Number(sql(db, "SELECT count(*) FROM decks WHERE name='Tetap ada';")), 1);
     const columns = sql(db, "SELECT group_concat(name, ',') FROM pragma_table_info('mastery_states');");
     assert.match(columns, /manual_grade/); assert.match(columns, /failure_streak/);
+    assert.match(sql(db, "SELECT group_concat(name, ',') FROM pragma_table_info('decks');"), /content_type/);
     sql(db, "INSERT INTO practice_sessions(mode,started_at,total_items) VALUES('mixed',1,5);");
   }
-  console.log('Migrasi fresh dan v1–v8 → v9 lulus, integritas serta data lama terjaga.');
+  console.log('Migrasi fresh dan v1–v9 → v10 lulus, kategori deck dan data lama terjaga.');
 } finally { rmSync(dir, { recursive: true, force: true }); }

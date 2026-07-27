@@ -4,12 +4,16 @@ import * as schema from '../../db/schema';
 import { activityEvents, decks, entries, entryTags, masteryStates, practiceSessionDecks, practiceSessions } from '../../db/schema';
 
 export type Database = ExpoSQLiteDatabase<typeof schema>;
+export type DeckContentType = 'word' | 'phrase' | 'sentence';
+export const deckContentTypes: { value: DeckContentType; label: string }[] = [{ value: 'word', label: 'Kata' }, { value: 'phrase', label: 'Frasa' }, { value: 'sentence', label: 'Kalimat' }];
+export const deckContentTypeLabel = (value: DeckContentType | null | undefined) => deckContentTypes.find((item) => item.value === value)?.label ?? 'Campuran lama';
 export type DeckInput = {
   name: string;
   description?: string;
   sourceLanguage: string;
   targetLanguage: string;
   color?: string;
+  contentType: DeckContentType;
 };
 
 export type DeckSummary = typeof decks.$inferSelect & { entryCount: number; masteredCount: number };
@@ -23,6 +27,7 @@ export async function listDecks(database: Database, archived?: boolean): Promise
       sourceLanguage: decks.sourceLanguage,
       targetLanguage: decks.targetLanguage,
       color: decks.color,
+      contentType: decks.contentType,
       isArchived: decks.isArchived,
       createdAt: decks.createdAt,
       updatedAt: decks.updatedAt,
@@ -50,6 +55,7 @@ export async function createDeck(database: Database, input: DeckInput) {
     sourceLanguage: input.sourceLanguage,
     targetLanguage: input.targetLanguage,
     color: input.color ?? '#355A46',
+    contentType: input.contentType,
     createdAt: now,
     updatedAt: now,
   }).returning();
@@ -57,12 +63,15 @@ export async function createDeck(database: Database, input: DeckInput) {
 }
 
 export async function updateDeck(database: Database, id: number, input: DeckInput) {
+  const existingTypes = await database.select({ type: entries.type }).from(entries).where(eq(entries.deckId, id)).groupBy(entries.type);
+  if (existingTypes.some((row) => row.type !== input.contentType)) throw new Error('DECK_TYPE_HAS_ENTRIES');
   const [updated] = await database.update(decks).set({
     name: input.name.trim(),
     description: input.description?.trim() || null,
     sourceLanguage: input.sourceLanguage,
     targetLanguage: input.targetLanguage,
     color: input.color ?? '#355A46',
+    contentType: input.contentType,
     updatedAt: new Date(),
   }).where(eq(decks.id, id)).returning();
   return updated;
@@ -83,14 +92,14 @@ export async function hasEntries(database: Database, id: number) {
 
 export async function listCompatibleDecks(database: Database, sourceId: number) {
   const source = await getDeck(database, sourceId); if (!source) return [];
-  return listDecks(database).then((rows) => rows.filter((deck) => deck.id !== sourceId && deck.sourceLanguage === source.sourceLanguage && deck.targetLanguage === source.targetLanguage));
+  return listDecks(database).then((rows) => rows.filter((deck) => deck.id !== sourceId && deck.sourceLanguage === source.sourceLanguage && deck.targetLanguage === source.targetLanguage && deck.contentType === source.contentType));
 }
 
 export async function duplicateDeck(database: Database, sourceId: number) {
   return database.transaction(async (transaction) => {
     const source = await transaction.query.decks.findFirst({ where: eq(decks.id, sourceId) }); if (!source) throw new Error('DECK_NOT_FOUND');
     const now = new Date();
-    const [copy] = await transaction.insert(decks).values({ name: `${source.name} (salinan)`, description: source.description, sourceLanguage: source.sourceLanguage, targetLanguage: source.targetLanguage, color: source.color, createdAt: now, updatedAt: now }).returning();
+    const [copy] = await transaction.insert(decks).values({ name: `${source.name} (salinan)`, description: source.description, sourceLanguage: source.sourceLanguage, targetLanguage: source.targetLanguage, color: source.color, contentType: source.contentType, createdAt: now, updatedAt: now }).returning();
     const sourceEntries = await transaction.select().from(entries).where(eq(entries.deckId, sourceId)).orderBy(asc(entries.id));
     for (const item of sourceEntries) {
       const [created] = await transaction.insert(entries).values({ deckId: copy.id, type: item.type, sourceText: item.sourceText, translatedText: item.translatedText, notes: item.notes, exampleText: item.exampleText, exampleTranslation: item.exampleTranslation, isFavorite: item.isFavorite, createdAt: now, updatedAt: now }).returning();
@@ -107,7 +116,7 @@ export async function mergeDecks(database: Database, sourceId: number, destinati
   return database.transaction(async (transaction) => {
     const [source, destination] = await Promise.all([transaction.query.decks.findFirst({ where: eq(decks.id, sourceId) }), transaction.query.decks.findFirst({ where: eq(decks.id, destinationId) })]);
     if (!source || !destination) throw new Error('DECK_NOT_FOUND');
-    if (source.sourceLanguage !== destination.sourceLanguage || source.targetLanguage !== destination.targetLanguage) throw new Error('INCOMPATIBLE_LANGUAGES');
+    if (source.sourceLanguage !== destination.sourceLanguage || source.targetLanguage !== destination.targetLanguage || source.contentType !== destination.contentType) throw new Error('INCOMPATIBLE_DECK');
     const sessionRows = await transaction.select({ sessionId: practiceSessionDecks.sessionId }).from(practiceSessionDecks).where(eq(practiceSessionDecks.deckId, sourceId));
     if (sessionRows.length) await transaction.insert(practiceSessionDecks).values(sessionRows.map(({ sessionId }) => ({ sessionId, deckId: destinationId }))).onConflictDoNothing();
     await transaction.delete(practiceSessionDecks).where(eq(practiceSessionDecks.deckId, sourceId));

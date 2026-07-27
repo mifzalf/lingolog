@@ -4,6 +4,7 @@ import { decks, entries, masteryStates, practiceSessionDecks, practiceSessionEnt
 
 export type GameMode = 'flashcard' | 'dictation' | 'matchup' | 'delayed_recall';
 export type PracticeMode = GameMode | 'word_wheel' | 'mixed';
+export type PracticeContentType = 'word' | 'phrase' | 'sentence';
 export type FlashcardDirection = 'source_to_target' | 'target_to_source' | 'mixed';
 export type DictationVariant = 'audio_to_source' | 'meaning_to_source' | 'fill_to_source';
 export type DictationCue = 'audio' | 'meaning';
@@ -15,6 +16,7 @@ export type PracticeConfig = {
   dateFrom?: string;
   dateTo?: string;
   grades: number[];
+  contentTypes?: PracticeContentType[];
   itemLimit: number;
   shuffle: boolean;
   flashcardDirection: FlashcardDirection;
@@ -66,6 +68,7 @@ function conditions(config: PracticeConfig) {
   const to = config.dateTo ? localDate(config.dateTo, true) : undefined;
   if (from) values.push(gte(entries.createdAt, from));
   if (to) values.push(lt(entries.createdAt, to));
+  if (config.contentTypes?.length && config.contentTypes.length < 3) values.push(inArray(entries.type, config.contentTypes));
   if (config.grades.length < 4) values.push(sql`coalesce(${masteryStates.grade}, 0) in (${sql.join(config.grades.map((grade) => sql`${grade}`), sql`, `)})`);
   return values;
 }

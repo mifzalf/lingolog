@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, ne, or, sql } from 'drizzle-orm';
 import type { Database } from '../decks/deck.repository';
-import { activityEvents, entries, entryTags, masteryStates, tags } from '../../db/schema';
+import { activityEvents, decks, entries, entryTags, masteryStates, tags } from '../../db/schema';
 
 export type EntryType = 'word' | 'phrase' | 'sentence';
 export type EntryInput = {
@@ -124,6 +124,8 @@ async function replaceTags(transaction: Parameters<Parameters<Database['transact
 
 export async function createEntry(database: Database, input: EntryInput) {
   return database.transaction(async (transaction) => {
+    const deck = await transaction.query.decks.findFirst({ where: eq(decks.id, input.deckId) });
+    if (!deck || (deck.contentType && deck.contentType !== input.type)) throw new Error('ENTRY_TYPE_MISMATCH');
     const now = new Date();
     const [created] = await transaction.insert(entries).values({
       deckId: input.deckId, type: input.type, sourceText: input.sourceText.trim(), translatedText: input.translatedText.trim(),
@@ -140,6 +142,8 @@ export async function createEntry(database: Database, input: EntryInput) {
 
 export async function updateEntry(database: Database, id: number, input: EntryInput) {
   return database.transaction(async (transaction) => {
+    const deck = await transaction.query.decks.findFirst({ where: eq(decks.id, input.deckId) });
+    if (!deck || (deck.contentType && deck.contentType !== input.type)) throw new Error('ENTRY_TYPE_MISMATCH');
     const [updated] = await transaction.update(entries).set({
       type: input.type, sourceText: input.sourceText.trim(), translatedText: input.translatedText.trim(),
       notes: input.notes?.trim() || null, exampleText: input.exampleText?.trim() || null,

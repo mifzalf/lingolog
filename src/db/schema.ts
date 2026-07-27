@@ -7,6 +7,7 @@ export const decks = sqliteTable('decks', {
   sourceLanguage: text('source_language').notNull(),
   targetLanguage: text('target_language').notNull(),
   color: text('color'),
+  contentType: text('content_type', { enum: ['word', 'phrase', 'sentence'] }), // null hanya untuk deck campuran lama
   isArchived: integer('is_archived', { mode: 'boolean' }).notNull().default(false),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),

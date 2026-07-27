@@ -23,7 +23,19 @@ export type StarterDeck = {
  * Tambahkan deck siap pakai di sini pada tahap penyusunan konten.
  * `id` harus stabil; naikkan `version` ketika isi deck diperbarui.
  */
-export const starterDecks: StarterDeck[] = [...germanStarterDecks, ...germanExtraStarterDecks, ...germanCefrExpansionStarterDecks, ...germanA1ExamStarterDecks, ...germanA2ExamStarterDecks, ...germanB1PracticalStarterDecks];
+const contentTypeLabel = { word: 'Kata', phrase: 'Frasa', sentence: 'Kalimat' } as const;
+function splitByContentType(starter: StarterDeck): StarterDeck[] {
+  const types = [...new Set(starter.file.deck.entries.map((entry) => entry.type))];
+  if (types.length === 1) return [{ ...starter, file: { ...starter.file, deck: { ...starter.file.deck, contentType: types[0] } } }];
+  return types.map((type) => ({
+    ...starter,
+    id: `${starter.id}-${type}`,
+    summary: `${contentTypeLabel[type]}: ${starter.summary}`,
+    file: { ...starter.file, deck: { ...starter.file.deck, name: `${starter.file.deck.name} · ${contentTypeLabel[type]}`, contentType: type, entries: starter.file.deck.entries.filter((entry) => entry.type === type) } },
+  }));
+}
+
+export const starterDecks: StarterDeck[] = [...germanStarterDecks, ...germanExtraStarterDecks, ...germanCefrExpansionStarterDecks, ...germanA1ExamStarterDecks, ...germanA2ExamStarterDecks, ...germanB1PracticalStarterDecks].flatMap(splitByContentType);
 
 export const starterDeckLevels: { value: StarterDeckLevel; label: string }[] = [
   { value: 'pemula', label: 'Pemula' },
