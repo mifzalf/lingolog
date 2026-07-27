@@ -4,7 +4,7 @@ Tanggal inspeksi: 26 Juli 2026
 
 ## Lingkup dan standar
 
-Seluruh 43 deck dan 2.941 pasangan Jerman–Indonesia diperiksa pada tingkat katalog, deck, tipe materi, cakupan tema, dan kecocokan terjemahan. Jumlah entri bukan ukuran kelulusan. Deck dinilai dari:
+Seluruh 50 deck dan 2.941 pasangan Jerman–Indonesia diperiksa pada tingkat katalog, deck, tipe materi, cakupan tema, dan kecocokan terjemahan. Jumlah entri bukan ukuran kelulusan. Deck dinilai dari:
 
 - kesesuaian setiap materi dengan janji tema;
 - ketepatan dan kenaturalan pasangan Jerman–Indonesia;

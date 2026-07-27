@@ -12,8 +12,8 @@ Perintah tersebut mencakup:
 
 - TypeScript tanpa emit.
 - Unit test normalisasi Dikte, tanggal sesi, mastery, parser/format deck, dan nama file.
-- Integration contract katalog bawaan: 43 deck Jerman/2.941 entri, cakupan A1–C1, parser, batas tag, keunikan pasangan dalam dan lintas deck, pemisahan deck kalimat, larangan pola generator lama, serta identitas pasangan ter-normalisasi untuk deteksi materi satuan yang sudah tersalin.
-- Migrasi SQLite fresh serta v1/v2/v3/v4/v5/v6/v7/v8 ke v9, termasuk `application_id`, `integrity_check`, `foreign_key_check`, dan retensi data lama.
+- Integration contract katalog bawaan: 50 deck Jerman/2.941 entri, cakupan A1–C1, parser, batas tag, keunikan pasangan dalam dan lintas deck, pemisahan deck kalimat, larangan pola generator lama, serta identitas pasangan ter-normalisasi untuk deteksi materi satuan yang sudah tersalin.
+- Migrasi SQLite fresh serta v1/v2/v3/v4/v5/v6/v7/v8/v9 ke v10, termasuk `application_id`, `integrity_check`, `foreign_key_check`, dan retensi data lama.
 - Benchmark query SQLite dengan fixture 20.000 entri. Anggaran median pada mesin pengembangan adalah 500 ms.
 
 Sebelum kandidat build, jalankan gate gabungan:

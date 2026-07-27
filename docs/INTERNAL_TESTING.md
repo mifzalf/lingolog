@@ -8,7 +8,7 @@ Dokumen ini adalah lembar hasil Tahap 20 untuk target rilis Android. Kandidat An
 Marketing version: 1.0.0
 Android package/versionCode: com.lingolog.app / 3
 iOS bundle/buildNumber: com.lingolog.app / 1
-Katalog: 43 deck Jerman / 2.941 materi
+Katalog: 50 deck Jerman / 2.941 materi
 EAS project: @zalifzal/lingolog / 30612f66-a082-41f5-af5c-f38e048f20a6
 Android APK build terbaru: 6d855e7a-20cd-473c-ba29-467f8b6587d1
 Android APK build URL terbaru: https://expo.dev/accounts/zalifzal/projects/lingolog/builds/6d855e7a-20cd-473c-ba29-467f8b6587d1

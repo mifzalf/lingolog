@@ -44,7 +44,7 @@ Lihat mastery, akurasi, histori sesi, statistik deck dan entri, serta kalender a
 
 **Mulai dari materi bawaan**
 
-Pilih materi dari 43 Deck siap pakai Bahasa Jerman A1–C1. Seluruh koleksi dibundel bersama aplikasi dan dapat diedit seperti materi lokal biasa.
+Pilih materi dari 50 Deck siap pakai Bahasa Jerman A1–C1. Seluruh koleksi dibundel bersama aplikasi dan dapat diedit seperti materi lokal biasa.
 
 **Pindahkan data dengan kendali penuh**
 
@@ -60,7 +60,7 @@ Fitur utama:
 - Text-to-speech sesuai bahasa deck.
 - Mastery manual dan berbasis bukti latihan.
 - Kalender, histori, serta statistik.
-- 43 Deck siap pakai dengan total 2.941 materi Jerman menuju Indonesia; kata/frasa dipisahkan dari deck kalimat nyata.
+- 50 Deck siap pakai dengan total 2.941 materi Jerman menuju Indonesia; kata/frasa dipisahkan dari deck kalimat nyata.
 - Impor/ekspor deck dan backup/restore penuh.
 - Tema sistem, terang, dan gelap.
 - Dukungan Dynamic Type, Reduce Motion, TalkBack, dan VoiceOver.
@@ -81,7 +81,7 @@ Rilis pertama Lingolog:
 
 - Pustaka deck dan kosakata offline.
 - Kartu flash, Dikte, mastery, histori, kalender, dan statistik.
-- 43 Deck siap pakai dengan 2.941 materi Jerman A1–C1.
+- 50 Deck siap pakai dengan 2.941 materi Jerman A1–C1.
 - Text-to-speech, impor/ekspor deck, serta backup/restore.
 - Tema terang/gelap dan dukungan aksesibilitas.
 
