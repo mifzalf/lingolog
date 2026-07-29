@@ -352,6 +352,13 @@ Dokumen ini adalah checklist utama development. Sebuah tahap hanya diberi tanda 
 - Jumlah materi mengikuti kebutuhan alami tiap tema, bukan target seragam. Deck tetap melewati ambang editorial minimum, memisahkan kata dan frasa, serta bebas pasangan identik lintas katalog.
 - Frasa memprioritaskan fungsi B1: meminta informasi, menjelaskan masalah dan sebab-akibat, membandingkan pilihan, mengajukan solusi atau keluhan, serta memberi alasan dan saran.
 
+### Impor paket Deck siap pakai, selesai
+- File `.lingolog-catalog.json` dapat menambah atau memperbarui katalog lokal tanpa APK baru.
+- Paket dan deck memakai ID serta versi stabil; versi deck yang lebih tinggi menggantikan tampilan katalog, sedangkan deck lokal dan progres pengguna tidak disentuh.
+- Impor menampilkan pratinjau penerbit, versi, jumlah deck, dan jumlah materi sebelum persetujuan.
+- Parser ketat membatasi ukuran, jumlah deck, jumlah materi, ID, kategori tunggal, versi file, dan field asing.
+- Format dan alur penerbitan didokumentasikan di `docs/STARTER_CATALOG_PACKAGES.md`.
+
 ### Kategori deck dan filter latihan, selesai
 - Schema v10 menambahkan kategori deck `word`, `phrase`, atau `sentence`; migrasi mengisi kategori otomatis untuk deck lama yang hanya memiliki satu jenis materi dan menjaga deck campuran lama sebagai kompatibilitas sementara.
 - Tujuh deck katalog campuran dipisahkan saat katalog dimuat, sehingga katalog siap pakai kini berisi 50 deck tunggal-kategori dengan total materi tetap 2.941.

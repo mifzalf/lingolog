@@ -1,0 +1,97 @@
+old_deck_id	source_text	translated_text	material_type	proposed_target_deck_id	proposed_target_name	action
+de-id-a1-kata-inti	der Name, die Namen	nama	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	der Vorname, die Vornamen	nama depan	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	der Nachname, die Nachnamen	nama belakang	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Adresse, die Adressen	alamat	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Telefonnummer, die Telefonnummern	nomor telepon	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	das Land, die Länder	negara	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Stadt, die Städte	kota	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	die Sprache, die Sprachen	bahasa	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Familie, die Familien	keluarga	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	der Freund, die Freunde	teman laki-laki	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Freundin, die Freundinnen	teman perempuan	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Eltern	orang tua	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	der Vater, die Väter	ayah	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Mutter, die Mütter	ibu	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	der Bruder, die Brüder	saudara laki-laki	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Schwester, die Schwestern	saudara perempuan	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	das Kind, die Kinder	anak	word	de-id-a1-kata-identitaet-familie	Identitas & Keluarga	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Wohnung, die Wohnungen	apartemen	word	de-id-a1-kata-rumah-diri	Rumah & Diri	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	das Zimmer, die Zimmer	kamar	word	de-id-a1-kata-rumah-diri	Rumah & Diri	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	die Küche, die Küchen	dapur	word	de-id-a1-kata-rumah-diri	Rumah & Diri	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	das Bad, die Bäder	kamar mandi	word	de-id-a1-kata-rumah-diri	Rumah & Diri	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	der Schlüssel, die Schlüssel	kunci	word	de-id-a1-kata-rumah-diri	Rumah & Diri	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	der Bahnhof, die Bahnhöfe	stasiun kereta	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	die Haltestelle, die Haltestellen	halte	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	die Straße, die Straßen	jalan	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	der Supermarkt, die Supermärkte	supermarket	word	de-id-a1-kata-layanan-transaksi	Layanan & Transaksi	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Apotheke, die Apotheken	apotek	word	de-id-a1-kata-tubuh-kesehatan	Tubuh & Kesehatan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	der Arzt, die Ärzte	dokter laki-laki	word	de-id-a1-kata-tubuh-kesehatan	Tubuh & Kesehatan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Ärztin, die Ärztinnen	dokter perempuan	word	de-id-a1-kata-tubuh-kesehatan	Tubuh & Kesehatan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Arbeit	pekerjaan	word	de-id-a1-kata-profesi	Profesi & Tempat Kerja	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	der Beruf, die Berufe	profesi	word	de-id-a1-kata-profesi	Profesi & Tempat Kerja	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	die Schule, die Schulen	sekolah	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	der Kurs, die Kurse	kursus	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Frage, die Fragen	pertanyaan	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Antwort, die Antworten	jawaban	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	das Problem, die Probleme	masalah	word	de-id-a1-kata-layanan-transaksi	Layanan & Transaksi	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Hilfe	bantuan	word	de-id-a1-kata-layanan-transaksi	Layanan & Transaksi	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	das Geld	uang	word	de-id-a1-kata-layanan-transaksi	Layanan & Transaksi	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	der Preis, die Preise	harga	word	de-id-a1-kata-layanan-transaksi	Layanan & Transaksi	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Rechnung, die Rechnungen	tagihan	word	de-id-a1-kata-layanan-transaksi	Layanan & Transaksi	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	das Wasser	air	word	de-id-a1-kata-makanan-minuman	Makanan & Minuman	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	das Brot, die Brote	roti	word	de-id-a1-kata-makanan-minuman	Makanan & Minuman	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	das Gemüse	sayuran	word	de-id-a1-kata-makanan-minuman	Makanan & Minuman	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	das Obst	buah-buahan	word	de-id-a1-kata-makanan-minuman	Makanan & Minuman	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	der Kaffee	kopi	word	de-id-a1-kata-makanan-minuman	Makanan & Minuman	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	die Zeit	waktu	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	der Termin, die Termine	janji	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	der Tag, die Tage	hari	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	die Woche, die Wochen	minggu	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	das Wochenende, die Wochenenden	akhir pekan	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	heute	hari ini	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	morgen	besok	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	jetzt	sekarang	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	später	nanti	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	hier	di sini	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	dort	di sana	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	links	kiri	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	rechts	kanan	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	geradeaus	lurus	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	kommen	datang	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	gehen	pergi berjalan kaki	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	fahren	pergi dengan kendaraan	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	wohnen	tinggal	word	de-id-a1-kata-rumah-diri	Rumah & Diri	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	arbeiten	bekerja	word	de-id-a1-kata-profesi	Profesi & Tempat Kerja	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	lernen	belajar	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	sprechen	berbicara	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	verstehen	mengerti	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	fragen	bertanya	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	antworten	menjawab	word	de-id-a1-kata-rutinitas-waktu-belajar	Rutinitas, Waktu & Belajar	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	brauchen	membutuhkan	word	de-id-a1-kata-layanan-transaksi	Layanan & Transaksi	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	suchen	mencari	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	finden	menemukan	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	kaufen	membeli	word	de-id-a1-kata-layanan-transaksi	Layanan & Transaksi	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	bezahlen	membayar	word	de-id-a1-kata-layanan-transaksi	Layanan & Transaksi	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	essen	makan	word	de-id-a1-kata-makanan-minuman	Makanan & Minuman	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	trinken	minum	word	de-id-a1-kata-makanan-minuman	Makanan & Minuman	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	helfen	membantu	word	de-id-a1-kata-layanan-transaksi	Layanan & Transaksi	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	warten	menunggu	word	de-id-a1-kata-transportasi-layanan	Transportasi & Layanan Kota	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	öffnen	membuka	word	de-id-a1-kata-rumah-diri	Rumah & Diri	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	schließen	menutup	word	de-id-a1-kata-rumah-diri	Rumah & Diri	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	gut	baik	word	de-id-a1-kata-sifat-keadaan	Sifat & Keadaan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	schlecht	buruk	word	de-id-a1-kata-sifat-keadaan	Sifat & Keadaan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	klein	kecil	word	de-id-a1-kata-sifat-keadaan	Sifat & Keadaan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	groß	besar	word	de-id-a1-kata-sifat-keadaan	Sifat & Keadaan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	neu	baru	word	de-id-a1-kata-sifat-keadaan	Sifat & Keadaan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	alt	tua atau lama	word	de-id-a1-kata-sifat-keadaan	Sifat & Keadaan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	teuer	mahal	word	de-id-a1-kata-sifat-keadaan	Sifat & Keadaan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	billig	murah	word	de-id-a1-kata-sifat-keadaan	Sifat & Keadaan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	frei	luang atau kosong	word	de-id-a1-kata-sifat-keadaan	Sifat & Keadaan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	krank	sakit	word	de-id-a1-kata-tubuh-kesehatan	Tubuh & Kesehatan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	müde	lelah	word	de-id-a1-kata-tubuh-kesehatan	Tubuh & Kesehatan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	hungrig	lapar	word	de-id-a1-kata-makanan-minuman	Makanan & Minuman	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	durstig	haus	word	de-id-a1-kata-makanan-minuman	Makanan & Minuman	MERGE_INTO_EXISTING
+de-id-a1-kata-inti	wichtig	penting	word	de-id-a1-kata-sifat-keadaan	Sifat & Keadaan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	richtig	benar	word	de-id-a1-kata-sifat-keadaan	Sifat & Keadaan	MOVE_TO_NEW_DECK
+de-id-a1-kata-inti	falsch	salah	word	de-id-a1-kata-sifat-keadaan	Sifat & Keadaan	MOVE_TO_NEW_DECK
