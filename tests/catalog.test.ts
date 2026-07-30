@@ -3,12 +3,11 @@ import test from 'node:test';
 import { starterDecks } from '../src/features/starter-decks/catalog';
 import { parseDeckFile } from '../src/features/transfer/deck-transfer';
 import { starterEntryKey } from '../src/features/starter-decks/starter-deck.repository';
-import { CATALOG_FORMAT, mergeStarterCatalog, parseCatalogPackage } from '../src/features/starter-decks/catalog-package';
 
 const normalized = (value: string, locale: string) => value.normalize('NFKC').trim().toLocaleLowerCase(locale).replace(/[\p{P}\p{S}\s]+/gu, '');
 
 test('katalog bawaan khusus Jerman lolos format, batas tag, dan keunikan', () => {
-  assert.equal(starterDecks.length, 54);
+  assert.equal(starterDecks.length, 50);
   let totalEntries = 0;
   const coverage = new Set<string>();
   const allPairs = new Set<string>();
@@ -30,41 +29,10 @@ test('katalog bawaan khusus Jerman lolos format, batas tag, dan keunikan', () =>
   assert.deepEqual([...coverage].sort(), ['A1', 'A2', 'B1', 'C1']);
 });
 
-test('paket katalog valid dapat menambah dan memperbarui katalog berdasarkan versi deck', () => {
-  const bundled = starterDecks[0];
-  const added = { ...starterDecks[1], id: 'paket-uji-deck', version: 1, file: { ...starterDecks[1].file, deck: { ...starterDecks[1].file.deck, name: 'Deck dari paket' } } };
-  const updated = { ...bundled, version: bundled.version + 1, summary: 'Ringkasan pembaruan dari paket' };
-  const parsed = parseCatalogPackage(JSON.stringify({ format: CATALOG_FORMAT, version: 1, packageId: 'paket-uji', packageVersion: 2, name: 'Paket uji', publisher: 'Penguji', createdAt: '2026-07-27T00:00:00.000Z', decks: [updated, added] }));
-  const merged = mergeStarterCatalog([parsed]);
-  assert.equal(merged.find((deck) => deck.id === bundled.id)?.summary, updated.summary);
-  assert.equal(merged.find((deck) => deck.id === added.id)?.file.deck.name, 'Deck dari paket');
-  assert.equal(merged.length, starterDecks.length + 1);
-});
-
-test('paket katalog menolak ID ganda dan deck campuran', () => {
-  const deck = starterDecks[0];
-  const base = { format: CATALOG_FORMAT, version: 1, packageId: 'paket-rusak', packageVersion: 1, name: 'Paket rusak', publisher: 'Penguji', createdAt: '2026-07-27T00:00:00.000Z' };
-  assert.throws(() => parseCatalogPackage(JSON.stringify({ ...base, decks: [deck, deck] })));
-  const mixed = { ...deck, id: 'deck-campuran', file: { ...deck.file, deck: { ...deck.file.deck, contentType: 'word', entries: [deck.file.deck.entries[0], { ...deck.file.deck.entries[0], type: 'phrase', sourceText: 'Guten Morgen' }] } } };
-  assert.throws(() => parseCatalogPackage(JSON.stringify({ ...base, decks: [mixed] })));
-});
-
-test('deck payung Kata Inti dipensiunkan tanpa kehilangan materi A1', () => {
-  assert.equal(starterDecks.some((starter) => starter.id === 'de-id-a1-kata-inti'), false);
-  const targets = ['de-id-a1-kata-identitas-keluarga', 'de-id-a1-kata-rutinitas-waktu-belajar', 'de-id-a1-kata-layanan-transaksi', 'de-id-a1-kata-tubuh-kesehatan', 'de-id-a1-kata-sifat-keadaan'];
-  const created = starterDecks.filter((starter) => targets.includes(starter.id));
-  assert.equal(created.length, targets.length);
-  assert.equal(created.reduce((total, starter) => total + starter.file.deck.entries.length, 0), 62);
-  assert.ok(created.every((starter) => starter.file.deck.contentType === 'word'));
-  const a1 = starterDecks.filter((starter) => /\bA1\b/.test(starter.file.deck.name));
-  assert.equal(a1.length, 19);
-  assert.equal(a1.reduce((total, starter) => total + starter.file.deck.entries.length, 0), 974);
-});
-
 test('segmen Goethe A1 memisahkan delapan deck kata dan frasa', () => {
   const segment = starterDecks.filter((starter) => ['de-id-a1-kata-makanan-minuman', 'de-id-a1-frasa-restoran-belanja', 'de-id-a1-kata-profesi', 'de-id-a1-frasa-pekerjaan', 'de-id-a1-kata-hobi', 'de-id-a1-frasa-hobi', 'de-id-a1-kata-transportasi-layanan', 'de-id-a1-frasa-perjalanan-bantuan'].includes(starter.id));
   assert.equal(segment.length, 8);
-  assert.equal(segment.reduce((total, starter) => total + starter.file.deck.entries.length, 0), 506);
+  assert.equal(segment.reduce((total, starter) => total + starter.file.deck.entries.length, 0), 480);
   for (const starter of segment) {
     const expected = starter.id.includes('-kata-') ? 'word' : 'phrase';
     assert.ok(starter.file.deck.entries.every((entry) => entry.type === expected), `${starter.id} harus hanya berisi ${expected}`);

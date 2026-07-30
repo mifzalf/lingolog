@@ -5,7 +5,6 @@ import { germanCefrExpansionStarterDecks } from './german-cefr-expansion';
 import { germanA1ExamStarterDecks } from './german-a1-exam';
 import { germanA2ExamStarterDecks } from './german-a2-exam';
 import { germanB1PracticalStarterDecks } from './german-b1-practical';
-import { restructureGermanA1Decks } from './german-a1-restructured';
 
 export type StarterDeckLevel = 'pemula' | 'menengah' | 'lanjutan';
 export type StarterDeckCategory = 'sehari-hari' | 'perjalanan' | 'sekolah' | 'kerja' | 'lainnya';
@@ -36,8 +35,7 @@ function splitByContentType(starter: StarterDeck): StarterDeck[] {
   }));
 }
 
-const categorizedStarterDecks = [...germanStarterDecks, ...germanExtraStarterDecks, ...germanCefrExpansionStarterDecks, ...germanA1ExamStarterDecks, ...germanA2ExamStarterDecks, ...germanB1PracticalStarterDecks].flatMap(splitByContentType);
-export const starterDecks: StarterDeck[] = restructureGermanA1Decks(categorizedStarterDecks);
+export const starterDecks: StarterDeck[] = [...germanStarterDecks, ...germanExtraStarterDecks, ...germanCefrExpansionStarterDecks, ...germanA1ExamStarterDecks, ...germanA2ExamStarterDecks, ...germanB1PracticalStarterDecks].flatMap(splitByContentType);
 
 export const starterDeckLevels: { value: StarterDeckLevel; label: string }[] = [
   { value: 'pemula', label: 'Pemula' },
