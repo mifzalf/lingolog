@@ -6,16 +6,6 @@ Deck bawaan Jerman → Indonesia disusun sebagai materi belajar praktis, bukan s
 - Goethe-Zertifikat A2 — Wortliste: https://www.goethe.de/pro/relaunch/prf/de/Goethe-Zertifikat_A2_Wortliste.pdf
 - Goethe-/ÖSD-Zertifikat B1 — Wortliste: https://www.goethe.de/pro/relaunch/prf/de/Goethe-Zertifikat_B1_Wortliste.pdf
 - Deskripsi skala CEFR Council of Europe: https://www.coe.int/en/web/common-european-framework-reference-languages/level-descriptions
-- Duden Online untuk artikel, bentuk jamak, dan bentuk baku: https://www.duden.de/
-- DWDS untuk makna, valensi, register, dan contoh korpus: https://www.dwds.de/
-- Deutsche Welle, Nicos Weg A1 untuk fungsi komunikasi pemula: https://learngerman.dw.com/de/nicos-weg/c-36519687
-
-Untuk pengembangan paket A1 berbasis buku berizin, provenance dan keputusan editorial dicatat di:
-
-- `docs/A1_LERN_DEUTSCH_JETZT_INVENTORY.md`
-- `docs/A1_STAGE_2_CATALOG_MAPPING.md`
-- `docs/A1_STAGE_3_EDITORIAL_REVIEW.md`
-- `docs/content/a1-lern-deutsch-jetzt-editorial-review.tsv`
 
 ## Prinsip editorial
 
